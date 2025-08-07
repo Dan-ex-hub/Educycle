@@ -85,8 +85,7 @@
                                                         <i class="fas fa-eye"></i> View Order
                                                     </a>
                                                     {% if payment.status == 'completed' %}
-                                                        <button type="button" class="btn btn-sm btn-outline-warning" 
-                                                                onclick="requestRefund({{ payment.id }})">
+                                                        <button type="button" class="btn btn-sm btn-outline-warning" onclick="requestRefund({{ payment.id }})">
                                                             <i class="fas fa-undo"></i> Refund
                                                         </button>
                                                     {% endif %}
