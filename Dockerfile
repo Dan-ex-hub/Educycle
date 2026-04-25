@@ -35,6 +35,7 @@ USER appuser
 EXPOSE 8000
 
 # Run the application
-CMD python manage.py migrate && python manage.py createsuperuser --noinput || true && gunicorn --bind 0.0.0.0:${PORT:-8000} EduCycle.wsgi:application
+CMD python manage.py migrate && python manage.py createsuperuser --noinput || true && gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 4 --threads 2 EduCycle.wsgi:application
+
 
  
