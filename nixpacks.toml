@@ -1,6 +1,0 @@
-[phases.setup]
-nixPkgs = ["python311"]
-aptPkgs = ["postgresql-client", "build-essential", "libpq-dev"]
-
-[variables]
-PYTHON_VERSION = "3.11"
