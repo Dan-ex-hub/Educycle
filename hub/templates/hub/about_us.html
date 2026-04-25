@@ -1,211 +1,104 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}About Us - EduCycle{% endblock %}
-
+{% block title %}About Us — EduCycle{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <!-- Hero Section -->
-    <div class="row mb-5">
-        <div class="col-12 text-center">
-            <h1 class="display-4 mb-3">
-                <i class="fas fa-palette text-primary"></i> About EduCycle
-            </h1>
-            <p class="lead text-muted">Connecting students through sustainable commerce</p>
-        </div>
-    </div>
 
-    <!-- Mission Section -->
-    <div class="row mb-5">
-        <div class="col-md-6">
-            <h2 class="mb-4">
-                <i class="fas fa-bullseye text-primary"></i> Our Mission
-            </h2>
-            <p class="lead">To create a sustainable, student-driven marketplace that promotes community, reduces waste, and makes campus life more affordable.</p>
-            <p>EduCycle was born from a simple observation: students constantly need to buy and sell items, but existing platforms are either too complex, too expensive, or too impersonal. We wanted to create something that feels like it was built specifically for campus life.</p>
-        </div>
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-recycle text-success" style="font-size: 3rem;"></i>
-                    <h4 class="mt-3">Sustainable Commerce</h4>
-                    <p class="text-muted">Every transaction helps reduce waste and promote reuse on campus.</p>
-                </div>
-            </div>
-        </div>
+<!-- Hero -->
+<div class="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-600 py-20">
+  <div class="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-0 left-0 w-64 h-64 bg-amber-400/15 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-5">
+      <i class="fas fa-recycle text-white text-2xl"></i>
     </div>
-
-    <!-- What We Do Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2 class="text-center mb-4">
-                <i class="fas fa-cogs text-primary"></i> What We Do
-            </h2>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-shopping-cart text-primary" style="font-size: 2.5rem;"></i>
-                    <h5 class="mt-3">Buy & Sell</h5>
-                    <p class="text-muted">Easy-to-use platform for students to buy and sell campus essentials.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-users text-success" style="font-size: 2.5rem;"></i>
-                    <h5 class="mt-3">Build Community</h5>
-                    <p class="text-muted">Connect with fellow students and build lasting relationships.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-leaf text-warning" style="font-size: 2.5rem;"></i>
-                    <h5 class="mt-3">Reduce Waste</h5>
-                    <p class="text-muted">Promote sustainability by giving items a second life.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Values Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2 class="text-center mb-4">
-                <i class="fas fa-heart text-danger"></i> Our Values
-            </h2>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="d-flex">
-                <div class="me-3">
-                    <i class="fas fa-shield-alt text-primary" style="font-size: 1.5rem;"></i>
-                </div>
-                <div>
-                    <h5>Trust & Safety</h5>
-                    <p class="text-muted">We prioritize the safety and trust of our community members above all else.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="d-flex">
-                <div class="me-3">
-                    <i class="fas fa-handshake text-success" style="font-size: 1.5rem;"></i>
-                </div>
-                <div>
-                    <h5>Community First</h5>
-                    <p class="text-muted">Every feature is designed with the student community in mind.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="d-flex">
-                <div class="me-3">
-                    <i class="fas fa-lightbulb text-warning" style="font-size: 1.5rem;"></i>
-                </div>
-                <div>
-                    <h5>Innovation</h5>
-                    <p class="text-muted">We continuously innovate to provide the best experience for students.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="d-flex">
-                <div class="me-3">
-                    <i class="fas fa-globe text-info" style="font-size: 1.5rem;"></i>
-                </div>
-                <div>
-                    <h5>Sustainability</h5>
-                    <p class="text-muted">Committed to reducing environmental impact through reuse and recycling.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Team Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2 class="text-center mb-4">
-                <i class="fas fa-users text-primary"></i> Meet Our Team
-            </h2>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                        <i class="fas fa-user" style="font-size: 2rem;"></i>
-                    </div>
-                    <h5 class="mt-3">Founder & CEO</h5>
-                    <p class="text-muted">Passionate about creating sustainable solutions for students.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                        <i class="fas fa-code" style="font-size: 2rem;"></i>
-                    </div>
-                    <h5 class="mt-3">Lead Developer</h5>
-                    <p class="text-muted">Building the technology that powers our community.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <div class="rounded-circle bg-warning text-white d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                        <i class="fas fa-headset" style="font-size: 2rem;"></i>
-                    </div>
-                    <h5 class="mt-3">Support Team</h5>
-                    <p class="text-muted">Dedicated to helping our community succeed.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stats Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card bg-gradient-primary text-white">
-                <div class="card-body text-center">
-                    <h3 class="mb-4">Our Impact</h3>
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <h2 class="display-4">500+</h2>
-                            <p>Happy Students</p>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <h2 class="display-4">1000+</h2>
-                            <p>Items Traded</p>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <h2 class="display-4">50+</h2>
-                            <p>Categories</p>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <h2 class="display-4">95%</h2>
-                            <p>Satisfaction Rate</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CTA Section -->
-    <div class="row">
-        <div class="col-12 text-center">
-            <h3 class="mb-4">Ready to Join Our Community?</h3>
-            <p class="lead mb-4">Start buying, selling, and connecting with fellow students today!</p>
-            <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-3">
-                <i class="fas fa-user-plus"></i> Sign Up Now
-            </a>
-            <a href="{% url 'contact_us' %}" class="btn btn-outline-primary btn-lg">
-                <i class="fas fa-envelope"></i> Contact Us
-            </a>
-        </div>
-    </div>
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-white mb-4">About EduCycle</h1>
+    <p class="text-indigo-200 text-lg leading-relaxed">Connecting students through sustainable commerce — one textbook at a time.</p>
+  </div>
 </div>
-{% endblock %} 
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-20">
+
+  <!-- Mission -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+    <div>
+      <span class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full uppercase tracking-wider mb-4">
+        <i class="fas fa-bullseye text-[10px]"></i>Our Mission
+      </span>
+      <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Built for students, by students</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">EduCycle was born from a simple observation: students constantly need to buy and sell items, but existing platforms are either too complex, too expensive, or too impersonal.</p>
+      <p class="text-slate-600 leading-relaxed">We wanted to create something that feels like it was built specifically for campus life — sustainable, affordable, and community-driven.</p>
+    </div>
+    <div class="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-3xl p-8 text-center border border-indigo-100">
+      <i class="fas fa-recycle text-indigo-500 text-5xl mb-4"></i>
+      <h3 class="text-xl font-bold text-slate-900 mb-2">Sustainable Commerce</h3>
+      <p class="text-slate-500 text-sm">Every transaction helps reduce waste and promote reuse on campus.</p>
+    </div>
+  </div>
+
+  <!-- What we do -->
+  <div>
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-extrabold text-slate-900 mb-2">What We Do</h2>
+      <p class="text-slate-500">Three pillars that drive everything we build</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      {% for icon, color, bg, title, desc in "123" %}
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6 text-center hover:-translate-y-1 transition-transform">
+        <div class="w-14 h-14 rounded-2xl {% if forloop.counter == 1 %}bg-indigo-100{% elif forloop.counter == 2 %}bg-emerald-100{% else %}bg-amber-100{% endif %} flex items-center justify-center mx-auto mb-4">
+          <i class="{% if forloop.counter == 1 %}fas fa-shopping-cart text-indigo-600{% elif forloop.counter == 2 %}fas fa-users text-emerald-600{% else %}fas fa-leaf text-amber-600{% endif %} text-xl"></i>
+        </div>
+        <h3 class="font-bold text-slate-900 mb-2">{% if forloop.counter == 1 %}Buy & Sell{% elif forloop.counter == 2 %}Build Community{% else %}Reduce Waste{% endif %}</h3>
+        <p class="text-slate-500 text-sm">{% if forloop.counter == 1 %}Easy-to-use platform for students to buy and sell campus essentials.{% elif forloop.counter == 2 %}Connect with fellow students and build lasting relationships.{% else %}Promote sustainability by giving items a second life.{% endif %}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Values -->
+  <div>
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Our Values</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      {% for item in "1234" %}
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
+          {% if forloop.counter == 1 %}bg-indigo-100{% elif forloop.counter == 2 %}bg-emerald-100{% elif forloop.counter == 3 %}bg-amber-100{% else %}bg-blue-100{% endif %}">
+          <i class="{% if forloop.counter == 1 %}fas fa-shield-alt text-indigo-600{% elif forloop.counter == 2 %}fas fa-handshake text-emerald-600{% elif forloop.counter == 3 %}fas fa-lightbulb text-amber-600{% else %}fas fa-globe text-blue-600{% endif %} text-sm"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-slate-900 text-sm mb-1">{% if forloop.counter == 1 %}Trust & Safety{% elif forloop.counter == 2 %}Community First{% elif forloop.counter == 3 %}Innovation{% else %}Sustainability{% endif %}</h4>
+          <p class="text-slate-500 text-xs leading-relaxed">{% if forloop.counter == 1 %}We prioritize the safety and trust of our community members above all else.{% elif forloop.counter == 2 %}Every feature is designed with the student community in mind.{% elif forloop.counter == 3 %}We continuously innovate to provide the best experience for students.{% else %}Committed to reducing environmental impact through reuse and recycling.{% endif %}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="bg-gradient-to-br from-indigo-600 to-violet-600 rounded-3xl p-10 text-white text-center">
+    <h2 class="text-2xl font-extrabold mb-8">Our Impact</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+      {% for num, label in "1234" %}
+      <div>
+        <p class="text-4xl font-extrabold text-amber-300">{% if forloop.counter == 1 %}500+{% elif forloop.counter == 2 %}1000+{% elif forloop.counter == 3 %}50+{% else %}95%{% endif %}</p>
+        <p class="text-indigo-200 text-sm mt-1">{% if forloop.counter == 1 %}Happy Students{% elif forloop.counter == 2 %}Items Traded{% elif forloop.counter == 3 %}Categories{% else %}Satisfaction{% endif %}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="text-center">
+    <h2 class="text-2xl font-extrabold text-slate-900 mb-3">Ready to Join?</h2>
+    <p class="text-slate-500 mb-6">Start buying, selling, and connecting with fellow students today.</p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="{% url 'register' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-2xl shadow-sm transition-all hover:-translate-y-px">
+        <i class="fas fa-user-plus text-xs"></i>Sign Up Free
+      </a>
+      <a href="{% url 'contact_us' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm rounded-2xl transition-colors">
+        <i class="fas fa-envelope text-xs"></i>Contact Us
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

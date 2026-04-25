@@ -1,277 +1,323 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}{{ item.name }} - EduCycle{% endblock %}
+{% block title %}{{ item.name }} — EduCycle{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <!-- Item Images -->
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-img-top" style="height: 400px; position: relative; overflow: hidden; border-radius: 0.375rem 0.375rem 0 0;">
-                    {% if item.image1 %}
-                        <img src="{{ item.image1.url }}" alt="{{ item.name }}" class="w-100 h-100" style="object-fit: cover;">
-                    {% else %}
-                        <!-- Fallback to category-based design when no image -->
-                    {% if item.category == 'textbook' %}
-                        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem;">📚</div>
-                            <div style="background: #1976d2; color: white; padding: 0.5rem 1.5rem; border-radius: 2rem; font-size: 1rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">Textbook</div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: #1f2937; margin-bottom: 0.5rem;">{{ item.name }}</div>
-                            <div style="font-size: 2.5rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                        </div>
-                    {% elif item.category == 'equipment' %}
-                        <div style="background: linear-gradient(135deg, #f3e5f5 0%, #ce93d8 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem;">🔬</div>
-                            <div style="background: #7b1fa2; color: white; padding: 0.5rem 1.5rem; border-radius: 2rem; font-size: 1rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">Lab Equipment</div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: #1f2937; margin-bottom: 0.5rem;">{{ item.name }}</div>
-                            <div style="font-size: 2.5rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                        </div>
-                    {% elif item.category == 'appliance' %}
-                        <div style="background: linear-gradient(135deg, #e8f5e8 0%, #a5d6a7 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem;">⚡</div>
-                            <div style="background: #388e3c; color: white; padding: 0.5rem 1.5rem; border-radius: 2rem; font-size: 1rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">Appliance</div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: #1f2937; margin-bottom: 0.5rem;">{{ item.name }}</div>
-                            <div style="font-size: 2.5rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                        </div>
-                    {% elif item.category == 'decor' %}
-                        <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem;">🎨</div>
-                            <div style="background: #f57c00; color: white; padding: 0.5rem 1.5rem; border-radius: 2rem; font-size: 1rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">Room Decor</div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: #1f2937; margin-bottom: 0.5rem;">{{ item.name }}</div>
-                            <div style="font-size: 2.5rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                        </div>
-                    {% else %}
-                        <div style="background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem;">📦</div>
-                            <div style="background: #c2185b; color: white; padding: 0.5rem 1.5rem; border-radius: 2rem; font-size: 1rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">Other</div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: #1f2937; margin-bottom: 0.5rem;">{{ item.name }}</div>
-                            <div style="font-size: 2.5rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                        </div>
-                    {% endif %}
-                    {% endif %}
-                </div>
-            </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- Breadcrumb -->
+  <nav class="flex items-center gap-2 text-xs text-slate-400 mb-6">
+    <a href="/" class="hover:text-indigo-600 transition-colors">Home</a>
+    <i class="fas fa-chevron-right text-[9px]"></i>
+    <a href="/?category={{ item.category }}" class="hover:text-indigo-600 transition-colors">{{ item.get_category_display }}</a>
+    <i class="fas fa-chevron-right text-[9px]"></i>
+    <span class="text-slate-600 font-medium truncate max-w-[200px]">{{ item.name }}</span>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       MAIN PRODUCT SECTION
+  ══════════════════════════════════════════ -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+
+    <!-- ── Left: Image ── -->
+    <div class="space-y-3">
+      <div class="relative overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-card"
+           style="aspect-ratio: 4/3;">
+        {% if item.image1 %}
+          <img src="{{ item.image1.url }}" alt="{{ item.name }}"
+               class="w-full h-full object-cover">
+        {% else %}
+          <!-- Category placeholder -->
+          <div class="w-full h-full flex flex-col items-center justify-center
+            {% if item.category == 'textbook' %}bg-gradient-to-br from-blue-50 to-indigo-100
+            {% elif item.category == 'equipment' %}bg-gradient-to-br from-violet-50 to-purple-100
+            {% elif item.category == 'appliance' %}bg-gradient-to-br from-emerald-50 to-teal-100
+            {% elif item.category == 'decor' %}bg-gradient-to-br from-amber-50 to-orange-100
+            {% else %}bg-gradient-to-br from-rose-50 to-pink-100{% endif %}">
+            <span class="text-8xl mb-4 leading-none">
+              {% if item.category == 'textbook' %}📚
+              {% elif item.category == 'equipment' %}🔬
+              {% elif item.category == 'appliance' %}⚡
+              {% elif item.category == 'decor' %}🎨
+              {% else %}📦{% endif %}
+            </span>
+            <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider">{{ item.get_category_display }}</span>
+          </div>
+        {% endif %}
+
+        <!-- Category badge overlay -->
+        <div class="absolute top-4 left-4">
+          <span class="px-3 py-1.5 rounded-full text-xs font-bold shadow-sm backdrop-blur-sm
+            {% if item.category == 'textbook' %}bg-blue-100/90 text-blue-700
+            {% elif item.category == 'equipment' %}bg-violet-100/90 text-violet-700
+            {% elif item.category == 'appliance' %}bg-emerald-100/90 text-emerald-700
+            {% elif item.category == 'decor' %}bg-amber-100/90 text-amber-700
+            {% else %}bg-rose-100/90 text-rose-700{% endif %}">
+            {% if item.category == 'textbook' %}<i class="fas fa-book-open mr-1 text-[10px]"></i>
+            {% elif item.category == 'equipment' %}<i class="fas fa-flask mr-1 text-[10px]"></i>
+            {% elif item.category == 'appliance' %}<i class="fas fa-plug mr-1 text-[10px]"></i>
+            {% elif item.category == 'decor' %}<i class="fas fa-paint-brush mr-1 text-[10px]"></i>
+            {% else %}<i class="fas fa-box mr-1 text-[10px]"></i>{% endif %}
+            {{ item.get_category_display }}
+          </span>
         </div>
+      </div>
 
-        <!-- Item Details -->
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <span class="badge bg-secondary mb-2">
-                            {% if item.category == 'textbook' %}
-                                <i class="fas fa-book-open"></i>
-                            {% elif item.category == 'equipment' %}
-                                <i class="fas fa-tools"></i>
-                            {% elif item.category == 'decor' %}
-                                <i class="fas fa-paint-brush"></i>
-                            {% elif item.category == 'appliance' %}
-                                <i class="fas fa-plug"></i>
-                            {% else %}
-                                <i class="fas fa-ellipsis-h"></i>
-                            {% endif %}
-                            {{ item.get_category_display }}
-                        </span>
-                    </div>
-
-                    <h2 class="card-title mb-3">{{ item.name }}</h2>
-                    <p class="card-text text-muted mb-4">{{ item.description }}</p>
-                    
-                    {% if item.price %}
-                    <div class="mb-4">
-                        <span class="h3 text-primary">₹{{ item.price }}</span>
-                    </div>
-                    {% endif %}
-
-
-
-                    <div class="mb-4">
-                                <small class="text-muted">
-                            <i class="fas fa-user"></i> Seller: {{ item.seller.get_full_name|default:item.seller.username }}
-                                </small>
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        {% if user.is_authenticated and user != item.seller %}
-                        <a href="{% url 'send_message' item.id %}" class="btn btn-primary">
-                            <i class="fas fa-envelope"></i> Contact Seller
-                        </a>
-                        <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success">
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                        </a>
-                        {% endif %}
-                        
-                        {% if user == item.seller %}
-                        <a href="{% url 'item_edit' item.id %}" class="btn btn-warning">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                        <a href="{% url 'item_delete' item.id %}" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> Delete
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
+      <!-- Second image if present -->
+      {% if item.image2 %}
+      <div class="overflow-hidden rounded-2xl border border-slate-100 shadow-sm" style="aspect-ratio: 16/7;">
+        <img src="{{ item.image2.url }}" alt="{{ item.name }} - additional"
+             class="w-full h-full object-cover">
+      </div>
+      {% endif %}
     </div>
 
-    <!-- Reviews Section -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="fas fa-star text-warning"></i> Reviews
-                        <span class="badge bg-secondary ms-2">{{ item.reviews.count }}</span>
-                    </h5>
-                    {% if user.is_authenticated and user != item.seller %}
-                        <a href="{% url 'add_review' item.id %}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> Write a Review
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="card-body">
-                    {% if item.reviews.all %}
-                        {% for review in item.reviews.all %}
-                            <div class="review-item border-bottom pb-3 mb-3">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <div class="d-flex align-items-center mb-1">
-                                            <div class="stars me-2">
-                                                {% for i in "12345" %}
-                                                    {% if forloop.counter <= review.rating %}
-                                                        <span class="star filled">★</span>
-                                                    {% else %}
-                                                        <span class="star">☆</span>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </div>
-                                            <span class="fw-bold">{{ review.title }}</span>
-                                            {% if review.is_verified_purchase %}
-                                                <span class="badge bg-success ms-2">
-                                                    <i class="fas fa-check-circle"></i> Verified Purchase
-                                                </span>
-                                            {% endif %}
-                                        </div>
-                                        <small class="text-muted">
-                                            By {{ review.user.get_full_name|default:review.user.username }} 
-                                            on {{ review.created_at|date:"M d, Y" }}
-                                        </small>
-                                    </div>
-                                    {% if user == review.user %}
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="{% url 'edit_review' review.id %}">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a></li>
-                                                <li><a class="dropdown-item text-danger" href="{% url 'delete_review' review.id %}">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </a></li>
-                                            </ul>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <p class="mb-2">{{ review.comment }}</p>
-                                <div class="d-flex align-items-center">
-                                    <button class="btn btn-sm btn-outline-secondary me-2" onclick="markHelpful({{ review.id }})">
-                                        <i class="fas fa-thumbs-up"></i> Helpful ({{ review.helpful_votes }})
-                                    </button>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="text-center py-4">
-                            <i class="fas fa-star text-muted" style="font-size: 3rem;"></i>
-                            <h6 class="mt-2 text-muted">No reviews yet</h6>
-                            <p class="text-muted">Be the first to review this item!</p>
-                            {% if user.is_authenticated and user != item.seller %}
-                                <a href="{% url 'add_review' item.id %}" class="btn btn-primary">
-                                    <i class="fas fa-star"></i> Write the First Review
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+    <!-- ── Right: Details ── -->
+    <div class="flex flex-col">
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6 sm:p-8 flex flex-col flex-1">
+
+        <!-- Title -->
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight mb-3">
+          {{ item.name }}
+        </h1>
+
+        <!-- Price -->
+        <div class="flex items-baseline gap-3 mb-5">
+          {% if item.price %}
+            <span class="text-4xl font-extrabold text-indigo-600">₹{{ item.price }}</span>
+            <span class="text-sm text-slate-400 font-medium">Negotiable</span>
+          {% else %}
+            <span class="px-4 py-1.5 bg-emerald-100 text-emerald-700 text-lg font-bold rounded-full">Free / Swap Only</span>
+          {% endif %}
         </div>
+
+        <!-- Swap info -->
+        {% if item.desired_swap_item %}
+        <div class="flex items-center gap-2 mb-5 px-4 py-3 bg-amber-50 border border-amber-100 rounded-2xl">
+          <i class="fas fa-exchange-alt text-amber-500 flex-shrink-0"></i>
+          <p class="text-sm text-amber-800">
+            <span class="font-semibold">Open to swap for:</span> {{ item.desired_swap_item }}
+          </p>
+        </div>
+        {% endif %}
+
+        <!-- Description -->
+        <div class="mb-6">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Description</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">{{ item.description }}</p>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-slate-100 my-4"></div>
+
+        <!-- Seller info -->
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+            <span class="text-indigo-700 font-bold text-sm">
+              {{ item.seller.first_name|first|upper }}{{ item.seller.last_name|first|upper }}
+            </span>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-slate-800">{{ item.seller.get_full_name|default:item.seller.username }}</p>
+            <p class="text-xs text-slate-400 flex items-center gap-1">
+              <i class="fas fa-clock text-[10px]"></i>
+              Listed {{ item.created_at|timesince }} ago
+            </p>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 mt-auto">
+          {% if user.is_authenticated and user != item.seller %}
+            <a href="{% url 'send_message' item.id %}"
+              class="flex-1 flex items-center justify-center gap-2 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-px">
+              <i class="fas fa-envelope text-xs"></i>Contact Seller
+            </a>
+            <a href="{% url 'add_to_cart' item.id %}"
+              class="flex-1 flex items-center justify-center gap-2 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-px">
+              <i class="fas fa-shopping-cart text-xs"></i>Add to Cart
+            </a>
+          {% elif user == item.seller %}
+            <a href="{% url 'item_edit' item.id %}"
+              class="flex-1 flex items-center justify-center gap-2 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-2xl shadow-sm transition-all hover:-translate-y-px">
+              <i class="fas fa-edit text-xs"></i>Edit Listing
+            </a>
+            <a href="{% url 'item_delete' item.id %}"
+              class="flex items-center justify-center gap-2 px-5 py-3.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-sm rounded-2xl border border-red-100 transition-all">
+              <i class="fas fa-trash text-xs"></i>Delete
+            </a>
+          {% else %}
+            <a href="{% url 'user_login' %}"
+              class="flex-1 flex items-center justify-center gap-2 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-2xl shadow-sm transition-all hover:-translate-y-px">
+              <i class="fas fa-sign-in-alt text-xs"></i>Login to Contact Seller
+            </a>
+          {% endif %}
+        </div>
+
+        <!-- Safety note -->
+        <div class="mt-4 flex items-start gap-2 px-3 py-2.5 bg-slate-50 rounded-xl">
+          <i class="fas fa-shield-alt text-emerald-500 text-xs mt-0.5 flex-shrink-0"></i>
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            Always meet in a public campus location. Verify the item before paying.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       REVIEWS SECTION
+  ══════════════════════════════════════════ -->
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6 sm:p-8 mb-10">
+
+    <!-- Reviews header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
+          <i class="fas fa-star text-amber-500 text-sm"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">Reviews</h2>
+          <p class="text-xs text-slate-400">{{ item.reviews.count }} review{{ item.reviews.count|pluralize }}</p>
+        </div>
+      </div>
+      {% if user.is_authenticated and user != item.seller %}
+        <a href="{% url 'add_review' item.id %}"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-xl border border-amber-100 transition-colors">
+          <i class="fas fa-plus text-[10px]"></i>Write a Review
+        </a>
+      {% endif %}
     </div>
 
-    <!-- Related Items -->
-    {% if items %}
-    <div class="row mt-5">
-        <div class="col-12">
-            <h3 class="mb-4">Related Items</h3>
-            <div class="row">
-                {% for related_item in items %}
-                <div class="col-md-4 mb-3">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-img-top" style="height: 150px; position: relative; overflow: hidden; border-radius: 0.375rem 0.375rem 0 0;">
-                            {% if related_item.image1 %}
-                                <img src="{{ related_item.image1.url }}" alt="{{ related_item.name }}" class="w-100 h-100" style="object-fit: cover;">
-                            {% else %}
-                                <!-- Fallback for related items -->
-                                <div style="background: linear-gradient(135deg, #f3e5f5 0%, #ce93d8 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                                    <div style="font-size: 2rem;">🔬</div>
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="card-body">
-                            <h6 class="card-title">{{ related_item.name }}</h6>
-                            <p class="card-text text-muted small">{{ related_item.description|truncatewords:10 }}</p>
-                            {% if related_item.price %}
-                            <span class="text-primary">₹{{ related_item.price }}</span>
-                            {% endif %}
-                        </div>
-                        <div class="card-footer">
-                            <a href="{% url 'item_detail' related_item.id %}" class="btn btn-outline-primary btn-sm">
-                                View Details
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    {% if item.reviews.all %}
+    <div class="space-y-5">
+      {% for review in item.reviews.all %}
+      <div class="flex gap-4 pb-5 {% if not forloop.last %}border-b border-slate-100{% endif %}">
+        <!-- Avatar -->
+        <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+          <span class="text-indigo-700 font-bold text-sm">
+            {{ review.user.first_name|first|upper }}{{ review.user.last_name|first|upper }}
+          </span>
+        </div>
+        <!-- Content -->
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-start justify-between gap-2 mb-1">
+            <div>
+              <!-- Stars -->
+              <div class="flex items-center gap-0.5 mb-1">
+                {% for i in "12345" %}
+                  <i class="fas fa-star text-xs {% if forloop.counter <= review.rating %}text-amber-400{% else %}text-slate-200{% endif %}"></i>
                 {% endfor %}
+                <span class="ml-2 text-sm font-bold text-slate-800">{{ review.title }}</span>
+                {% if review.is_verified_purchase %}
+                  <span class="ml-2 inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full">
+                    <i class="fas fa-check-circle text-[9px]"></i>Verified
+                  </span>
+                {% endif %}
+              </div>
+              <p class="text-xs text-slate-400">
+                {{ review.user.get_full_name|default:review.user.username }} · {{ review.created_at|date:"M d, Y" }}
+              </p>
             </div>
+            <!-- Edit/Delete for own review -->
+            {% if user == review.user %}
+            <div class="flex gap-1.5">
+              <a href="{% url 'edit_review' review.id %}"
+                class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-amber-100 hover:text-amber-600 text-slate-400 flex items-center justify-center transition-colors">
+                <i class="fas fa-edit text-[10px]"></i>
+              </a>
+              <a href="{% url 'delete_review' review.id %}"
+                class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-red-100 hover:text-red-500 text-slate-400 flex items-center justify-center transition-colors">
+                <i class="fas fa-trash text-[10px]"></i>
+              </a>
+            </div>
+            {% endif %}
+          </div>
+          <p class="text-sm text-slate-600 leading-relaxed mt-2">{{ review.comment }}</p>
+          <button onclick="markHelpful({{ review.id }}, this)"
+            class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 hover:bg-slate-100 text-slate-500 text-xs font-medium rounded-lg transition-colors">
+            <i class="fas fa-thumbs-up text-[10px]"></i>Helpful ({{ review.helpful_votes }})
+          </button>
         </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty reviews -->
+    <div class="flex flex-col items-center justify-center py-12 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center mb-4">
+        <i class="fas fa-star text-amber-300 text-2xl"></i>
+      </div>
+      <h3 class="text-base font-bold text-slate-700 mb-1">No reviews yet</h3>
+      <p class="text-slate-500 text-sm mb-4">Be the first to share your experience with this item.</p>
+      {% if user.is_authenticated and user != item.seller %}
+        <a href="{% url 'add_review' item.id %}"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+          <i class="fas fa-star text-xs"></i>Write the First Review
+        </a>
+      {% endif %}
     </div>
     {% endif %}
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       RELATED ITEMS
+  ══════════════════════════════════════════ -->
+  {% if items %}
+  <div>
+    <h2 class="text-xl font-bold text-slate-900 mb-5 flex items-center gap-2">
+      <i class="fas fa-layer-group text-indigo-400 text-base"></i>
+      More in {{ item.get_category_display }}
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for rel in items %}
+      <a href="{% url 'item_detail' rel.id %}"
+        class="group bg-white rounded-3xl border border-slate-100 shadow-card overflow-hidden flex flex-col
+               transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
+        <!-- Image -->
+        <div class="relative overflow-hidden" style="height:160px">
+          {% if rel.image1 %}
+            <img src="{{ rel.image1.url }}" alt="{{ rel.name }}"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          {% else %}
+            <div class="w-full h-full bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center">
+              <span class="text-4xl">
+                {% if rel.category == 'textbook' %}📚
+                {% elif rel.category == 'equipment' %}🔬
+                {% elif rel.category == 'appliance' %}⚡
+                {% elif rel.category == 'decor' %}🎨
+                {% else %}📦{% endif %}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+        <!-- Body -->
+        <div class="p-4 flex flex-col flex-1">
+          <h3 class="font-semibold text-slate-900 text-sm leading-snug mb-1 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+            {{ rel.name }}
+          </h3>
+          <p class="text-xs text-slate-500 line-clamp-2 mb-3 flex-1">{{ rel.description|truncatewords:10 }}</p>
+          <div class="flex items-center justify-between">
+            {% if rel.price %}
+              <span class="text-base font-bold text-indigo-600">₹{{ rel.price }}</span>
+            {% else %}
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">Free</span>
+            {% endif %}
+            <span class="text-xs text-indigo-600 font-semibold group-hover:underline">View →</span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
 </div>
 
-<style>
-.stars {
-    display: inline-flex;
-    gap: 2px;
-}
-
-.star {
-    font-size: 1rem;
-    color: #ddd;
-}
-
-.star.filled {
-    color: #ffc107;
-}
-
-.review-item {
-    transition: background-color 0.2s ease;
-}
-
-.review-item:hover {
-    background-color: #f8f9fa;
-    border-radius: 0.375rem;
-    padding: 0.5rem;
-    margin: -0.5rem;
-}
-</style>
-
 <script>
-function markHelpful(reviewId) {
-    // This would typically make an AJAX call to update helpful votes
-    // For now, we'll just show a simple alert
-    alert('Thank you for your feedback!');
+function markHelpful(reviewId, btn) {
+  btn.innerHTML = '<i class="fas fa-thumbs-up text-[10px] text-indigo-500"></i><span class="text-indigo-600">Thanks!</span>';
+  btn.disabled = true;
 }
 </script>
-{% endblock %} 
+{% endblock %}

@@ -1,0 +1,420 @@
+﻿{% extends "hub/base.html" %}
+{% block title %}Settings — EduCycle{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <!-- Page header -->
+  <div class="flex items-center gap-4 mb-8">
+    <div class="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center">
+      <i class="fas fa-cog text-indigo-600 text-lg"></i>
+    </div>
+    <div>
+      <h1 class="text-2xl font-extrabold text-slate-900">Account Settings</h1>
+      <p class="text-slate-500 text-sm mt-0.5">Manage your profile, security, and preferences</p>
+    </div>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-6">
+
+    <!-- ── Sidebar nav ── -->
+    <aside class="lg:w-56 flex-shrink-0">
+      <nav class="bg-white rounded-2xl border border-slate-100 shadow-card p-2 space-y-1 sticky top-20">
+        {% for sec, icon, label, color in nav_items %}{% empty %}
+        {% for item in "123456" %}
+        <button onclick="showSection('{% if forloop.counter == 1 %}profile{% elif forloop.counter == 2 %}security{% elif forloop.counter == 3 %}notifications{% elif forloop.counter == 4 %}privacy{% elif forloop.counter == 5 %}appearance{% else %}danger{% endif %}')"
+          id="nav-{% if forloop.counter == 1 %}profile{% elif forloop.counter == 2 %}security{% elif forloop.counter == 3 %}notifications{% elif forloop.counter == 4 %}privacy{% elif forloop.counter == 5 %}appearance{% else %}danger{% endif %}"
+          class="settings-nav w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all text-left
+            {% if forloop.counter == 6 %}text-red-500 hover:bg-red-50{% else %}text-slate-600 hover:bg-slate-50{% endif %}">
+          <i class="{% if forloop.counter == 1 %}fas fa-user text-indigo-400{% elif forloop.counter == 2 %}fas fa-lock text-slate-400{% elif forloop.counter == 3 %}fas fa-bell text-slate-400{% elif forloop.counter == 4 %}fas fa-shield-alt text-slate-400{% elif forloop.counter == 5 %}fas fa-palette text-slate-400{% else %}fas fa-exclamation-triangle{% endif %} w-4 text-center"></i>
+          {% if forloop.counter == 1 %}Profile{% elif forloop.counter == 2 %}Security{% elif forloop.counter == 3 %}Notifications{% elif forloop.counter == 4 %}Privacy{% elif forloop.counter == 5 %}Appearance{% else %}Danger Zone{% endif %}
+        </button>
+        {% if forloop.counter == 5 %}<div class="border-t border-slate-100 my-1"></div>{% endif %}
+        {% endfor %}
+        {% endfor %}
+      </nav>
+    </aside>
+
+    <!-- ── Main content ── -->
+    <div class="flex-1 min-w-0">
+
+      <!-- ══ PROFILE ══ -->
+      <div id="section-profile" class="space-y-5">
+        <form method="post" action="/settings/">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_profile">
+          <input type="hidden" name="active_section" value="profile">
+
+          <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+            <h2 class="section-title"><i class="fas fa-user text-indigo-400"></i> Personal Information</h2>
+            <!-- Avatar -->
+            <div class="flex items-center gap-4 mb-6 p-4 bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl border border-indigo-100">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md flex-shrink-0">
+                <span class="text-2xl font-extrabold text-white">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</span>
+              </div>
+              <div>
+                <p class="font-bold text-slate-900">{{ user.get_full_name|default:user.username }}</p>
+                <p class="text-sm text-slate-500">{{ user.email }}</p>
+                <p class="text-xs text-slate-400 mt-0.5">Member since {{ user.date_joined|date:"F Y" }}</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div><label class="flabel">First Name</label><input type="text" name="first_name" value="{{ user.first_name }}" class="sfield" placeholder="First name"></div>
+              <div><label class="flabel">Last Name</label><input type="text" name="last_name" value="{{ user.last_name }}" class="sfield" placeholder="Last name"></div>
+              <div class="sm:col-span-2"><label class="flabel">Email Address</label><input type="email" name="email" value="{{ user.email }}" class="sfield" placeholder="your@email.com"></div>
+              <div><label class="flabel">Phone Number</label><input type="tel" name="phone_number" value="{{ profile.phone_number }}" class="sfield" placeholder="+91 00000 00000"></div>
+              <div><label class="flabel">Username</label><input type="text" value="{{ user.username }}" class="sfield opacity-60 cursor-not-allowed" disabled><p class="text-xs text-slate-400 mt-1">Cannot be changed</p></div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+            <h2 class="section-title"><i class="fas fa-graduation-cap text-indigo-400"></i> Student Information</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div><label class="flabel">Student ID</label><input type="text" value="{{ profile.student_id }}" class="sfield opacity-60 cursor-not-allowed" disabled><p class="text-xs text-slate-400 mt-1">Contact support to change</p></div>
+              <div><label class="flabel">Department</label>
+                <select name="department" class="sfield">
+                  <option value="computer_science" {% if profile.department == "computer_science" %}selected{% endif %}>Computer Science</option>
+                  <option value="engineering" {% if profile.department == "engineering" %}selected{% endif %}>Engineering</option>
+                  <option value="arts" {% if profile.department == "arts" %}selected{% endif %}>Arts and Design</option>
+                  <option value="business" {% if profile.department == "business" %}selected{% endif %}>Business</option>
+                  <option value="science" {% if profile.department == "science" %}selected{% endif %}>Science</option>
+                  <option value="medicine" {% if profile.department == "medicine" %}selected{% endif %}>Medicine</option>
+                  <option value="law" {% if profile.department == "law" %}selected{% endif %}>Law</option>
+                  <option value="education" {% if profile.department == "education" %}selected{% endif %}>Education</option>
+                  <option value="other" {% if profile.department == "other" %}selected{% endif %}>Other</option>
+                </select>
+              </div>
+              <div><label class="flabel">Year of Study</label>
+                <select name="year_of_study" class="sfield">
+                  <option value="1" {% if profile.year_of_study == "1" %}selected{% endif %}>1st Year</option>
+                  <option value="2" {% if profile.year_of_study == "2" %}selected{% endif %}>2nd Year</option>
+                  <option value="3" {% if profile.year_of_study == "3" %}selected{% endif %}>3rd Year</option>
+                  <option value="4" {% if profile.year_of_study == "4" %}selected{% endif %}>4th Year</option>
+                  <option value="5" {% if profile.year_of_study == "5" %}selected{% endif %}>5th Year</option>
+                  <option value="graduate" {% if profile.year_of_study == "graduate" %}selected{% endif %}>Graduate</option>
+                  <option value="phd" {% if profile.year_of_study == "phd" %}selected{% endif %}>PhD</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary"><i class="fas fa-save text-xs"></i>Save Profile</button>
+        </form>
+      </div>
+
+      <!-- ══ SECURITY ══ -->
+      <div id="section-security" class="hidden space-y-5">
+        <form method="post" action="/settings/">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="change_password">
+          <input type="hidden" name="active_section" value="security">
+          <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+            <h2 class="section-title"><i class="fas fa-lock text-indigo-400"></i> Change Password</h2>
+            <div class="space-y-4 max-w-md">
+              <div><label class="flabel">Current Password</label><input type="password" name="current_password" class="sfield" placeholder="Enter current password"></div>
+              <div>
+                <label class="flabel">New Password</label>
+                <input type="password" name="new_password" id="new_pw" class="sfield" placeholder="Min 8 characters">
+                <div class="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div id="pw-bar" class="h-full rounded-full transition-all duration-300 w-0 bg-red-400"></div></div>
+                <p id="pw-label" class="text-xs text-slate-400 mt-1">Use uppercase, numbers, and symbols</p>
+              </div>
+              <div><label class="flabel">Confirm New Password</label><input type="password" name="confirm_password" class="sfield" placeholder="Repeat new password"></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+            <h2 class="section-title"><i class="fas fa-shield-alt text-indigo-400"></i> Security Status</h2>
+            <div class="space-y-3">
+              <div class="status-row"><div class="flex items-center gap-3"><div class="status-icon bg-emerald-100"><i class="fas fa-check-circle text-emerald-600 text-sm"></i></div><div><p class="status-label">Email Verified</p><p class="status-sub">{{ user.email }}</p></div></div><span class="badge-green">Active</span></div>
+              <div class="status-row"><div class="flex items-center gap-3"><div class="status-icon bg-amber-100"><i class="fas fa-mobile-alt text-amber-600 text-sm"></i></div><div><p class="status-label">Two-Factor Auth</p><p class="status-sub">Extra security layer</p></div></div><span class="badge-gray">Coming Soon</span></div>
+              <div class="status-row"><div class="flex items-center gap-3"><div class="status-icon bg-blue-100"><i class="fas fa-history text-blue-600 text-sm"></i></div><div><p class="status-label">Last Login</p><p class="status-sub">{{ user.last_login|date:"M d, Y H:i"|default:"N/A" }}</p></div></div></div>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary"><i class="fas fa-lock text-xs"></i>Update Password</button>
+        </form>
+      </div>
+
+      <!-- ══ NOTIFICATIONS ══ -->
+      <div id="section-notifications" class="hidden">
+        <form method="post" action="/settings/">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="save_notifications">
+          <input type="hidden" name="active_section" value="notifications">
+          <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+            <h2 class="section-title"><i class="fas fa-bell text-indigo-400"></i> Notification Preferences</h2>
+            <p class="text-xs text-slate-400 mb-5">Choose which notifications you want to receive.</p>
+            <div class="space-y-3">
+              <div class="toggle-row"><div><p class="toggle-label">New Messages</p><p class="toggle-sub">When someone messages you about an item</p></div><label class="toggle-switch"><input type="checkbox" name="notif_messages" {% if notif_prefs.notif_messages %}checked{% endif %}><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div><p class="toggle-label">Item Sold</p><p class="toggle-sub">When one of your listings is purchased</p></div><label class="toggle-switch"><input type="checkbox" name="notif_sold" {% if notif_prefs.notif_sold %}checked{% endif %}><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div><p class="toggle-label">New Reviews</p><p class="toggle-sub">When someone reviews your item</p></div><label class="toggle-switch"><input type="checkbox" name="notif_reviews" {% if notif_prefs.notif_reviews %}checked{% endif %}><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div><p class="toggle-label">Order Updates</p><p class="toggle-sub">Status changes on your orders</p></div><label class="toggle-switch"><input type="checkbox" name="notif_orders" {% if notif_prefs.notif_orders %}checked{% endif %}><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div><p class="toggle-label">Platform Announcements</p><p class="toggle-sub">News and updates from EduCycle</p></div><label class="toggle-switch"><input type="checkbox" name="notif_announcements" {% if notif_prefs.notif_announcements %}checked{% endif %}><span class="toggle-track"></span></label></div>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary"><i class="fas fa-save text-xs"></i>Save Preferences</button>
+        </form>
+      </div>
+
+      <!-- ══ PRIVACY ══ -->
+      <div id="section-privacy" class="hidden">
+        <form method="post" action="/settings/">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="save_privacy">
+          <input type="hidden" name="active_section" value="privacy">
+          <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+            <h2 class="section-title"><i class="fas fa-shield-alt text-indigo-400"></i> Privacy Settings</h2>
+            <p class="text-xs text-slate-400 mb-5">Control what others can see about you.</p>
+            <div class="space-y-3">
+              <div class="toggle-row"><div><p class="toggle-label">Show Profile to Others</p><p class="toggle-sub">Let other students see your profile and listings</p></div><label class="toggle-switch"><input type="checkbox" name="show_profile" {% if privacy_prefs.show_profile %}checked{% endif %}><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div><p class="toggle-label">Show Email Address</p><p class="toggle-sub">Display your email on your public profile</p></div><label class="toggle-switch"><input type="checkbox" name="show_email" {% if privacy_prefs.show_email %}checked{% endif %}><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div><p class="toggle-label">Allow Direct Messages</p><p class="toggle-sub">Let buyers contact you about your listings</p></div><label class="toggle-switch"><input type="checkbox" name="allow_messages" {% if privacy_prefs.allow_messages %}checked{% endif %}><span class="toggle-track"></span></label></div>
+            </div>
+            <div class="mt-4 p-3.5 bg-blue-50 rounded-2xl border border-blue-100 flex items-start gap-2">
+              <i class="fas fa-info-circle text-blue-500 text-xs mt-0.5 flex-shrink-0"></i>
+              <p class="text-xs text-blue-700 leading-relaxed">You can request a copy of your data or ask us to delete your account at any time. See our <a href="#" class="underline font-semibold">Privacy Policy</a>.</p>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary"><i class="fas fa-save text-xs"></i>Save Privacy Settings</button>
+        </form>
+      </div>
+
+      <!-- ══ APPEARANCE ══ -->
+      <div id="section-appearance" class="hidden">
+        <form method="post" action="/settings/" id="appearance-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="save_appearance">
+          <input type="hidden" name="active_section" value="appearance">
+          <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 shadow-card p-6">
+            <h2 class="section-title"><i class="fas fa-palette text-indigo-400"></i> Appearance</h2>
+            <div class="space-y-6">
+              <div>
+                <p class="flabel mb-3">Theme</p>
+                <div class="grid grid-cols-3 gap-3">
+
+                  <!-- Light -->
+                  <label class="cursor-pointer" onclick="applyTheme('light')">
+                    <input type="radio" name="theme" value="light" class="sr-only peer" {% if theme == "light" or not theme %}checked{% endif %}>
+                    <div class="p-3 rounded-2xl border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all text-center hover:border-indigo-300">
+                      <div class="w-full h-14 bg-white rounded-xl border border-slate-200 mb-2 flex flex-col items-center justify-center gap-1">
+                        <i class="fas fa-sun text-amber-400 text-xl"></i>
+                        <div class="flex gap-1"><div class="w-6 h-1 bg-slate-200 rounded"></div><div class="w-4 h-1 bg-slate-100 rounded"></div></div>
+                      </div>
+                      <p class="text-xs font-bold text-slate-700">Light</p>
+                      <p class="text-[10px] text-slate-400 mt-0.5">Clean & bright</p>
+                    </div>
+                  </label>
+
+                  <!-- Dark -->
+                  <label class="cursor-pointer" onclick="applyTheme('dark')">
+                    <input type="radio" name="theme" value="dark" class="sr-only peer" {% if theme == "dark" %}checked{% endif %}>
+                    <div class="p-3 rounded-2xl border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all text-center hover:border-indigo-300">
+                      <div class="w-full h-14 bg-slate-900 rounded-xl mb-2 flex flex-col items-center justify-center gap-1">
+                        <i class="fas fa-moon text-indigo-400 text-xl"></i>
+                        <div class="flex gap-1"><div class="w-6 h-1 bg-slate-700 rounded"></div><div class="w-4 h-1 bg-slate-800 rounded"></div></div>
+                      </div>
+                      <p class="text-xs font-bold text-slate-700">Dark</p>
+                      <p class="text-[10px] text-slate-400 mt-0.5">Easy on eyes</p>
+                    </div>
+                  </label>
+
+                  <!-- System -->
+                  <label class="cursor-pointer" onclick="applyTheme('system')">
+                    <input type="radio" name="theme" value="system" class="sr-only peer" {% if theme == "system" %}checked{% endif %}>
+                    <div class="p-3 rounded-2xl border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all text-center hover:border-indigo-300">
+                      <div class="w-full h-14 bg-gradient-to-r from-white to-slate-900 rounded-xl mb-2 flex flex-col items-center justify-center gap-1">
+                        <i class="fas fa-laptop text-slate-500 text-xl"></i>
+                        <div class="flex gap-1"><div class="w-3 h-1 bg-slate-300 rounded"></div><div class="w-3 h-1 bg-slate-700 rounded"></div></div>
+                      </div>
+                      <p class="text-xs font-bold text-slate-700">System</p>
+                      <p class="text-[10px] text-slate-400 mt-0.5">Follows OS</p>
+                    </div>
+                  </label>
+                </div>
+                <p class="text-xs text-slate-400 mt-3 flex items-center gap-1.5">
+                  <i class="fas fa-info-circle text-indigo-400"></i>
+                  Theme applies instantly. Click Save to persist across sessions.
+                </p>
+              </div>
+              <div>
+                <label class="flabel mb-2">Language</label>
+                <select name="language" class="sfield max-w-xs">
+                  <option value="en" {% if language == "en" %}selected{% endif %}>🇬🇧 English</option>
+                  <option value="hi" {% if language == "hi" %}selected{% endif %}>🇮🇳 Hindi</option>
+                  <option value="ta" {% if language == "ta" %}selected{% endif %}>🇮🇳 Tamil</option>
+                  <option value="te" {% if language == "te" %}selected{% endif %}>🇮🇳 Telugu</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary mt-4"><i class="fas fa-save text-xs"></i>Save Appearance</button>
+        </form>
+      </div>
+
+      <!-- ══ DANGER ZONE ══ -->
+      <div id="section-danger" class="hidden space-y-4">
+
+        <!-- Delete own listings -->
+        <div class="bg-white rounded-3xl border border-red-100 shadow-card p-6">
+          <h2 class="text-xs font-bold text-red-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <i class="fas fa-trash text-red-400"></i> Delete My Listings
+          </h2>
+          <p class="text-sm text-slate-600 mb-1">You currently have <strong class="text-red-600">{{ my_listing_count }}</strong> active listing(s).</p>
+          <p class="text-xs text-slate-500 mb-4">This will permanently delete all your listings, their messages, and cart entries. This cannot be undone.</p>
+          <form method="post" action="/settings/">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete_my_listings">
+            <input type="hidden" name="active_section" value="danger">
+            <div class="flex gap-2 items-center">
+              <input type="text" name="confirm_listings" placeholder='Type "DELETE" to confirm'
+                class="flex-1 px-3 py-2.5 border-2 border-red-200 rounded-xl text-sm focus:outline-none focus:border-red-500 bg-white">
+              <button type="submit" onclick="return confirm('Delete all your listings? This cannot be undone.')"
+                class="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors flex-shrink-0">
+                Delete All Listings
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Delete account -->
+        <div class="bg-white rounded-3xl border border-red-200 shadow-card p-6">
+          <h2 class="text-xs font-bold text-red-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <i class="fas fa-user-times text-red-500"></i> Delete Account
+          </h2>
+          <p class="text-sm text-slate-600 mb-1">Permanently delete your EduCycle account.</p>
+          <p class="text-xs text-slate-500 mb-4 leading-relaxed">All your listings, messages, orders, and personal data will be permanently erased. <strong>This action is irreversible.</strong></p>
+          <form method="post" action="/settings/" onsubmit="return confirmDelete(event)">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete_account">
+            <input type="hidden" name="active_section" value="danger">
+            <div class="flex gap-2 items-center">
+              <input type="text" name="confirm_text" placeholder='Type "DELETE" to confirm'
+                class="flex-1 px-3 py-2.5 border-2 border-red-200 rounded-xl text-sm focus:outline-none focus:border-red-500 bg-white">
+              <button type="submit" class="px-4 py-2.5 bg-red-700 hover:bg-red-800 text-white text-xs font-bold rounded-xl transition-colors flex-shrink-0">
+                Delete Account
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div><!-- end main content -->
+  </div><!-- end flex -->
+</div><!-- end max-w -->
+
+<style>
+/* ── Shared field style ── */
+.sfield {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 0.875rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+  background: #f8fafc;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.sfield:focus { border-color: #6366f1; background: #fff; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+.sfield:disabled { background: #f1f5f9; cursor: not-allowed; opacity: 0.6; }
+select.sfield {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+  padding-right: 2.5rem;
+}
+/* ── Labels ── */
+.flabel { display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.375rem; }
+/* ── Section title ── */
+.section-title { font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+/* ── Primary button ── */
+.btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 2rem; background: #4f46e5; color: white; font-weight: 700; font-size: 0.875rem; border-radius: 1rem; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.btn-primary:hover { background: #4338ca; box-shadow: 0 4px 12px rgba(79,70,229,.3); transform: translateY(-1px); }
+/* ── Toggle switch ── */
+.toggle-switch { position: relative; display: inline-flex; align-items: center; cursor: pointer; }
+.toggle-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.toggle-track { width: 2.75rem; height: 1.5rem; background: #cbd5e1; border-radius: 9999px; transition: background 0.2s; position: relative; }
+.toggle-track::after { content: ''; position: absolute; top: 0.125rem; left: 0.125rem; width: 1.25rem; height: 1.25rem; background: white; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.toggle-switch input:checked + .toggle-track { background: #4f46e5; }
+.toggle-switch input:checked + .toggle-track::after { transform: translateX(1.25rem); }
+/* ── Toggle row ── */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 1rem; }
+.toggle-row:hover { background: #f1f5f9; }
+.toggle-label { font-size: 0.875rem; font-weight: 600; color: #1e293b; }
+.toggle-sub { font-size: 0.75rem; color: #64748b; margin-top: 0.125rem; }
+/* ── Status rows ── */
+.status-row { display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 1rem; }
+.status-icon { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.status-label { font-size: 0.875rem; font-weight: 600; color: #1e293b; }
+.status-sub { font-size: 0.75rem; color: #64748b; }
+.badge-green { padding: 0.25rem 0.625rem; background: #d1fae5; color: #065f46; font-size: 0.7rem; font-weight: 700; border-radius: 9999px; }
+.badge-gray { padding: 0.25rem 0.625rem; background: #e2e8f0; color: #475569; font-size: 0.7rem; font-weight: 700; border-radius: 9999px; }
+/* ── Active nav ── */
+.active-nav { background: #eef2ff !important; color: #4f46e5 !important; }
+</style>
+
+<script>
+/* ── Section switcher ── */
+const SECTIONS = ['profile','security','notifications','privacy','appearance','danger'];
+
+function showSection(name) {
+  SECTIONS.forEach(s => {
+    const panel = document.getElementById('section-' + s);
+    const btn   = document.getElementById('nav-' + s);
+    if (!panel || !btn) return;
+    panel.classList.toggle('hidden', s !== name);
+    if (s === name) {
+      btn.classList.add('active-nav');
+    } else {
+      btn.classList.remove('active-nav');
+    }
+  });
+  // Update URL without reload so back button works
+  history.replaceState(null, '', '/settings/?section=' + name);
+}
+
+/* ── Restore active section from URL or server ── */
+document.addEventListener('DOMContentLoaded', function() {
+  const section = '{{ active_section }}' || 'profile';
+  showSection(section);
+
+  // Sync theme radio to current localStorage value
+  const storedTheme = localStorage.getItem('ec-theme') || '{{ theme }}' || 'light';
+  const radio = document.querySelector('input[name="theme"][value="' + storedTheme + '"]');
+  if (radio) radio.checked = true;
+});
+
+/* ── Password strength meter ── */
+const pwInput = document.getElementById('new_pw');
+if (pwInput) {
+  pwInput.addEventListener('input', function() {
+    const v = this.value;
+    let score = 0;
+    if (v.length >= 8) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[a-z]/.test(v)) score++;
+    if (/\d/.test(v)) score++;
+    if (/[!@#$%^&*]/.test(v)) score++;
+    const bar   = document.getElementById('pw-bar');
+    const lbl   = document.getElementById('pw-label');
+    const pcts  = ['0%','25%','50%','75%','100%'];
+    const colors = ['bg-red-400','bg-red-400','bg-amber-400','bg-amber-400','bg-emerald-500'];
+    const texts  = ['','Weak','Fair','Good','Strong','Very Strong'];
+    bar.style.width = pcts[score] || '0%';
+    bar.className = 'h-full rounded-full transition-all duration-300 ' + (colors[score] || 'bg-red-400');
+    lbl.textContent = texts[score] || 'Use uppercase, numbers, and symbols';
+    lbl.className = 'text-xs mt-1 ' + (score >= 4 ? 'text-emerald-600' : score >= 2 ? 'text-amber-600' : 'text-slate-400');
+  });
+}
+
+/* ── Delete account confirmation ── */
+function confirmDelete(e) {
+  const val = e.target.querySelector('[name=confirm_text]').value;
+  if (val !== 'DELETE') {
+    alert('Please type DELETE exactly (all caps) to confirm.');
+    e.preventDefault();
+    return false;
+  }
+  return confirm('This will permanently delete your account and all data. Are you absolutely sure?');
+}
+</script>
+{% endblock %}

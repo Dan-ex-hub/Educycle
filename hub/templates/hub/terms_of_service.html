@@ -1,0 +1,110 @@
+{% extends 'hub/base.html' %}
+{% block title %}Terms of Service — EduCycle{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <div class="mb-10">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center">
+        <i class="fas fa-file-contract text-indigo-600 text-lg"></i>
+      </div>
+      <div>
+        <h1 class="text-3xl font-extrabold text-slate-900">Terms of Service</h1>
+        <p class="text-slate-500 text-sm mt-0.5">Effective: January 2025 · Version 1.0</p>
+      </div>
+    </div>
+    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-100">
+      <p class="text-sm text-amber-800 leading-relaxed">
+        By using EduCycle, you agree to these terms. Please read them carefully. If you do not agree, please do not use our platform.
+      </p>
+    </div>
+  </div>
+
+  <div class="space-y-6">
+
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">1</span>
+        Eligibility
+      </h2>
+      <p class="text-sm text-slate-600 leading-relaxed">EduCycle is exclusively for enrolled students, faculty, and staff of registered educational institutions. By creating an account, you confirm that you are currently affiliated with an educational institution and that the information you provide is accurate.</p>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">2</span>
+        Acceptable Use
+      </h2>
+      <div class="space-y-3 text-sm text-slate-600">
+        <p class="font-semibold text-slate-800">You may:</p>
+        <ul class="space-y-1.5 ml-4">
+          <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-500 mt-0.5 text-xs flex-shrink-0"></i>List genuine second-hand educational items for sale or swap</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-500 mt-0.5 text-xs flex-shrink-0"></i>Contact sellers about listed items</li>
+          <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-500 mt-0.5 text-xs flex-shrink-0"></i>Leave honest reviews for completed transactions</li>
+        </ul>
+        <p class="font-semibold text-slate-800 mt-3">You may not:</p>
+        <ul class="space-y-1.5 ml-4">
+          <li class="flex items-start gap-2"><i class="fas fa-times text-red-500 mt-0.5 text-xs flex-shrink-0"></i>List counterfeit, stolen, or prohibited items</li>
+          <li class="flex items-start gap-2"><i class="fas fa-times text-red-500 mt-0.5 text-xs flex-shrink-0"></i>Misrepresent the condition or authenticity of items</li>
+          <li class="flex items-start gap-2"><i class="fas fa-times text-red-500 mt-0.5 text-xs flex-shrink-0"></i>Harass, spam, or defraud other users</li>
+          <li class="flex items-start gap-2"><i class="fas fa-times text-red-500 mt-0.5 text-xs flex-shrink-0"></i>Create multiple accounts or impersonate others</li>
+          <li class="flex items-start gap-2"><i class="fas fa-times text-red-500 mt-0.5 text-xs flex-shrink-0"></i>Use the platform for commercial reselling at scale</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">3</span>
+        Transactions & Payments
+      </h2>
+      <div class="space-y-3 text-sm text-slate-600 leading-relaxed">
+        <p>EduCycle facilitates connections between buyers and sellers but is <strong class="text-slate-800">not a party to any transaction</strong>. All sales are directly between users.</p>
+        <p>Sellers are responsible for accurately describing items. Buyers are responsible for verifying items before completing payment.</p>
+        <p>EduCycle does not guarantee the quality, safety, or legality of listed items. We are not liable for disputes between users.</p>
+        <p>Payment processing is handled by third-party providers (Stripe, Razorpay). Their terms apply to payment transactions.</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">4</span>
+        Content & Intellectual Property
+      </h2>
+      <p class="text-sm text-slate-600 leading-relaxed">You retain ownership of content you post (photos, descriptions). By posting, you grant EduCycle a non-exclusive licence to display that content on our platform. You must not post content that infringes third-party intellectual property rights.</p>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">5</span>
+        Account Termination
+      </h2>
+      <p class="text-sm text-slate-600 leading-relaxed">We reserve the right to suspend or terminate accounts that violate these terms, engage in fraudulent activity, or harm the community. You may delete your account at any time from Settings → Danger Zone.</p>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">6</span>
+        Limitation of Liability
+      </h2>
+      <p class="text-sm text-slate-600 leading-relaxed">EduCycle is provided "as is". We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform, including losses from transactions between users. Our total liability is limited to the amount you paid to use our service (currently zero, as EduCycle is free).</p>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">7</span>
+        Changes to Terms
+      </h2>
+      <p class="text-sm text-slate-600 leading-relaxed">We may update these terms from time to time. We will notify you of significant changes via email or a platform notification. Continued use of EduCycle after changes constitutes acceptance of the new terms.</p>
+    </div>
+
+    <div class="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-3xl border border-indigo-100 p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-3">Questions about our Terms?</h2>
+      <p class="text-sm text-slate-600 mb-4">Contact us if you have any questions about these Terms of Service.</p>
+      <a href="{% url 'contact_us' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+        <i class="fas fa-envelope text-xs"></i>Contact Us
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

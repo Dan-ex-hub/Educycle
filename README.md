@@ -1,286 +1,304 @@
-# 🎓 EduCycle - Student Marketplace Platform
+# 🎓 EduCycle — Campus Marketplace
 
-A full-stack e-commerce platform built with Django REST Framework, featuring real-time communication, advanced search, and modern authentication. Designed for students to buy, sell, and exchange academic and hostel essentials within their campus community.
+A full-stack student marketplace built with **Django 5.2** and **Tailwind CSS**. Students can buy, sell, and swap second-hand textbooks, lab equipment, appliances, and room decor within their campus community.
 
-## 🚀 **Live Demo**
-- **Web Application**: [http://localhost:8000](http://localhost:8000)
-- **API Documentation**: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
-- **Admin Panel**: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+---
 
-## ✨ **Key Features**
+## ✨ Features
 
-### 🔐 **Advanced Authentication & Security**
-- **JWT Token Authentication** - Secure stateless authentication
-- **OAuth2 Integration** - Google, GitHub login support
-- **Two-Factor Authentication (2FA)** - SMS/Email verification
-- **Rate Limiting** - Protection against brute force attacks
-- **CSRF Protection** - Enhanced security headers
-- **Password Strength Validation** - Real-time password strength meter
+| Area | What's included |
+|---|---|
+| **Auth** | Register with student ID, login/logout, session management, password change |
+| **Listings** | Create, edit, delete items with photos, category, price, swap option |
+| **Search** | Full-text search, category filter, live autocomplete suggestions |
+| **Cart & Orders** | Add to cart, checkout, order tracking for buyers and sellers |
+| **Payments** | Stripe (card), Razorpay (UPI/wallets), Cash on Delivery |
+| **Messaging** | Direct messages between buyers and sellers |
+| **Reviews** | Star ratings and comments on items |
+| **Notifications** | In-app alerts for sales, messages, reviews, order updates |
+| **AI Assistant** | Keyword-based chatbot with typewriter effect and admin escalation |
+| **Settings** | Profile, password, notification prefs, privacy, dark/light/system theme |
+| **Dark Mode** | Full dark mode across every page, persisted in localStorage |
+| **Support Pages** | Contact Us, Report a Bug (saved to DB), Privacy Policy, Terms, Safety, How It Works |
+| **Admin** | Django admin with ContactMessage and BugReport management |
 
-### 🔍 **Smart Search & Discovery**
-- **Advanced Search** - Multi-field search with filters
-- **Real-time Suggestions** - AI-powered autocomplete
-- **Category Filtering** - Filter by item categories
-- **Price Range Filtering** - Filter by price range
-- **Search Analytics** - Track popular searches
-- **Saved Searches** - Users can save search criteria
+---
 
-### 💬 **Real-time Communication**
-- **WebSocket Integration** - Real-time chat between users
-- **Live Notifications** - Instant message notifications
-- **Online Status** - Show when sellers are online
-- **Message Threading** - Organized conversations
-- **File Sharing** - Share images in messages
+## 🛠 Tech Stack
 
-### 🛒 **E-commerce Features**
-- **Shopping Cart** - Add/remove items with quantity
-- **Order Management** - Complete order lifecycle
-- **Payment Integration** - Stripe payment processing
-- **Escrow System** - Secure transactions
-- **Order Tracking** - Real-time order status
+- **Backend:** Django 5.2, Django REST Framework 3.14
+- **Database:** SQLite 3 (development) — see deployment section for production
+- **Frontend:** Tailwind CSS (CDN), Font Awesome, Inter font
+- **Payments:** Stripe, Razorpay (mock fallback if not installed)
+- **Images:** Pillow, real product photos from Unsplash
+- **Auth:** Django sessions + `djangorestframework-simplejwt` for API
 
-### 📱 **Modern UI/UX**
-- **Responsive Design** - Mobile-first approach
-- **Dark Mode** - Toggle between light/dark themes
-- **Progressive Web App (PWA)** - Offline functionality
-- **Interactive Maps** - Show item locations
-- **Image Gallery** - Multiple image support with zoom
-- **Infinite Scroll** - Smooth pagination
+---
 
-### 📊 **Analytics & Insights**
-- **User Analytics** - Track user behavior
-- **Sales Analytics** - Revenue tracking and trends
-- **Search Analytics** - Popular search terms
-- **Performance Monitoring** - Real-time metrics
-- **Admin Dashboard** - Comprehensive analytics panel
+## 🚀 Running Locally
 
-## 🛠 **Technology Stack**
-
-### **Backend**
-- **Django 5.2** - Web framework
-- **Django REST Framework** - API development
-- **PostgreSQL** - Primary database
-- **Redis** - Caching and session storage
-- **Celery** - Background task processing
-- **Elasticsearch** - Advanced search engine
-
-### **Frontend**
-- **React.js** - Modern frontend framework
-- **Material-UI** - Professional component library
-- **WebSocket** - Real-time communication
-- **PWA** - Progressive web app features
-
-### **DevOps & Deployment**
-- **Docker** - Containerization
-- **Docker Compose** - Multi-service orchestration
-- **Nginx** - Reverse proxy and load balancer
-- **Gunicorn** - WSGI server
-- **AWS/Azure** - Cloud deployment ready
-
-### **Security & Monitoring**
-- **JWT Authentication** - Stateless authentication
-- **OAuth2** - Third-party authentication
-- **Rate Limiting** - API protection
-- **HTTPS/SSL** - Secure communication
-- **Security Headers** - XSS, CSRF protection
-
-## 🚀 **Quick Start**
-
-### **Prerequisites**
+### Prerequisites
 - Python 3.11+
-- Docker & Docker Compose
-- PostgreSQL (optional, SQLite for development)
+- pip
 
-### **Option 1: Docker (Recommended)**
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/edicycle.git
-cd edicycle
-
-# Start all services
-docker-compose up -d
-
-# Create superuser
-docker-compose exec web python manage.py createsuperuser
-
-# Access the application
-open http://localhost:8000
-```
-
-### **Option 2: Local Development**
+### Steps
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/edicycle.git
-cd edicycle
+# 1. Clone
+git clone <your-repo-url>
+cd Educycle
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+# 2. Install dependencies
 pip install -r requirements.txt
+pip install Pillow stripe
 
-# Run migrations
+# 3. Apply migrations
 python manage.py migrate
 
-# Create superuser
+# 4. Create a superuser (for admin panel)
 python manage.py createsuperuser
 
-# Start development server
+# 5. (Optional) Load sample products
+python manage.py add_sample_items
+
+# 6. Start the dev server
 python manage.py runserver
 ```
 
-## 📚 **API Documentation**
+Open **http://127.0.0.1:8000** in your browser.
 
-### **Authentication**
-```bash
-# Get JWT token
-curl -X POST http://localhost:8000/api/token/ \
-  -H "Content-Type: application/json" \
-  -d '{"username": "your_username", "password": "your_password"}'
-
-# Use token in requests
-curl -H "Authorization: Bearer <your_token>" \
-  http://localhost:8000/api/items/
-```
-
-### **Key Endpoints**
-- `GET /api/items/` - List all items
-- `POST /api/items/` - Create new item
-- `GET /api/items/search/` - Advanced search
-- `GET /api/profile/` - User profile
-- `GET /api/my-cart/` - User's cart
-- `POST /api/messages/` - Send message
-
-## 🏗 **Architecture**
-
-### **Database Schema**
-```
-User (Django Auth)
-├── Item (Products)
-│   ├── CartItem (Shopping Cart)
-│   ├── OrderItem (Orders)
-│   └── Message (Communication)
-├── Cart (Shopping Cart)
-├── Order (Orders)
-└── Message (Communication)
-```
-
-### **Service Architecture**
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Nginx Proxy   │    │   Django App    │    │   PostgreSQL    │
-│   (Port 80)     │◄──►│   (Port 8000)   │◄──►│   (Port 5432)   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │                       ▼                       │
-         │              ┌─────────────────┐             │
-         │              │     Redis       │             │
-         │              │   (Port 6379)   │             │
-         │              └─────────────────┘             │
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Static Files  │    │   Cache/Session │    │   Data Storage  │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
-## 📈 **Performance Metrics**
-
-- **Response Time**: < 200ms average
-- **Database Queries**: Optimized with select_related/prefetch_related
-- **Caching**: Redis-based caching for frequently accessed data
-- **Image Optimization**: Automatic image compression and resizing
-- **CDN Ready**: Static files served via CDN
-
-## 🔒 **Security Features**
-
-- **JWT Authentication** - Secure token-based auth
-- **Rate Limiting** - API protection (10 req/s for API, 5 req/min for login)
-- **CSRF Protection** - Cross-site request forgery protection
-- **XSS Protection** - Content Security Policy headers
-- **SQL Injection Protection** - Django ORM protection
-- **File Upload Security** - Validated file uploads
-- **HTTPS Ready** - SSL/TLS encryption support
-
-## 🧪 **Testing**
-
-```bash
-# Run all tests
-python manage.py test
-
-# Run with coverage
-coverage run --source='.' manage.py test
-coverage report
-
-# Run specific test
-python manage.py test hub.tests.test_views
-```
-
-## 📊 **Monitoring & Analytics**
-
-### **Application Metrics**
-- Request/Response times
-- Database query performance
-- Memory usage
-- Error rates
-
-### **Business Metrics**
-- User registration/engagement
-- Item listing/sales
-- Search patterns
-- Revenue tracking
-
-## 🚀 **Deployment**
-
-### **Production Checklist**
-- [ ] Set `DEBUG=False`
-- [ ] Configure `ALLOWED_HOSTS`
-- [ ] Set up SSL certificates
-- [ ] Configure database for production
-- [ ] Set up monitoring and logging
-- [ ] Configure backup system
-
-### **AWS Deployment**
-```bash
-# Build Docker image
-docker build -t edicycle .
-
-# Push to ECR
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
-docker tag edicycle:latest <account-id>.dkr.ecr.us-east-1.amazonaws.com/edicycle:latest
-docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/edicycle:latest
-```
-
-## 🤝 **Contributing**
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 **License**
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 **Acknowledgments**
-
-- Django community for the excellent framework
-- Django REST Framework for API development
-- Material-UI for the beautiful components
-- All contributors and testers
+Admin panel: **http://127.0.0.1:8000/admin/**
 
 ---
 
-## 📞 **Contact**
+## 📁 Project Structure
 
-- **Project Link**: [https://github.com/yourusername/edicycle](https://github.com/yourusername/edicycle)
-- **Email**: your.email@example.com
-- **LinkedIn**: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
+```
+Educycle/
+├── EduCycle/               # Django project settings
+│   ├── settings.py
+│   └── urls.py
+├── hub/                    # Main app
+│   ├── models.py           # Item, Order, Payment, Review, Notification, ContactMessage, BugReport …
+│   ├── views.py            # All view functions
+│   ├── urls.py             # URL routing
+│   ├── forms.py            # Registration, login, item forms
+│   ├── chatbot.py          # Keyword-based AI assistant
+│   ├── services.py         # NotificationService
+│   ├── payment_views.py    # Stripe + Razorpay handlers
+│   ├── api_views.py        # DRF API endpoints
+│   └── templates/hub/      # All HTML templates (Tailwind CSS)
+├── media/                  # Uploaded item images
+├── db.sqlite3              # SQLite database
+├── requirements.txt
+└── manage.py
+```
 
 ---
 
-**Built with ❤️ by [Your Name]** 
+## 🌐 Deployment Guide
+
+### Option 1 — Railway (Recommended, free tier available)
+
+Railway supports SQLite for small projects and is the easiest zero-config deployment.
+
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Login and deploy
+railway login
+railway init
+railway up
+```
+
+Set these environment variables in Railway dashboard:
+```
+SECRET_KEY=your-secret-key-here
+DEBUG=False
+ALLOWED_HOSTS=your-app.railway.app
+```
+
+---
+
+### Option 2 — Render (Free tier, SQLite supported)
+
+1. Push your code to GitHub
+2. Go to [render.com](https://render.com) → New Web Service
+3. Connect your GitHub repo
+4. Set:
+   - **Build command:** `pip install -r requirements.txt && python manage.py migrate`
+   - **Start command:** `gunicorn EduCycle.wsgi:application`
+5. Add environment variables:
+   ```
+   SECRET_KEY=your-secret-key
+   DEBUG=False
+   ALLOWED_HOSTS=your-app.onrender.com
+   ```
+
+> **Note on SQLite on Render:** Render's free tier uses an ephemeral filesystem — the SQLite file resets on each deploy. For persistent data, use Render's free PostgreSQL add-on (see Option 4).
+
+---
+
+### Option 3 — VPS / DigitalOcean Droplet
+
+```bash
+# On your server (Ubuntu 22.04)
+sudo apt update && sudo apt install python3-pip python3-venv nginx
+
+# Clone and set up
+git clone <your-repo> /var/www/educycle
+cd /var/www/educycle
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt gunicorn
+
+# Configure settings for production
+export SECRET_KEY="your-secret-key"
+export DEBUG=False
+export ALLOWED_HOSTS="your-domain.com"
+
+python manage.py migrate
+python manage.py collectstatic --noinput
+
+# Run with Gunicorn
+gunicorn EduCycle.wsgi:application --bind 0.0.0.0:8000 --workers 3 --daemon
+
+# Nginx config: /etc/nginx/sites-available/educycle
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location /static/ { alias /var/www/educycle/staticfiles/; }
+    location /media/  { alias /var/www/educycle/media/; }
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+---
+
+### Option 4 — Switching from SQLite to PostgreSQL (Production)
+
+SQLite is fine for development and low-traffic deployments. For production with multiple users, switch to PostgreSQL:
+
+```bash
+pip install psycopg2-binary
+```
+
+In `settings.py`, replace the `DATABASES` block:
+
+```python
+import dj_database_url
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgresql://user:password@localhost:5432/educycle'
+    )
+}
+```
+
+Then:
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+Free PostgreSQL options:
+- **Render** — free 90-day PostgreSQL instance
+- **Supabase** — free tier with 500MB
+- **Railway** — free tier with PostgreSQL plugin
+- **Neon** — serverless PostgreSQL, generous free tier
+
+---
+
+### Production Checklist
+
+Before going live, update `settings.py`:
+
+```python
+DEBUG = False
+SECRET_KEY = os.environ.get('SECRET_KEY')   # Never hardcode in production
+ALLOWED_HOSTS = ['your-domain.com']
+
+# Serve static files with WhiteNoise
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',   # Add this
+    ...
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# HTTPS settings (once you have SSL)
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+```
+
+Run:
+```bash
+python manage.py collectstatic
+```
+
+---
+
+## 🔑 Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `SECRET_KEY` | Django secret key | Hardcoded (change for production!) |
+| `DEBUG` | Debug mode | `True` |
+| `ALLOWED_HOSTS` | Comma-separated allowed hosts | `[]` |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe public key | Test placeholder |
+| `STRIPE_SECRET_KEY` | Stripe secret key | Test placeholder |
+| `RAZORPAY_KEY_ID` | Razorpay key ID | Test placeholder |
+| `RAZORPAY_KEY_SECRET` | Razorpay secret | Test placeholder |
+
+---
+
+## 📋 Key URLs
+
+| URL | Description |
+|---|---|
+| `/` | Homepage / item listing |
+| `/register/` | Student registration |
+| `/login/` | Login |
+| `/items/create/` | List an item for sale |
+| `/items/<id>/` | Item detail page |
+| `/cart/` | Shopping cart |
+| `/checkout/` | Checkout |
+| `/orders/` | Order history |
+| `/profile/` | User profile & listings |
+| `/settings/` | Account settings + dark mode |
+| `/chatbot/` | AI assistant |
+| `/notifications/` | Notification centre |
+| `/contact/` | Contact Us |
+| `/report-bug/` | Report a Bug |
+| `/privacy/` | Privacy Policy |
+| `/terms/` | Terms of Service |
+| `/how-it-works/` | How It Works |
+| `/safety/` | Safety Guidelines |
+| `/admin/` | Django admin panel |
+| `/api/` | REST API endpoints |
+
+---
+
+## 🧪 Running Tests
+
+```bash
+python manage.py test hub
+```
+
+---
+
+## 📝 License
+
+MIT License — free to use, modify, and distribute.
+
+---
+
+**Built with ❤️ for students, by students.**

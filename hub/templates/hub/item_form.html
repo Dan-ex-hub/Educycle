@@ -1,143 +1,208 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}{% if edit_mode %}Edit Item{% else %}Add New Item{% endif %} - EduCycle{% endblock %}
+{% block title %}{% if edit_mode %}Edit Listing{% else %}Sell an Item{% endif %} — EduCycle{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-gradient-primary text-white">
-                    <h3 class="mb-0">
-                        <i class="fas fa-{% if edit_mode %}edit{% else %}plus{% endif %}"></i>
-                        {% if edit_mode %}Edit Item{% else %}Add New Item{% endif %}
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="{{ form.name.id_for_label }}" class="form-label">
-                                        <i class="fas fa-tag"></i> Item Name *
-                                    </label>
-                                    {{ form.name }}
-                                    {% if form.name.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.name.errors.0 }}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="{{ form.category.id_for_label }}" class="form-label">
-                                        <i class="fas fa-folder"></i> Category *
-                                    </label>
-                                    {{ form.category }}
-                                    {% if form.category.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.category.errors.0 }}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="{{ form.price.id_for_label }}" class="form-label">
-                                        <i class="fas fa-rupee-sign"></i> Price (₹)
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">₹</span>
-                                        {{ form.price }}
-                                    </div>
-                                    {% if form.price.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.price.errors.0 }}
-                                    </div>
-                                    {% endif %}
-                                    <div class="form-text">Leave empty if you want to swap only</div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="{{ form.desired_swap_item.id_for_label }}" class="form-label">
-                                        <i class="fas fa-exchange-alt"></i> Desired Swap Item
-                                    </label>
-                                    {{ form.desired_swap_item }}
-                                    {% if form.desired_swap_item.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.desired_swap_item.errors.0 }}
-                                    </div>
-                                    {% endif %}
-                                    <div class="form-text">What would you like to swap this for?</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="{{ form.description.id_for_label }}" class="form-label">
-                                <i class="fas fa-align-left"></i> Description *
-                            </label>
-                            {{ form.description }}
-                            {% if form.description.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.description.errors.0 }}
-                            </div>
-                            {% endif %}
-                            <div class="form-text">Describe the condition, features, and any important details</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="{{ form.image1.id_for_label }}" class="form-label">
-                                        <i class="fas fa-image"></i> Primary Image
-                                    </label>
-                                    {{ form.image1 }}
-                                    {% if form.image1.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.image1.errors.0 }}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="{{ form.image2.id_for_label }}" class="form-label">
-                                        <i class="fas fa-images"></i> Additional Image
-                                    </label>
-                                    {{ form.image2 }}
-                                    {% if form.image2.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.image2.errors.0 }}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-{% if edit_mode %}save{% else %}plus{% endif %}"></i>
-                                {% if edit_mode %}Update Item{% else %}Add Item{% endif %}
-                            </button>
-                            <a href="{% url 'item_list' %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left"></i> Back to Items
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center gap-3 mb-2">
+      <a href="{% url 'item_list' %}" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
+        <i class="fas fa-arrow-left text-slate-600 text-sm"></i>
+      </a>
+      <div class="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center">
+        <i class="fas fa-{% if edit_mode %}edit{% else %}tag{% endif %} text-indigo-600 text-sm"></i>
+      </div>
     </div>
+    <h1 class="text-2xl font-extrabold text-slate-900 mt-3">
+      {% if edit_mode %}Edit your listing{% else %}List an item for sale{% endif %}
+    </h1>
+    <p class="text-slate-500 text-sm mt-1">
+      {% if edit_mode %}Update the details of your listing.{% else %}Fill in the details below and reach thousands of students on campus.{% endif %}
+    </p>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" id="item-form" class="space-y-6">
+    {% csrf_token %}
+    <!-- Idempotency token: unique per page load, prevents duplicate submissions -->
+    <input type="hidden" name="form_token" id="form-token">
+
+    <!-- ── Basic Info ── -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+        <i class="fas fa-info-circle text-indigo-400"></i> Basic Information
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <!-- Name -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Item Name <span class="text-red-400">*</span>
+          </label>
+          <div class="relative">
+            <i class="fas fa-tag absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+            {{ form.name }}
+          </div>
+          {% if form.name.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ form.name.errors.0 }}</p>{% endif %}
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Category <span class="text-red-400">*</span>
+          </label>
+          <div class="relative">
+            <i class="fas fa-folder absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+            {{ form.category }}
+          </div>
+          {% if form.category.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ form.category.errors.0 }}</p>{% endif %}
+        </div>
+
+        <!-- Price -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">Price (₹)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-semibold pointer-events-none">₹</span>
+            {{ form.price }}
+          </div>
+          <p class="mt-1 text-xs text-slate-400">Leave empty if swap-only</p>
+          {% if form.price.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ form.price.errors.0 }}</p>{% endif %}
+        </div>
+
+        <!-- Swap -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+            <i class="fas fa-exchange-alt text-slate-400 mr-1"></i>Desired Swap Item
+          </label>
+          <div class="relative">
+            <i class="fas fa-exchange-alt absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+            {{ form.desired_swap_item }}
+          </div>
+          <p class="mt-1 text-xs text-slate-400">What would you like in exchange?</p>
+          {% if form.desired_swap_item.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ form.desired_swap_item.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Description ── -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+        <i class="fas fa-align-left text-indigo-400"></i> Description
+      </h3>
+      <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+        Item Description <span class="text-red-400">*</span>
+      </label>
+      {{ form.description }}
+      <p class="mt-1.5 text-xs text-slate-400">Describe the condition, edition, features, and any important details.</p>
+      {% if form.description.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ form.description.errors.0 }}</p>{% endif %}
+    </div>
+
+    <!-- ── Images ── -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+        <i class="fas fa-images text-indigo-400"></i> Photos
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <!-- Image 1 -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">Primary Photo</label>
+          <label for="{{ form.image1.id_for_label }}"
+            class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-2xl cursor-pointer bg-slate-50 hover:bg-indigo-50 transition-all group">
+            <i class="fas fa-cloud-upload-alt text-slate-300 group-hover:text-indigo-400 text-2xl mb-2 transition-colors"></i>
+            <span class="text-xs text-slate-400 group-hover:text-indigo-500 font-medium transition-colors">Click to upload</span>
+            <span class="text-[11px] text-slate-300 mt-0.5">PNG, JPG up to 5MB</span>
+          </label>
+          <div class="mt-2">{{ form.image1 }}</div>
+          {% if form.image1.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ form.image1.errors.0 }}</p>{% endif %}
+        </div>
+        <!-- Image 2 -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">Additional Photo <span class="text-slate-400 font-normal">(optional)</span></label>
+          <label for="{{ form.image2.id_for_label }}"
+            class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-2xl cursor-pointer bg-slate-50 hover:bg-indigo-50 transition-all group">
+            <i class="fas fa-plus text-slate-300 group-hover:text-indigo-400 text-2xl mb-2 transition-colors"></i>
+            <span class="text-xs text-slate-400 group-hover:text-indigo-500 font-medium transition-colors">Add another photo</span>
+          </label>
+          <div class="mt-2">{{ form.image2 }}</div>
+          {% if form.image2.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ form.image2.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="flex gap-3">
+      <button type="submit" id="submit-btn"
+        class="flex-1 py-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-px flex items-center justify-center gap-2">
+        <i class="fas fa-{% if edit_mode %}save{% else %}tag{% endif %}" id="submit-icon"></i>
+        <span id="submit-label">{% if edit_mode %}Save Changes{% else %}Publish Listing{% endif %}</span>
+      </button>
+      <a href="{% url 'item_list' %}"
+        class="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm rounded-2xl transition-colors flex items-center gap-2">
+        Cancel
+      </a>
+    </div>
+  </form>
 </div>
-{% endblock %} 
+
+<style>
+  #item-form input[type="text"],
+  #item-form input[type="number"],
+  #item-form select,
+  #item-form textarea {
+    width: 100%;
+    padding: 0.7rem 1rem 0.7rem 2.6rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 0.875rem;
+    font-size: 0.875rem;
+    color: #1e293b;
+    background: #f8fafc;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  #item-form input[type="number"] { padding-left: 2rem; }
+  #item-form textarea {
+    padding: 0.875rem 1rem;
+    min-height: 120px;
+    resize: vertical;
+  }
+  #item-form input:focus,
+  #item-form select:focus,
+  #item-form textarea:focus {
+    border-color: #6366f1;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+  }
+  #item-form select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.25rem;
+    padding-right: 2.5rem;
+  }
+  #item-form input[type="file"] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    color: #64748b;
+    background: transparent;
+    border: none;
+    outline: none;
+  }
+</style>
+
+<script>
+/* Generate a unique token per page load */
+document.getElementById('form-token').value = 'tok_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+
+/* Prevent double/triple submit — disable button the moment the form is submitted */
+document.getElementById('item-form').addEventListener('submit', function () {
+  const btn   = document.getElementById('submit-btn');
+  const icon  = document.getElementById('submit-icon');
+  const label = document.getElementById('submit-label');
+  btn.disabled = true;
+  icon.className = 'fas fa-spinner fa-spin';
+  label.textContent = 'Saving…';
+});
+</script>
+{% endblock %}

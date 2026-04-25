@@ -4,7 +4,7 @@ from django.contrib import messages
 from .forms import UserRegistrationForm, UserLoginForm, ItemForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
-from .models import Item, Message, Cart, CartItem, Order, OrderItem, Notification, Review, ChatMessage
+from .models import Item, Message, Cart, CartItem, Order, OrderItem, Notification, Review, ChatMessage, ContactMessage, BugReport, NewsletterSubscription
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.conf import settings
@@ -66,6 +66,12 @@ def user_login(request):
                 login(request, user)
                 if not remember_me:
                     request.session.set_expiry(0)  # Session expires when browser closes
+                
+                # Admin redirect: admin@gmail.com with password admin123
+                if user.email == 'admin@gmail.com':
+                    messages.success(request, f'Welcome back, Admin!')
+                    return redirect('admin_panel')
+                
                 messages.success(request, f'Welcome back, {user.get_full_name() or user.username}!')
                 return redirect('home')
             else:
@@ -145,17 +151,24 @@ def search_suggestions(request):
 @login_required
 def item_create(request):
     if request.method == 'POST':
+        # ── Idempotency guard: reject duplicate rapid submissions ──
+        form_token = request.POST.get('form_token', '')
+        last_token = request.session.get('last_item_form_token', '')
+        if form_token and form_token == last_token:
+            # Same token submitted twice — redirect without saving
+            messages.warning(request, 'Your item was already submitted.')
+            return redirect('item_list')
+        if form_token:
+            request.session['last_item_form_token'] = form_token
+
         form = ItemForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 item = form.save(commit=False)
                 item.seller = request.user
                 item.save()
-                
-                # Send notification for item added
                 NotificationService.notify_item_added(request.user, item)
-                
-                messages.success(request, 'Item created successfully! You will receive a confirmation email.')
+                messages.success(request, 'Item listed successfully!')
                 return redirect('item_list')
             except Exception as e:
                 messages.error(request, f'Failed to create item: {str(e)}')
@@ -214,6 +227,8 @@ def send_message(request, item_id):
 
 @login_required
 def profile(request):
+    if request.user.email == 'admin@gmail.com':
+        return redirect('admin_panel')
     user_items = Item.objects.filter(seller=request.user).order_by('-created_at')
     received_messages = Message.objects.filter(receiver=request.user).order_by('-timestamp')
     return render(request, 'hub/profile.html', {'user_items': user_items, 'received_messages': received_messages})
@@ -499,37 +514,71 @@ def about_us(request):
     return render(request, 'hub/about_us.html')
 
 def contact_us(request):
-    """Contact Us page"""
+    """Contact Us page — saves submission to DB and shows inline success"""
+    from .models import ContactMessage
+    submitted = False
     if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        subject = request.POST.get('subject')
-        message = request.POST.get('message')
-        
-        # Here you would typically send an email or save to database
-        messages.success(request, 'Thank you for your message! We will get back to you soon.')
-        return redirect('contact_us')
-    
-    return render(request, 'hub/contact_us.html')
+        name    = request.POST.get('name', '').strip()
+        email   = request.POST.get('email', '').strip()
+        subject = request.POST.get('subject', 'general').strip()
+        message = request.POST.get('message', '').strip()
+        if name and email and message:
+            ContactMessage.objects.create(
+                name=name, email=email, subject=subject, message=message
+            )
+            submitted = True
+        else:
+            messages.error(request, 'Please fill in all required fields.')
+    return render(request, 'hub/contact_us.html', {'submitted': submitted})
+
 
 def report_bug(request):
-    """Report a Bug page"""
+    """Report a Bug page — saves submission to DB and shows inline success"""
+    from .models import BugReport
+    submitted = False
     if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        bug_type = request.POST.get('bug_type')
-        description = request.POST.get('description')
-        steps = request.POST.get('steps')
-        
-        # Here you would typically save to database or send to support
-        messages.success(request, 'Thank you for reporting this issue! Our team will investigate.')
-        return redirect('report_bug')
-    
-    return render(request, 'hub/report_bug.html')
+        name        = request.POST.get('name', '').strip()
+        email       = request.POST.get('email', '').strip()
+        bug_type    = request.POST.get('bug_type', 'other').strip()
+        severity    = request.POST.get('severity', 'medium').strip()
+        description = request.POST.get('description', '').strip()
+        steps       = request.POST.get('steps', '').strip()
+        browser     = request.POST.get('browser', '').strip()
+        device      = request.POST.get('device', '').strip()
+        if name and email and description:
+            BugReport.objects.create(
+                name=name, email=email, bug_type=bug_type,
+                severity=severity, description=description,
+                steps=steps, browser=browser, device=device
+            )
+            submitted = True
+        else:
+            messages.error(request, 'Please fill in all required fields.')
+    return render(request, 'hub/report_bug.html', {'submitted': submitted})
 
 def help_center(request):
     """Help Center page"""
     return render(request, 'hub/help_center.html')
+
+
+def privacy_policy(request):
+    """Privacy Policy page"""
+    return render(request, 'hub/privacy_policy.html')
+
+
+def terms_of_service(request):
+    """Terms of Service page"""
+    return render(request, 'hub/terms_of_service.html')
+
+
+def how_it_works(request):
+    """How It Works page"""
+    return render(request, 'hub/how_it_works.html')
+
+
+def safety_guidelines(request):
+    """Safety Guidelines page"""
+    return render(request, 'hub/safety_guidelines.html')
 
 # Review System Views
 @login_required
@@ -635,13 +684,21 @@ def chatbot(request):
     if request.method == 'POST':
         message = request.POST.get('message')
         session_id = request.POST.get('session_id', str(uuid.uuid4()))
-        
+
         if message:
-            chatbot = EduCycleChatbot()
-            response = chatbot.get_response(message, session_id)
+            bot = EduCycleChatbot()
+            response = bot.get_response(message, session_id)
+            escalate = response == '__ESCALATE_TO_ADMIN__'
+            if escalate:
+                response = (
+                    "I'm not quite sure how to help with that one. "
+                    "Let me connect you with a real person from our support team — "
+                    "they'll be able to assist you much better! 🙋"
+                )
             return JsonResponse({
                 'response': response,
-                'session_id': session_id
+                'session_id': session_id,
+                'escalate': escalate,
             })
     
     # For GET request, return the chatbot page
@@ -668,3 +725,305 @@ def get_chat_history(request, session_id):
         })
     
     return JsonResponse({'messages': messages})
+
+
+@login_required
+def settings_view(request):
+    """User settings page — handles all settings actions"""
+    from .models import UserProfile
+    from django.contrib.auth import update_session_auth_hash
+
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    active_section = 'profile'  # default
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        active_section = request.POST.get('active_section', 'profile')
+
+        # ── Update Profile ──────────────────────────────────────────
+        if action == 'update_profile':
+            request.user.first_name = request.POST.get('first_name', '').strip()
+            request.user.last_name  = request.POST.get('last_name', '').strip()
+            new_email = request.POST.get('email', '').strip()
+            if new_email and new_email != request.user.email:
+                if User.objects.filter(email=new_email).exclude(pk=request.user.pk).exists():
+                    messages.error(request, 'That email address is already in use.')
+                else:
+                    request.user.email = new_email
+            request.user.save()
+            profile.phone_number  = request.POST.get('phone_number', '').strip()
+            profile.department    = request.POST.get('department', profile.department)
+            profile.year_of_study = request.POST.get('year_of_study', profile.year_of_study)
+            profile.save()
+            messages.success(request, 'Profile updated successfully.')
+            active_section = 'profile'
+
+        # ── Change Password ─────────────────────────────────────────
+        elif action == 'change_password':
+            current = request.POST.get('current_password', '')
+            new_pw  = request.POST.get('new_password', '')
+            confirm = request.POST.get('confirm_password', '')
+            if not request.user.check_password(current):
+                messages.error(request, 'Current password is incorrect.')
+            elif new_pw != confirm:
+                messages.error(request, 'New passwords do not match.')
+            elif len(new_pw) < 8:
+                messages.error(request, 'Password must be at least 8 characters.')
+            else:
+                request.user.set_password(new_pw)
+                request.user.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request, 'Password changed successfully. You are still logged in.')
+            active_section = 'security'
+
+        # ── Save Notification Prefs ─────────────────────────────────
+        elif action == 'save_notifications':
+            # Store toggle states in session (no DB model for this yet)
+            prefs = {
+                'notif_messages':      'notif_messages'      in request.POST,
+                'notif_sold':          'notif_sold'          in request.POST,
+                'notif_reviews':       'notif_reviews'       in request.POST,
+                'notif_orders':        'notif_orders'        in request.POST,
+                'notif_announcements': 'notif_announcements' in request.POST,
+            }
+            request.session['notification_prefs'] = prefs
+            messages.success(request, 'Notification preferences saved.')
+            active_section = 'notifications'
+
+        # ── Save Privacy Prefs ──────────────────────────────────────
+        elif action == 'save_privacy':
+            privacy = {
+                'show_profile':  'show_profile'  in request.POST,
+                'show_email':    'show_email'    in request.POST,
+                'allow_messages':'allow_messages' in request.POST,
+            }
+            request.session['privacy_prefs'] = privacy
+            messages.success(request, 'Privacy settings saved.')
+            active_section = 'privacy'
+
+        # ── Save Appearance ─────────────────────────────────────────
+        elif action == 'save_appearance':
+            request.session['theme']    = request.POST.get('theme', 'light')
+            request.session['language'] = request.POST.get('language', 'en')
+            messages.success(request, 'Appearance preferences saved.')
+            active_section = 'appearance'
+
+        # ── Delete Own Listings ─────────────────────────────────────
+        elif action == 'delete_my_listings':
+            confirm_text = request.POST.get('confirm_listings', '')
+            if confirm_text == 'DELETE':
+                count = Item.objects.filter(seller=request.user).count()
+                # Remove related data first
+                my_items = Item.objects.filter(seller=request.user)
+                CartItem.objects.filter(item__in=my_items).delete()
+                Message.objects.filter(item__in=my_items).delete()
+                my_items.delete()
+                messages.success(request, f'Deleted {count} listing(s) successfully.')
+            else:
+                messages.error(request, 'Please type DELETE to confirm.')
+            active_section = 'danger'
+
+        # ── Delete Account ──────────────────────────────────────────
+        elif action == 'delete_account':
+            confirm_text = request.POST.get('confirm_text', '')
+            if confirm_text == 'DELETE':
+                logout(request)
+                request.user.delete()
+                messages.success(request, 'Your account has been permanently deleted.')
+                return redirect('home')
+            else:
+                messages.error(request, 'Please type DELETE exactly to confirm.')
+            active_section = 'danger'
+
+        return redirect(f'/settings/?section={active_section}')
+
+    # ── GET ─────────────────────────────────────────────────────────
+    active_section = request.GET.get('section', 'profile')
+    notif_prefs = request.session.get('notification_prefs', {
+        'notif_messages': True, 'notif_sold': True,
+        'notif_reviews': True, 'notif_orders': True, 'notif_announcements': True,
+    })
+    privacy_prefs = request.session.get('privacy_prefs', {
+        'show_profile': True, 'show_email': False, 'allow_messages': True,
+    })
+    theme    = request.session.get('theme', 'light')
+    language = request.session.get('language', 'en')
+
+    return render(request, 'hub/settings.html', {
+        'profile':        profile,
+        'user':           request.user,
+        'active_section': active_section,
+        'notif_prefs':    notif_prefs,
+        'privacy_prefs':  privacy_prefs,
+        'theme':          theme,
+        'language':       language,
+        'my_listing_count': Item.objects.filter(seller=request.user).count(),
+    })
+
+
+def newsletter_subscribe(request):
+    """Handle newsletter subscription from the footer form"""
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        if email:
+            obj, created = NewsletterSubscription.objects.get_or_create(
+                email=email, defaults={'is_active': True}
+            )
+            if created:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': True, 'message': 'Subscribed successfully!'})
+                messages.success(request, 'You have been subscribed to our newsletter!')
+            else:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': True, 'message': 'You are already subscribed.'})
+                messages.info(request, 'You are already subscribed.')
+        else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'message': 'Please provide a valid email.'})
+            messages.error(request, 'Please provide a valid email.')
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@login_required
+def admin_panel(request):
+    """Custom admin panel — only accessible to admin@gmail.com"""
+    if request.user.email != 'admin@gmail.com':
+        messages.error(request, 'Access denied. Admin privileges required.')
+        return redirect('home')
+
+    # Handle POST actions (update order status, resolve bugs/contacts, etc.)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'update_order_status':
+            order_id = request.POST.get('order_id')
+            new_status = request.POST.get('status')
+            try:
+                order = Order.objects.get(id=order_id)
+                order.status = new_status
+                order.save()
+                messages.success(request, f'Order #{order_id} status updated to {new_status}.')
+            except Order.DoesNotExist:
+                messages.error(request, 'Order not found.')
+
+        elif action == 'resolve_bug':
+            bug_id = request.POST.get('bug_id')
+            try:
+                bug = BugReport.objects.get(id=bug_id)
+                bug.is_resolved = not bug.is_resolved
+                bug.save()
+                status = 'resolved' if bug.is_resolved else 'reopened'
+                messages.success(request, f'Bug #{bug_id} has been {status}.')
+            except BugReport.DoesNotExist:
+                messages.error(request, 'Bug report not found.')
+
+        elif action == 'resolve_contact':
+            contact_id = request.POST.get('contact_id')
+            try:
+                contact = ContactMessage.objects.get(id=contact_id)
+                contact.is_resolved = not contact.is_resolved
+                contact.save()
+                status = 'resolved' if contact.is_resolved else 'reopened'
+                messages.success(request, f'Contact #{contact_id} has been {status}.')
+            except ContactMessage.DoesNotExist:
+                messages.error(request, 'Contact message not found.')
+
+        elif action == 'delete_review':
+            review_id = request.POST.get('review_id')
+            try:
+                review = Review.objects.get(id=review_id)
+                review.delete()
+                messages.success(request, f'Review #{review_id} has been deleted.')
+            except Review.DoesNotExist:
+                messages.error(request, 'Review not found.')
+
+        elif action == 'toggle_item':
+            item_id = request.POST.get('item_id')
+            try:
+                item = Item.objects.get(id=item_id)
+                item.is_active = not item.is_active
+                item.save()
+                status = 'activated' if item.is_active else 'deactivated'
+                messages.success(request, f'Item "{item.name}" has been {status}.')
+            except Item.DoesNotExist:
+                messages.error(request, 'Item not found.')
+
+        elif action == 'remove_subscriber':
+            sub_id = request.POST.get('sub_id')
+            try:
+                sub = NewsletterSubscription.objects.get(id=sub_id)
+                sub.is_active = not sub.is_active
+                sub.save()
+                status = 'activated' if sub.is_active else 'deactivated'
+                messages.success(request, f'Subscriber {sub.email} has been {status}.')
+            except NewsletterSubscription.DoesNotExist:
+                messages.error(request, 'Subscriber not found.')
+
+        return redirect('admin_panel')
+
+    # ── Dashboard statistics ─────────────────────────────────────
+    from django.db.models import Count, Sum, Avg
+
+    total_orders = Order.objects.count()
+    pending_orders = Order.objects.filter(status='pending').count()
+    confirmed_orders = Order.objects.filter(status='confirmed').count()
+    shipped_orders = Order.objects.filter(status='shipped').count()
+    delivered_orders = Order.objects.filter(status='delivered').count()
+    cancelled_orders = Order.objects.filter(status='cancelled').count()
+    total_revenue = Order.objects.aggregate(total=Sum('total_amount'))['total'] or 0
+
+    total_items = Item.objects.count()
+    active_items = Item.objects.filter(is_active=True).count()
+    total_users = User.objects.count()
+
+    total_reviews = Review.objects.count()
+    avg_rating = Review.objects.aggregate(avg=Avg('rating'))['avg'] or 0
+
+    total_bugs = BugReport.objects.count()
+    open_bugs = BugReport.objects.filter(is_resolved=False).count()
+    critical_bugs = BugReport.objects.filter(severity='critical', is_resolved=False).count()
+
+    total_contacts = ContactMessage.objects.count()
+    open_contacts = ContactMessage.objects.filter(is_resolved=False).count()
+
+    total_subscribers = NewsletterSubscription.objects.filter(is_active=True).count()
+
+    # ── Data for tabs ────────────────────────────────────────────
+    orders = Order.objects.select_related('buyer', 'seller').order_by('-created_at')[:50]
+    reviews = Review.objects.select_related('item', 'user').order_by('-created_at')[:50]
+    bugs = BugReport.objects.order_by('-submitted_at')[:50]
+    contacts = ContactMessage.objects.order_by('-submitted_at')[:50]
+    subscribers = NewsletterSubscription.objects.order_by('-subscribed_at')[:50]
+    items = Item.objects.select_related('seller').order_by('-created_at')[:50]
+    users = User.objects.order_by('-date_joined')[:50]
+
+    context = {
+        # Stats
+        'total_orders': total_orders,
+        'pending_orders': pending_orders,
+        'confirmed_orders': confirmed_orders,
+        'shipped_orders': shipped_orders,
+        'delivered_orders': delivered_orders,
+        'cancelled_orders': cancelled_orders,
+        'total_revenue': total_revenue,
+        'total_items': total_items,
+        'active_items': active_items,
+        'total_users': total_users,
+        'total_reviews': total_reviews,
+        'avg_rating': round(avg_rating, 1),
+        'total_bugs': total_bugs,
+        'open_bugs': open_bugs,
+        'critical_bugs': critical_bugs,
+        'total_contacts': total_contacts,
+        'open_contacts': open_contacts,
+        'total_subscribers': total_subscribers,
+        # Tab data
+        'orders': orders,
+        'reviews': reviews,
+        'bugs': bugs,
+        'contacts': contacts,
+        'subscribers': subscribers,
+        'items': items,
+        'users': users,
+    }
+    return render(request, 'hub/admin_panel.html', context)

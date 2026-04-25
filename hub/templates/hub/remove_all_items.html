@@ -1,50 +1,39 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}Remove All Items{% endblock %}
-
+{% block title %}Remove All Items — EduCycle{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h4 class="mb-0">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Remove All Items
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-warning">
-                        <h5 class="alert-heading">⚠️ Warning!</h5>
-                        <p class="mb-0">
-                            You are about to remove <strong>{{ item_count }}</strong> items from the database. 
-                            This action will also delete all related data including:
-                        </p>
-                        <ul class="mb-0 mt-2">
-                            <li>All cart items</li>
-                            <li>All messages</li>
-                            <li>All order items</li>
-                            <li>All orders</li>
-                        </ul>
-                        <p class="mb-0 mt-2">
-                            <strong>This action cannot be undone!</strong>
-                        </p>
-                    </div>
-                    
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'home' %}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you absolutely sure you want to remove all items? This action cannot be undone!')">
-                                <i class="fas fa-trash"></i> Remove All Items
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+<div class="max-w-lg mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="bg-white rounded-3xl border border-red-200 shadow-card p-8">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-exclamation-triangle text-red-500 text-xl"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-extrabold text-slate-900">Remove All Items</h1>
+        <p class="text-xs text-red-500 font-semibold mt-0.5">Superuser action · Irreversible</p>
+      </div>
     </div>
+
+    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-100 mb-6">
+      <p class="text-sm text-amber-800 font-semibold mb-2">⚠️ You are about to delete <span class="text-red-600">{{ item_count }} items</span> and all related data:</p>
+      <ul class="text-xs text-amber-700 space-y-1 ml-4 list-disc">
+        <li>All cart items</li>
+        <li>All messages</li>
+        <li>All order items and orders</li>
+      </ul>
+      <p class="text-xs text-red-600 font-bold mt-3">This cannot be undone.</p>
+    </div>
+
+    <form method="post" class="flex gap-3">
+      {% csrf_token %}
+      <a href="{% url 'home' %}" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm rounded-2xl transition-colors flex items-center justify-center gap-2">
+        <i class="fas fa-arrow-left text-xs"></i>Cancel
+      </a>
+      <button type="submit"
+        onclick="return confirm('Are you absolutely sure? This cannot be undone!')"
+        class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2">
+        <i class="fas fa-trash text-xs"></i>Remove All
+      </button>
+    </form>
+  </div>
 </div>
-{% endblock %} 
+{% endblock %}

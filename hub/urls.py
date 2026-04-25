@@ -44,6 +44,10 @@ urlpatterns = [
     path('contact/', views.contact_us, name='contact_us'),
     path('report-bug/', views.report_bug, name='report_bug'),
     path('help/', views.help_center, name='help_center'),
+    path('privacy/', views.privacy_policy, name='privacy_policy'),
+    path('terms/', views.terms_of_service, name='terms_of_service'),
+    path('how-it-works/', views.how_it_works, name='how_it_works'),
+    path('safety/', views.safety_guidelines, name='safety_guidelines'),
     
     # Review System
     path('item/<int:item_id>/review/', views.add_review, name='add_review'),
@@ -58,4 +62,13 @@ urlpatterns = [
     # Chatbot
     path('chatbot/', views.chatbot, name='chatbot'),
     path('chatbot/history/<str:session_id>/', views.get_chat_history, name='get_chat_history'),
-] 
+
+    # Settings
+    path('settings/', views.settings_view, name='settings'),
+
+    # Newsletter subscription
+    path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
+
+    # Custom Admin Panel
+    path('panel/', views.admin_panel, name='admin_panel'),
+]

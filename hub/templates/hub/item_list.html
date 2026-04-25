@@ -1,272 +1,347 @@
 {% extends 'hub/base.html' %}
 
-{% block title %}Available Items - EduCycle{% endblock %}
+{% block title %}Browse Items — EduCycle{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <!-- Amazon-style Search Bar -->
-    <div class="amazon-search-container mb-4">
-        <div class="search-wrapper">
-            <form method="get" action="{% url 'item_list' %}" class="amazon-search-form">
-                <div class="search-input-group">
-                    <div class="category-dropdown">
-                        <select class="category-select" name="category">
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO SECTION
+═══════════════════════════════════════════════════════ -->
+<section class="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500">
+
+    <!-- Decorative blobs -->
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-indigo-400/30 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-16 -left-16 w-72 h-72 bg-amber-400/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+
+        <!-- Eyebrow -->
+        <div class="flex justify-center mb-5">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 text-white/90 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse-slow"></span>
+                Student Marketplace · 100% Free to List
+            </span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="text-center text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight mb-4">
+            Give your study materials<br>
+            <span class="text-amber-300">a second life.</span>
+        </h1>
+        <p class="text-center text-indigo-100 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-light">
+            Buy and sell textbooks, lab gear, and more — right on campus. Sustainable, affordable, and community-driven.
+        </p>
+
+        <!-- ─── SEARCH BAR ─── -->
+        <div class="max-w-3xl mx-auto">
+            <form method="get" action="{% url 'item_list' %}" id="search-form">
+                <div class="flex items-stretch bg-white rounded-2xl shadow-2xl overflow-hidden ring-1 ring-white/20">
+
+                    <!-- Category select -->
+                    <div class="relative flex-shrink-0 border-r border-slate-200">
+                        <select name="category"
+                            class="h-full pl-4 pr-8 py-4 text-sm font-medium text-slate-700 bg-slate-50 appearance-none cursor-pointer focus:outline-none focus:bg-white transition-colors min-w-[130px]">
                             <option value="">All Categories</option>
-                            <option value="textbook" {% if category_filter == 'textbook' %}selected{% endif %}>Textbooks</option>
-                            <option value="equipment" {% if category_filter == 'equipment' %}selected{% endif %}>Lab Equipment</option>
-                            <option value="decor" {% if category_filter == 'decor' %}selected{% endif %}>Room Decor</option>
-                            <option value="appliance" {% if category_filter == 'appliance' %}selected{% endif %}>Appliances</option>
-                            <option value="other" {% if category_filter == 'other' %}selected{% endif %}>Other</option>
+                            <option value="textbook"  {% if category_filter == 'textbook'  %}selected{% endif %}>📚 Textbooks</option>
+                            <option value="equipment" {% if category_filter == 'equipment' %}selected{% endif %}>🔬 Lab Equipment</option>
+                            <option value="decor"     {% if category_filter == 'decor'     %}selected{% endif %}>🎨 Room Decor</option>
+                            <option value="appliance" {% if category_filter == 'appliance' %}selected{% endif %}>⚡ Appliances</option>
+                            <option value="other"     {% if category_filter == 'other'     %}selected{% endif %}>📦 Other</option>
                         </select>
-                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        <i class="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
                     </div>
-                    <input type="text" class="search-input" name="search" value="{{ search_query }}" placeholder="Search EduCycle...">
-                    <button type="submit" class="search-button">
+
+                    <!-- Text input -->
+                    <div class="relative flex-1">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+                        <input
+                            type="text"
+                            name="search"
+                            id="search-input"
+                            value="{{ search_query }}"
+                            placeholder="Search for textbooks, calculators, lab coats…"
+                            autocomplete="off"
+                            class="w-full h-full pl-11 pr-4 py-4 text-sm text-slate-800 placeholder-slate-400 bg-transparent focus:outline-none">
+                        <!-- Suggestions dropdown -->
+                        <div id="suggestions-box"
+                            class="hidden absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-b-2xl shadow-xl z-50 overflow-hidden mt-px">
+                        </div>
+                    </div>
+
+                    <!-- Search button -->
+                    <button type="submit"
+                        class="btn-amber flex-shrink-0 px-6 py-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm transition-colors flex items-center gap-2">
                         <i class="fas fa-search"></i>
+                        <span class="hidden sm:inline">Search</span>
                     </button>
                 </div>
             </form>
-                        </div>
-                        
-        {% if user.is_authenticated %}
-        <div class="add-item-button">
-            <a href="{% url 'item_create' %}" class="btn btn-success">
-                <i class="fas fa-plus"></i> Add Item
-            </a>
-                        </div>
-        {% endif %}
-</div>
 
-        <!-- Items Display Section -->
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="fas fa-gallery-thumbnails"></i> Available Items</h2>
-                <div class="text-muted">
-                    <i class="fas fa-info-circle"></i> {{ items.count }} items found
-                </div>
-            </div>
-
-            {% if items %}
-<div class="row">
-    {% for item in items %}
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm hover-lift">
-                        <div class="card-img-top" style="height: 200px; position: relative; overflow: hidden; border-radius: 0.375rem 0.375rem 0 0;">
-                            {% if item.image1 %}
-                                <img src="{{ item.image1.url }}" alt="{{ item.name }}" class="w-100 h-100" style="object-fit: cover;">
-                            {% else %}
-                                <!-- Fallback to category-based design when no image -->
-                            {% if item.category == 'textbook' %}
-                                <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚</div>
-                                    <div style="background: #1976d2; color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 0.5rem;">Textbook</div>
-                                    <div style="font-size: 0.875rem; font-weight: bold; color: #1f2937; margin-bottom: 0.25rem;">{{ item.name|truncatechars:20 }}</div>
-                                    <div style="font-size: 1.25rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                                </div>
-                            {% elif item.category == 'equipment' %}
-                                <div style="background: linear-gradient(135deg, #f3e5f5 0%, #ce93d8 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔬</div>
-                                    <div style="background: #7b1fa2; color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 0.5rem;">Lab Equipment</div>
-                                    <div style="font-size: 0.875rem; font-weight: bold; color: #1f2937; margin-bottom: 0.25rem;">{{ item.name|truncatechars:20 }}</div>
-                                    <div style="font-size: 1.25rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                                </div>
-                            {% elif item.category == 'appliance' %}
-                                <div style="background: linear-gradient(135deg, #e8f5e8 0%, #a5d6a7 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
-                                    <div style="background: #388e3c; color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 0.5rem;">Appliance</div>
-                                    <div style="font-size: 0.875rem; font-weight: bold; color: #1f2937; margin-bottom: 0.25rem;">{{ item.name|truncatechars:20 }}</div>
-                                    <div style="font-size: 1.25rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                                </div>
-                            {% elif item.category == 'decor' %}
-                                <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎨</div>
-                                    <div style="background: #f57c00; color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 0.5rem;">Room Decor</div>
-                                    <div style="font-size: 0.875rem; font-weight: bold; color: #1f2937; margin-bottom: 0.25rem;">{{ item.name|truncatechars:20 }}</div>
-                                    <div style="font-size: 1.25rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                                </div>
-                            {% else %}
-                                <div style="background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%); width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📦</div>
-                                    <div style="background: #c2185b; color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 0.5rem;">Other</div>
-                                    <div style="font-size: 0.875rem; font-weight: bold; color: #1f2937; margin-bottom: 0.25rem;">{{ item.name|truncatechars:20 }}</div>
-                                    <div style="font-size: 1.25rem; font-weight: bold; color: #059669;">₹{{ item.price }}</div>
-                                </div>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                        
-                        <div class="card-body d-flex flex-column">
-                            <div class="mb-2">
-                                <span class="badge bg-secondary">
-                                    {% if item.category == 'textbook' %}
-                                        <i class="fas fa-book-open"></i>
-                                    {% elif item.category == 'equipment' %}
-                                        <i class="fas fa-tools"></i>
-                                    {% elif item.category == 'decor' %}
-                                        <i class="fas fa-paint-brush"></i>
-                                    {% elif item.category == 'appliance' %}
-                                        <i class="fas fa-plug"></i>
-                                    {% else %}
-                                        <i class="fas fa-ellipsis-h"></i>
-                                    {% endif %}
-                                    {{ item.get_category_display }}
-                                </span>
-                            </div>
-                            
-                            <h5 class="card-title">{{ item.name }}</h5>
-                            <p class="card-text text-muted">{{ item.description|truncatewords:15 }}</p>
-                            
-                            <div class="mt-auto">
-                                {% if item.price %}
-                                <div class="mb-2">
-                                    <span class="h5 text-primary mb-0">₹{{ item.price }}</span>
-                                </div>
-                                {% endif %}
-                                
-
-                                
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="fas fa-user"></i> {{ item.seller.first_name }} {{ item.seller.last_name }}
-                                    </small>
-                                    <a href="{% url 'item_detail' item.id %}" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-eye"></i> View Details
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Quick category pills -->
+            <div class="flex flex-wrap justify-center gap-2 mt-5">
+                <a href="{% url 'item_list' %}"
+                    class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all
+                    {% if not category_filter %}bg-white text-indigo-700 shadow-sm{% else %}bg-white/20 text-white hover:bg-white/30{% endif %}">
+                    All
+                </a>
+                {% for slug, label, emoji in category_pills %}
+                <a href="?category={{ slug }}"
+                    class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all
+                    {% if category_filter == slug %}bg-white text-indigo-700 shadow-sm{% else %}bg-white/20 text-white hover:bg-white/30{% endif %}">
+                    {{ emoji }} {{ label }}
+                </a>
+                {% empty %}
+                <a href="?category=textbook"  class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all {% if category_filter == 'textbook' %}!bg-white !text-indigo-700 shadow-sm{% endif %}">📚 Textbooks</a>
+                <a href="?category=equipment" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all {% if category_filter == 'equipment' %}!bg-white !text-indigo-700 shadow-sm{% endif %}">🔬 Lab Equipment</a>
+                <a href="?category=decor"     class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all {% if category_filter == 'decor' %}!bg-white !text-indigo-700 shadow-sm{% endif %}">🎨 Room Decor</a>
+                <a href="?category=appliance" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all {% if category_filter == 'appliance' %}!bg-white !text-indigo-700 shadow-sm{% endif %}">⚡ Appliances</a>
+                <a href="?category=other"     class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition-all {% if category_filter == 'other' %}!bg-white !text-indigo-700 shadow-sm{% endif %}">📦 Other</a>
                 {% endfor %}
             </div>
-            {% else %}
-            <div class="text-center py-5">
-                <i class="fas fa-search text-muted" style="font-size: 4rem;"></i>
-                <h3 class="text-muted mt-3">No items found</h3>
-                <p class="text-muted">Try adjusting your search criteria or browse all categories.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     STATS STRIP
+═══════════════════════════════════════════════════════ -->
+<div class="bg-white border-b border-slate-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-3 divide-x divide-slate-100">
+            <div class="py-4 text-center">
+                <p class="text-xl font-bold text-indigo-600">{{ items.count }}</p>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Items Listed</p>
             </div>
-            {% endif %}
+            <div class="py-4 text-center">
+                <p class="text-xl font-bold text-indigo-600">100%</p>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Free to Use</p>
+            </div>
+            <div class="py-4 text-center">
+                <p class="text-xl font-bold text-indigo-600">Campus</p>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Community</p>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Search Suggestions JavaScript -->
+<!-- ═══════════════════════════════════════════════════════
+     PRODUCT GRID
+═══════════════════════════════════════════════════════ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Section header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-900">
+                {% if search_query %}
+                    Results for "<span class="text-indigo-600">{{ search_query }}</span>"
+                {% elif category_filter %}
+                    {% if category_filter == 'textbook' %}📚 Textbooks
+                    {% elif category_filter == 'equipment' %}🔬 Lab Equipment
+                    {% elif category_filter == 'decor' %}🎨 Room Decor
+                    {% elif category_filter == 'appliance' %}⚡ Appliances
+                    {% else %}📦 Other Items{% endif %}
+                {% else %}
+                    All Available Items
+                {% endif %}
+            </h2>
+            <p class="text-sm text-slate-500 mt-1">
+                <span class="font-semibold text-slate-700">{{ items.count }}</span> item{{ items.count|pluralize }} found
+            </p>
+        </div>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'item_create' %}"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all hover:-translate-y-px flex-shrink-0">
+            <i class="fas fa-plus text-xs"></i>
+            List an Item
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Grid -->
+    {% if items %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for item in items %}
+        <article class="card-lift bg-white rounded-3xl overflow-hidden shadow-card border border-slate-100 flex flex-col group">
+
+            <!-- Image / Placeholder -->
+            <a href="{% url 'item_detail' item.id %}" class="block relative overflow-hidden" style="height: 200px;">
+                {% if item.image1 %}
+                    <img src="{{ item.image1.url }}" alt="{{ item.name }}"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                {% else %}
+                    <!-- Category-themed placeholder -->
+                    <div class="w-full h-full flex flex-col items-center justify-center
+                        {% if item.category == 'textbook' %}bg-gradient-to-br from-blue-50 to-indigo-100
+                        {% elif item.category == 'equipment' %}bg-gradient-to-br from-violet-50 to-purple-100
+                        {% elif item.category == 'appliance' %}bg-gradient-to-br from-emerald-50 to-teal-100
+                        {% elif item.category == 'decor' %}bg-gradient-to-br from-amber-50 to-orange-100
+                        {% else %}bg-gradient-to-br from-rose-50 to-pink-100{% endif %}">
+
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-3 shadow-sm
+                            {% if item.category == 'textbook' %}bg-blue-100
+                            {% elif item.category == 'equipment' %}bg-violet-100
+                            {% elif item.category == 'appliance' %}bg-emerald-100
+                            {% elif item.category == 'decor' %}bg-amber-100
+                            {% else %}bg-rose-100{% endif %}">
+                            <span class="text-3xl leading-none">
+                                {% if item.category == 'textbook' %}📚
+                                {% elif item.category == 'equipment' %}🔬
+                                {% elif item.category == 'appliance' %}⚡
+                                {% elif item.category == 'decor' %}🎨
+                                {% else %}📦{% endif %}
+                            </span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ item.get_category_display }}</p>
+                    </div>
+                {% endif %}
+
+                <!-- Condition badge overlay -->
+                {% if item.condition %}
+                <div class="absolute top-3 left-3">
+                    <span class="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide shadow-sm
+                        {% if item.condition == 'new' or item.condition == 'like_new' %}bg-emerald-500 text-white
+                        {% elif item.condition == 'good' %}bg-blue-500 text-white
+                        {% else %}bg-slate-500 text-white{% endif %}">
+                        {{ item.get_condition_display|default:item.condition }}
+                    </span>
+                </div>
+                {% endif %}
+            </a>
+
+            <!-- Card body -->
+            <div class="flex flex-col flex-1 p-4">
+
+                <!-- Category badge -->
+                <div class="mb-2.5">
+                    <span class="badge-pill
+                        {% if item.category == 'textbook' %}bg-blue-50 text-blue-700 border border-blue-100
+                        {% elif item.category == 'equipment' %}bg-violet-50 text-violet-700 border border-violet-100
+                        {% elif item.category == 'appliance' %}bg-emerald-50 text-emerald-700 border border-emerald-100
+                        {% elif item.category == 'decor' %}bg-amber-50 text-amber-700 border border-amber-100
+                        {% else %}bg-rose-50 text-rose-700 border border-rose-100{% endif %}">
+                        {% if item.category == 'textbook' %}<i class="fas fa-book-open text-[10px]"></i>
+                        {% elif item.category == 'equipment' %}<i class="fas fa-flask text-[10px]"></i>
+                        {% elif item.category == 'appliance' %}<i class="fas fa-plug text-[10px]"></i>
+                        {% elif item.category == 'decor' %}<i class="fas fa-paint-brush text-[10px]"></i>
+                        {% else %}<i class="fas fa-box text-[10px]"></i>{% endif %}
+                        {{ item.get_category_display }}
+                    </span>
+                </div>
+
+                <!-- Title -->
+                <h3 class="font-semibold text-slate-900 text-sm leading-snug mb-1.5 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+                    <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a>
+                </h3>
+
+                <!-- Description -->
+                <p class="text-xs text-slate-500 leading-relaxed mb-3 line-clamp-2 flex-1">
+                    {{ item.description|truncatewords:18 }}
+                </p>
+
+                <!-- Price + Seller -->
+                <div class="flex items-end justify-between mt-auto pt-3 border-t border-slate-100">
+                    <div>
+                        {% if item.price %}
+                        <p class="text-lg font-bold text-indigo-600 leading-none">₹{{ item.price }}</p>
+                        {% else %}
+                        <p class="text-sm font-semibold text-emerald-600">Free</p>
+                        {% endif %}
+                        <p class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+                            <i class="fas fa-user-circle text-slate-300"></i>
+                            {{ item.seller.first_name }} {{ item.seller.last_name }}
+                        </p>
+                    </div>
+                    <a href="{% url 'item_detail' item.id %}"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white text-xs font-semibold rounded-xl transition-all duration-200 group/btn">
+                        View
+                        <i class="fas fa-arrow-right text-[10px] group-hover/btn:translate-x-0.5 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty state -->
+    <div class="flex flex-col items-center justify-center py-24 text-center">
+        <div class="w-24 h-24 rounded-3xl bg-indigo-50 flex items-center justify-center mb-6 shadow-inner">
+            <i class="fas fa-search text-indigo-300 text-4xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-slate-700 mb-2">No items found</h3>
+        <p class="text-slate-500 text-sm max-w-sm mb-6">
+            {% if search_query %}
+                We couldn't find anything matching "<strong>{{ search_query }}</strong>". Try a different keyword or browse all categories.
+            {% else %}
+                No items in this category yet. Be the first to list something!
+            {% endif %}
+        </p>
+        <div class="flex gap-3">
+            <a href="{% url 'item_list' %}" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors">
+                Browse All
+            </a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'item_create' %}" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+                <i class="fas fa-plus mr-1.5 text-xs"></i>List an Item
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SEARCH SUGGESTIONS JS
+═══════════════════════════════════════════════════════ -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search');
-    const suggestionsContainer = document.createElement('div');
-    suggestionsContainer.className = 'search-suggestions';
-    suggestionsContainer.style.cssText = `
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 1px solid #ddd;
-        border-top: none;
-        border-radius: 0 0 4px 4px;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 1000;
-        display: none;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    `;
-    
-    // Insert suggestions container after search input
-    searchInput.parentNode.style.position = 'relative';
-    searchInput.parentNode.appendChild(suggestionsContainer);
-    
-    let searchTimeout;
-    
-    searchInput.addEventListener('input', function() {
-        const query = this.value.trim();
-        
-        // Clear previous timeout
-        clearTimeout(searchTimeout);
-        
-        // Hide suggestions if query is too short
-        if (query.length < 2) {
-            suggestionsContainer.style.display = 'none';
-            return;
-        }
-        
-        // Debounce the search
-        searchTimeout = setTimeout(function() {
-            fetch(`{% url 'search_suggestions' %}?q=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    displaySuggestions(data.suggestions);
-                })
-                .catch(error => {
-                    console.error('Error fetching suggestions:', error);
-                });
-        }, 300);
+(function () {
+    const input = document.getElementById('search-input');
+    const box   = document.getElementById('suggestions-box');
+    if (!input || !box) return;
+
+    let timer;
+
+    input.addEventListener('input', function () {
+        clearTimeout(timer);
+        const q = this.value.trim();
+        if (q.length < 2) { box.classList.add('hidden'); return; }
+
+        timer = setTimeout(() => {
+            fetch(`{% url 'search_suggestions' %}?q=${encodeURIComponent(q)}`)
+                .then(r => r.json())
+                .then(data => render(data.suggestions || []))
+                .catch(() => box.classList.add('hidden'));
+        }, 280);
     });
-    
-    function displaySuggestions(suggestions) {
-        if (suggestions.length === 0) {
-            suggestionsContainer.style.display = 'none';
-            return;
-        }
-        
-        suggestionsContainer.innerHTML = '';
-        
-        suggestions.forEach(suggestion => {
-            const div = document.createElement('div');
-            div.className = 'suggestion-item';
-            div.style.cssText = `
-                padding: 8px 12px;
-                cursor: pointer;
-                border-bottom: 1px solid #eee;
-                font-size: 14px;
-            `;
-            
-            if (suggestion.text.startsWith('Category:')) {
-                div.innerHTML = `<i class="fas fa-tags"></i> ${suggestion.text}`;
-                div.style.color = '#6c757d';
-            } else {
-                div.innerHTML = `<i class="fas fa-search"></i> ${suggestion.text}`;
-            }
-            
-            div.addEventListener('click', function() {
-                searchInput.value = suggestion.text.replace('Category: ', '');
-                suggestionsContainer.style.display = 'none';
-                
-                // Trigger form submission
-                const form = searchInput.closest('form');
-                if (form) {
-                    form.submit();
-                }
+
+    function render(suggestions) {
+        if (!suggestions.length) { box.classList.add('hidden'); return; }
+        box.innerHTML = suggestions.map(s => `
+            <button type="button"
+                class="suggestion-item w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors border-b border-slate-50 last:border-0"
+                data-value="${s.text.replace('Category: ', '')}">
+                <i class="fas ${s.text.startsWith('Category:') ? 'fa-tag text-indigo-400' : 'fa-search text-slate-400'} text-xs w-4 text-center flex-shrink-0"></i>
+                <span>${s.text}</span>
+            </button>`).join('');
+        box.classList.remove('hidden');
+
+        box.querySelectorAll('.suggestion-item').forEach(el => {
+            el.addEventListener('click', () => {
+                input.value = el.dataset.value;
+                box.classList.add('hidden');
+                document.getElementById('search-form').submit();
             });
-            
-            div.addEventListener('mouseenter', function() {
-                this.style.backgroundColor = '#f8f9fa';
-            });
-            
-            div.addEventListener('mouseleave', function() {
-                this.style.backgroundColor = 'white';
-            });
-            
-            suggestionsContainer.appendChild(div);
         });
-        
-        suggestionsContainer.style.display = 'block';
     }
-    
-    // Hide suggestions when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
-            suggestionsContainer.style.display = 'none';
-        }
+
+    document.addEventListener('click', e => {
+        if (!input.contains(e.target) && !box.contains(e.target)) box.classList.add('hidden');
     });
-    
-    // Hide suggestions on escape key
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            suggestionsContainer.style.display = 'none';
-        }
-    });
-});
+    input.addEventListener('keydown', e => { if (e.key === 'Escape') box.classList.add('hidden'); });
+})();
 </script>
-{% endblock %} 
+
+{% endblock %}

@@ -1,0 +1,319 @@
+{% extends 'hub/base.html' %}
+{% block title %}Admin Panel — EduCycle{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-extrabold text-slate-900">
+        <i class="fas fa-shield-alt text-indigo-600 mr-2"></i>Admin Panel
+      </h1>
+      <p class="text-slate-500 text-sm mt-1">Manage orders, reviews, reports &amp; users</p>
+    </div>
+    <a href="{% url 'home' %}" class="px-4 py-2 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-xl hover:bg-indigo-50 transition-colors">
+      <i class="fas fa-arrow-left mr-1"></i>Back to Site
+    </a>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 text-center">
+      <div class="w-10 h-10 mx-auto rounded-xl bg-indigo-100 flex items-center justify-center mb-2"><i class="fas fa-shopping-bag text-indigo-600"></i></div>
+      <p class="text-2xl font-bold text-slate-900">{{ total_orders }}</p>
+      <p class="text-xs text-slate-500">Total Orders</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 text-center">
+      <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-100 flex items-center justify-center mb-2"><i class="fas fa-check-circle text-emerald-600"></i></div>
+      <p class="text-2xl font-bold text-emerald-600">{{ delivered_orders }}</p>
+      <p class="text-xs text-slate-500">Delivered</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 text-center">
+      <div class="w-10 h-10 mx-auto rounded-xl bg-red-100 flex items-center justify-center mb-2"><i class="fas fa-times-circle text-red-600"></i></div>
+      <p class="text-2xl font-bold text-red-600">{{ cancelled_orders }}</p>
+      <p class="text-xs text-slate-500">Cancelled</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 text-center">
+      <div class="w-10 h-10 mx-auto rounded-xl bg-amber-100 flex items-center justify-center mb-2"><i class="fas fa-star text-amber-600"></i></div>
+      <p class="text-2xl font-bold text-slate-900">{{ total_reviews }}</p>
+      <p class="text-xs text-slate-500">Reviews ({{ avg_rating }}★)</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 text-center">
+      <div class="w-10 h-10 mx-auto rounded-xl bg-rose-100 flex items-center justify-center mb-2"><i class="fas fa-bug text-rose-600"></i></div>
+      <p class="text-2xl font-bold text-rose-600">{{ open_bugs }}</p>
+      <p class="text-xs text-slate-500">Open Bugs</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 text-center">
+      <div class="w-10 h-10 mx-auto rounded-xl bg-violet-100 flex items-center justify-center mb-2"><i class="fas fa-users text-violet-600"></i></div>
+      <p class="text-2xl font-bold text-slate-900">{{ total_users }}</p>
+      <p class="text-xs text-slate-500">Users</p>
+    </div>
+  </div>
+
+  <!-- Secondary stats -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+    <div class="bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl p-4 text-white text-center">
+      <p class="text-2xl font-bold">₹{{ total_revenue }}</p><p class="text-xs opacity-80">Revenue</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 text-center">
+      <p class="text-2xl font-bold text-amber-600">{{ pending_orders }}</p><p class="text-xs text-slate-500">Pending Orders</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 text-center">
+      <p class="text-2xl font-bold text-blue-600">{{ open_contacts }}</p><p class="text-xs text-slate-500">Open Contacts</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 text-center">
+      <p class="text-2xl font-bold text-emerald-600">{{ total_subscribers }}</p><p class="text-xs text-slate-500">Subscribers</p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-card overflow-hidden">
+    <div class="flex overflow-x-auto border-b border-slate-200 px-2 pt-2 gap-1" id="admin-tabs">
+      <button onclick="showTab('orders')" class="admin-tab active-tab px-4 py-2.5 text-sm font-semibold rounded-t-xl whitespace-nowrap" data-tab="orders"><i class="fas fa-shopping-bag mr-1.5"></i>Orders</button>
+      <button onclick="showTab('reviews')" class="admin-tab px-4 py-2.5 text-sm font-semibold rounded-t-xl whitespace-nowrap" data-tab="reviews"><i class="fas fa-star mr-1.5"></i>Reviews</button>
+      <button onclick="showTab('bugs')" class="admin-tab px-4 py-2.5 text-sm font-semibold rounded-t-xl whitespace-nowrap" data-tab="bugs"><i class="fas fa-bug mr-1.5"></i>Bug Reports</button>
+      <button onclick="showTab('contacts')" class="admin-tab px-4 py-2.5 text-sm font-semibold rounded-t-xl whitespace-nowrap" data-tab="contacts"><i class="fas fa-envelope mr-1.5"></i>Contacts</button>
+      <button onclick="showTab('subscribers')" class="admin-tab px-4 py-2.5 text-sm font-semibold rounded-t-xl whitespace-nowrap" data-tab="subscribers"><i class="fas fa-bell mr-1.5"></i>Subscribers</button>
+      <button onclick="showTab('items')" class="admin-tab px-4 py-2.5 text-sm font-semibold rounded-t-xl whitespace-nowrap" data-tab="items"><i class="fas fa-box mr-1.5"></i>Items</button>
+      <button onclick="showTab('users')" class="admin-tab px-4 py-2.5 text-sm font-semibold rounded-t-xl whitespace-nowrap" data-tab="users"><i class="fas fa-users mr-1.5"></i>Users</button>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div class="tab-panel p-6" id="tab-orders">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">All Orders ({{ total_orders }})</h3>
+      {% if orders %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead><tr class="text-left text-xs text-slate-500 uppercase tracking-wider border-b border-slate-200">
+            <th class="pb-3 pr-4">ID</th><th class="pb-3 pr-4">Buyer</th><th class="pb-3 pr-4">Seller</th><th class="pb-3 pr-4">Amount</th><th class="pb-3 pr-4">Status</th><th class="pb-3 pr-4">Date</th><th class="pb-3">Action</th>
+          </tr></thead>
+          <tbody>
+          {% for order in orders %}
+          <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+            <td class="py-3 pr-4 font-semibold text-indigo-600">#{{ order.id }}</td>
+            <td class="py-3 pr-4">{{ order.buyer.username }}</td>
+            <td class="py-3 pr-4">{{ order.seller.username }}</td>
+            <td class="py-3 pr-4 font-semibold">₹{{ order.total_amount }}</td>
+            <td class="py-3 pr-4">
+              <span class="badge-pill {% if order.status == 'delivered' %}bg-emerald-100 text-emerald-700{% elif order.status == 'cancelled' %}bg-red-100 text-red-700{% elif order.status == 'pending' %}bg-amber-100 text-amber-700{% elif order.status == 'shipped' %}bg-blue-100 text-blue-700{% else %}bg-indigo-100 text-indigo-700{% endif %}">{{ order.get_status_display }}</span>
+            </td>
+            <td class="py-3 pr-4 text-slate-500">{{ order.created_at|date:"d M Y" }}</td>
+            <td class="py-3">
+              <form method="post" class="flex items-center gap-2">{% csrf_token %}
+                <input type="hidden" name="action" value="update_order_status">
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <select name="status" class="text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white">
+                  <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                  <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                  <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                  <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                  <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+                <button type="submit" class="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors">Update</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}<p class="text-slate-400 text-center py-8"><i class="fas fa-inbox text-3xl mb-2 block"></i>No orders yet.</p>{% endif %}
+    </div>
+
+    <!-- REVIEWS TAB -->
+    <div class="tab-panel p-6 hidden" id="tab-reviews">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">All Reviews ({{ total_reviews }})</h3>
+      {% if reviews %}
+      <div class="space-y-4">
+        {% for review in reviews %}
+        <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-semibold text-slate-900">{{ review.user.username }}</span>
+              <span class="text-amber-500">{{ review.get_star_display }}</span>
+              <span class="text-xs text-slate-400">on "{{ review.item.name }}"</span>
+            </div>
+            <p class="font-medium text-sm text-slate-800">{{ review.title }}</p>
+            <p class="text-sm text-slate-600 mt-1">{{ review.comment|truncatewords:30 }}</p>
+            <p class="text-xs text-slate-400 mt-1">{{ review.created_at|date:"d M Y H:i" }}</p>
+          </div>
+          <form method="post">{% csrf_token %}
+            <input type="hidden" name="action" value="delete_review">
+            <input type="hidden" name="review_id" value="{{ review.id }}">
+            <button type="submit" onclick="return confirm('Delete this review?')" class="px-3 py-1.5 text-xs font-semibold text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"><i class="fas fa-trash mr-1"></i>Delete</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}<p class="text-slate-400 text-center py-8"><i class="fas fa-star text-3xl mb-2 block"></i>No reviews yet.</p>{% endif %}
+    </div>
+
+    <!-- BUGS TAB -->
+    <div class="tab-panel p-6 hidden" id="tab-bugs">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">Bug Reports ({{ total_bugs }} total, {{ open_bugs }} open{% if critical_bugs %}, <span class="text-red-600">{{ critical_bugs }} critical</span>{% endif %})</h3>
+      {% if bugs %}
+      <div class="space-y-3">
+        {% for bug in bugs %}
+        <div class="flex items-start gap-4 p-4 rounded-2xl border {% if bug.is_resolved %}bg-emerald-50/50 border-emerald-100{% elif bug.severity == 'critical' %}bg-red-50 border-red-200{% else %}bg-white border-slate-100{% endif %}">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span class="font-semibold text-slate-900">{{ bug.name }}</span>
+              <span class="badge-pill {% if bug.severity == 'critical' %}bg-red-100 text-red-700{% elif bug.severity == 'high' %}bg-orange-100 text-orange-700{% elif bug.severity == 'medium' %}bg-amber-100 text-amber-700{% else %}bg-slate-100 text-slate-600{% endif %}">{{ bug.get_severity_display }}</span>
+              <span class="badge-pill bg-indigo-100 text-indigo-700">{{ bug.get_bug_type_display }}</span>
+              {% if bug.is_resolved %}<span class="badge-pill bg-emerald-100 text-emerald-700"><i class="fas fa-check mr-1"></i>Resolved</span>{% endif %}
+            </div>
+            <p class="text-sm text-slate-600 mt-1">{{ bug.description|truncatewords:40 }}</p>
+            <p class="text-xs text-slate-400 mt-1">{{ bug.email }} · {{ bug.submitted_at|date:"d M Y H:i" }}{% if bug.browser %} · {{ bug.browser }}{% endif %}</p>
+          </div>
+          <form method="post">{% csrf_token %}
+            <input type="hidden" name="action" value="resolve_bug">
+            <input type="hidden" name="bug_id" value="{{ bug.id }}">
+            <button type="submit" class="px-3 py-1.5 text-xs font-semibold {% if bug.is_resolved %}text-amber-600 border-amber-200 hover:bg-amber-50{% else %}text-emerald-600 border-emerald-200 hover:bg-emerald-50{% endif %} border rounded-lg transition-colors">
+              {% if bug.is_resolved %}<i class="fas fa-redo mr-1"></i>Reopen{% else %}<i class="fas fa-check mr-1"></i>Resolve{% endif %}
+            </button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}<p class="text-slate-400 text-center py-8"><i class="fas fa-bug text-3xl mb-2 block"></i>No bug reports.</p>{% endif %}
+    </div>
+
+    <!-- CONTACTS TAB -->
+    <div class="tab-panel p-6 hidden" id="tab-contacts">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">Contact Messages ({{ total_contacts }} total, {{ open_contacts }} open)</h3>
+      {% if contacts %}
+      <div class="space-y-3">
+        {% for contact in contacts %}
+        <div class="flex items-start gap-4 p-4 rounded-2xl border {% if contact.is_resolved %}bg-emerald-50/50 border-emerald-100{% else %}bg-white border-slate-100{% endif %}">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span class="font-semibold text-slate-900">{{ contact.name }}</span>
+              <span class="badge-pill bg-indigo-100 text-indigo-700">{{ contact.get_subject_display }}</span>
+              {% if contact.is_resolved %}<span class="badge-pill bg-emerald-100 text-emerald-700"><i class="fas fa-check mr-1"></i>Resolved</span>{% endif %}
+            </div>
+            <p class="text-sm text-slate-600 mt-1">{{ contact.message|truncatewords:40 }}</p>
+            <p class="text-xs text-slate-400 mt-1">{{ contact.email }} · {{ contact.submitted_at|date:"d M Y H:i" }}</p>
+          </div>
+          <form method="post">{% csrf_token %}
+            <input type="hidden" name="action" value="resolve_contact">
+            <input type="hidden" name="contact_id" value="{{ contact.id }}">
+            <button type="submit" class="px-3 py-1.5 text-xs font-semibold {% if contact.is_resolved %}text-amber-600 border-amber-200 hover:bg-amber-50{% else %}text-emerald-600 border-emerald-200 hover:bg-emerald-50{% endif %} border rounded-lg transition-colors">
+              {% if contact.is_resolved %}<i class="fas fa-redo mr-1"></i>Reopen{% else %}<i class="fas fa-check mr-1"></i>Resolve{% endif %}
+            </button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}<p class="text-slate-400 text-center py-8"><i class="fas fa-envelope text-3xl mb-2 block"></i>No contact messages.</p>{% endif %}
+    </div>
+
+    <!-- SUBSCRIBERS TAB -->
+    <div class="tab-panel p-6 hidden" id="tab-subscribers">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">Newsletter Subscribers ({{ total_subscribers }} active)</h3>
+      {% if subscribers %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead><tr class="text-left text-xs text-slate-500 uppercase tracking-wider border-b border-slate-200">
+            <th class="pb-3 pr-4">Email</th><th class="pb-3 pr-4">Subscribed</th><th class="pb-3 pr-4">Status</th><th class="pb-3">Action</th>
+          </tr></thead>
+          <tbody>
+          {% for sub in subscribers %}
+          <tr class="border-b border-slate-100 hover:bg-slate-50">
+            <td class="py-3 pr-4 font-medium">{{ sub.email }}</td>
+            <td class="py-3 pr-4 text-slate-500">{{ sub.subscribed_at|date:"d M Y" }}</td>
+            <td class="py-3 pr-4"><span class="badge-pill {% if sub.is_active %}bg-emerald-100 text-emerald-700{% else %}bg-slate-100 text-slate-500{% endif %}">{% if sub.is_active %}Active{% else %}Inactive{% endif %}</span></td>
+            <td class="py-3">
+              <form method="post">{% csrf_token %}
+                <input type="hidden" name="action" value="remove_subscriber">
+                <input type="hidden" name="sub_id" value="{{ sub.id }}">
+                <button type="submit" class="px-3 py-1.5 text-xs font-semibold {% if sub.is_active %}text-red-600 border-red-200 hover:bg-red-50{% else %}text-emerald-600 border-emerald-200 hover:bg-emerald-50{% endif %} border rounded-lg transition-colors">
+                  {% if sub.is_active %}Deactivate{% else %}Activate{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}<p class="text-slate-400 text-center py-8"><i class="fas fa-bell text-3xl mb-2 block"></i>No subscribers yet.</p>{% endif %}
+    </div>
+
+    <!-- ITEMS TAB -->
+    <div class="tab-panel p-6 hidden" id="tab-items">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">Listings ({{ total_items }} total, {{ active_items }} active)</h3>
+      {% if items %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead><tr class="text-left text-xs text-slate-500 uppercase tracking-wider border-b border-slate-200">
+            <th class="pb-3 pr-4">Item</th><th class="pb-3 pr-4">Seller</th><th class="pb-3 pr-4">Price</th><th class="pb-3 pr-4">Category</th><th class="pb-3 pr-4">Status</th><th class="pb-3">Action</th>
+          </tr></thead>
+          <tbody>
+          {% for item in items %}
+          <tr class="border-b border-slate-100 hover:bg-slate-50">
+            <td class="py-3 pr-4 font-medium">{{ item.name|truncatewords:5 }}</td>
+            <td class="py-3 pr-4 text-slate-500">{{ item.seller.username }}</td>
+            <td class="py-3 pr-4 font-semibold">{% if item.price %}₹{{ item.price }}{% else %}Free/Swap{% endif %}</td>
+            <td class="py-3 pr-4"><span class="badge-pill bg-indigo-100 text-indigo-700">{{ item.get_category_display }}</span></td>
+            <td class="py-3 pr-4"><span class="badge-pill {% if item.is_active %}bg-emerald-100 text-emerald-700{% else %}bg-red-100 text-red-700{% endif %}">{% if item.is_active %}Active{% else %}Inactive{% endif %}</span></td>
+            <td class="py-3">
+              <form method="post">{% csrf_token %}
+                <input type="hidden" name="action" value="toggle_item">
+                <input type="hidden" name="item_id" value="{{ item.id }}">
+                <button type="submit" class="px-3 py-1.5 text-xs font-semibold {% if item.is_active %}text-red-600 border-red-200 hover:bg-red-50{% else %}text-emerald-600 border-emerald-200 hover:bg-emerald-50{% endif %} border rounded-lg transition-colors">
+                  {% if item.is_active %}Deactivate{% else %}Activate{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}<p class="text-slate-400 text-center py-8"><i class="fas fa-box text-3xl mb-2 block"></i>No items listed.</p>{% endif %}
+    </div>
+
+    <!-- USERS TAB -->
+    <div class="tab-panel p-6 hidden" id="tab-users">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">Registered Users ({{ total_users }})</h3>
+      {% if users %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead><tr class="text-left text-xs text-slate-500 uppercase tracking-wider border-b border-slate-200">
+            <th class="pb-3 pr-4">Username</th><th class="pb-3 pr-4">Email</th><th class="pb-3 pr-4">Name</th><th class="pb-3 pr-4">Joined</th><th class="pb-3">Status</th>
+          </tr></thead>
+          <tbody>
+          {% for u in users %}
+          <tr class="border-b border-slate-100 hover:bg-slate-50">
+            <td class="py-3 pr-4 font-semibold text-indigo-600">{{ u.username }}</td>
+            <td class="py-3 pr-4 text-slate-500">{{ u.email }}</td>
+            <td class="py-3 pr-4">{{ u.get_full_name|default:"—" }}</td>
+            <td class="py-3 pr-4 text-slate-500">{{ u.date_joined|date:"d M Y" }}</td>
+            <td class="py-3"><span class="badge-pill {% if u.is_active %}bg-emerald-100 text-emerald-700{% else %}bg-red-100 text-red-700{% endif %}">{% if u.is_active %}Active{% else %}Inactive{% endif %}</span></td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}<p class="text-slate-400 text-center py-8"><i class="fas fa-users text-3xl mb-2 block"></i>No users registered.</p>{% endif %}
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .admin-tab { color: #64748b; background: transparent; border: none; cursor: pointer; transition: all 0.2s; }
+  .admin-tab:hover { color: #4f46e5; background: #eef2ff; }
+  .admin-tab.active-tab { color: #4f46e5; background: #eef2ff; border-bottom: 2px solid #4f46e5; }
+</style>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active-tab'));
+  document.getElementById('tab-' + name).classList.remove('hidden');
+  document.querySelector('[data-tab="' + name + '"]').classList.add('active-tab');
+}
+</script>
+{% endblock %}

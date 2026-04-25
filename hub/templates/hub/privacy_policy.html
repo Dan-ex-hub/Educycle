@@ -1,0 +1,121 @@
+{% extends 'hub/base.html' %}
+{% block title %}Privacy Policy — EduCycle{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <!-- Header -->
+  <div class="mb-10">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center">
+        <i class="fas fa-shield-alt text-indigo-600 text-lg"></i>
+      </div>
+      <div>
+        <h1 class="text-3xl font-extrabold text-slate-900">Privacy Policy</h1>
+        <p class="text-slate-500 text-sm mt-0.5">Last updated: January 2025</p>
+      </div>
+    </div>
+    <div class="p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+      <p class="text-sm text-indigo-800 leading-relaxed">
+        EduCycle is committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights as a user of our campus marketplace.
+      </p>
+    </div>
+  </div>
+
+  <div class="space-y-8 prose-custom">
+
+    {% for section in sections %}{% empty %}
+
+    <!-- 1. Information We Collect -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">1</span>
+        Information We Collect
+      </h2>
+      <div class="space-y-3 text-sm text-slate-600 leading-relaxed">
+        <p><strong class="text-slate-800">Account Information:</strong> When you register, we collect your name, email address, student ID, department, year of study, and phone number.</p>
+        <p><strong class="text-slate-800">Listing Data:</strong> Item names, descriptions, prices, photos, and category information you provide when creating listings.</p>
+        <p><strong class="text-slate-800">Transaction Data:</strong> Order history, payment method preferences (we do not store card numbers), and delivery addresses.</p>
+        <p><strong class="text-slate-800">Communication Data:</strong> Messages exchanged between buyers and sellers through our platform.</p>
+        <p><strong class="text-slate-800">Usage Data:</strong> Pages visited, search queries, and interaction patterns to improve our service.</p>
+      </div>
+    </div>
+
+    <!-- 2. How We Use Your Information -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">2</span>
+        How We Use Your Information
+      </h2>
+      <ul class="space-y-2 text-sm text-slate-600">
+        <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>To create and manage your account</li>
+        <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>To facilitate buying and selling transactions between students</li>
+        <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>To send notifications about your listings, orders, and messages</li>
+        <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>To verify student identity and maintain platform safety</li>
+        <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>To improve our platform features and user experience</li>
+        <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>To comply with legal obligations</li>
+      </ul>
+    </div>
+
+    <!-- 3. Data Sharing -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">3</span>
+        Data Sharing
+      </h2>
+      <div class="space-y-3 text-sm text-slate-600 leading-relaxed">
+        <p>We <strong class="text-slate-800">do not sell</strong> your personal data to third parties.</p>
+        <p><strong class="text-slate-800">Between Users:</strong> Your name and listing details are visible to other students. Your email is only shared if you choose to display it in your profile settings.</p>
+        <p><strong class="text-slate-800">Payment Processors:</strong> Payment data is handled by Stripe and Razorpay under their respective privacy policies. We never store full card numbers.</p>
+        <p><strong class="text-slate-800">Legal Requirements:</strong> We may disclose data if required by law or to protect the safety of our community.</p>
+      </div>
+    </div>
+
+    <!-- 4. Data Security -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">4</span>
+        Data Security
+      </h2>
+      <div class="space-y-3 text-sm text-slate-600 leading-relaxed">
+        <p>We implement industry-standard security measures including SSL encryption, secure password hashing, and regular security audits.</p>
+        <p>Your password is stored as a cryptographic hash — we cannot see it. If you forget it, you must reset it.</p>
+        <p>While we take security seriously, no system is 100% secure. We encourage you to use a strong, unique password and enable two-factor authentication when available.</p>
+      </div>
+    </div>
+
+    <!-- 5. Your Rights -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">5</span>
+        Your Rights
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs font-bold text-slate-700 mb-1">Access</p><p class="text-xs text-slate-500">Request a copy of all data we hold about you</p></div>
+        <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs font-bold text-slate-700 mb-1">Correction</p><p class="text-xs text-slate-500">Update inaccurate personal information via Settings</p></div>
+        <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs font-bold text-slate-700 mb-1">Deletion</p><p class="text-xs text-slate-500">Delete your account and all associated data from Settings</p></div>
+        <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs font-bold text-slate-700 mb-1">Portability</p><p class="text-xs text-slate-500">Request your data in a machine-readable format</p></div>
+      </div>
+    </div>
+
+    <!-- 6. Cookies -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">6</span>
+        Cookies
+      </h2>
+      <p class="text-sm text-slate-600 leading-relaxed">We use essential session cookies to keep you logged in and remember your preferences (such as theme and notification settings). We do not use advertising or tracking cookies. You can clear cookies at any time through your browser settings, though this will log you out.</p>
+    </div>
+
+    <!-- 7. Contact -->
+    <div class="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-3xl border border-indigo-100 p-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-3">Questions about your privacy?</h2>
+      <p class="text-sm text-slate-600 mb-4">If you have any questions about this Privacy Policy or how we handle your data, please contact us.</p>
+      <a href="{% url 'contact_us' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+        <i class="fas fa-envelope text-xs"></i>Contact Us
+      </a>
+    </div>
+
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

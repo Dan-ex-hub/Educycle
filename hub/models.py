@@ -227,3 +227,76 @@ class ChatMessage(models.Model):
     
     def __str__(self):
         return f"{self.session_id} - {self.message_type} - {self.timestamp}"
+
+
+class ContactMessage(models.Model):
+    """Stores contact form submissions"""
+    SUBJECT_CHOICES = [
+        ('general', 'General Inquiry'),
+        ('support', 'Technical Support'),
+        ('bug', 'Report a Bug'),
+        ('feature', 'Feature Request'),
+        ('partnership', 'Partnership'),
+        ('other', 'Other'),
+    ]
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=20, choices=SUBJECT_CHOICES, default='general')
+    message = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    is_resolved = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-submitted_at']
+
+    def __str__(self):
+        return f"{self.name} — {self.get_subject_display()} ({self.submitted_at.strftime('%d %b %Y')})"
+
+
+class BugReport(models.Model):
+    """Stores bug report submissions"""
+    BUG_TYPE_CHOICES = [
+        ('ui', 'UI Issue'),
+        ('functionality', 'Functionality Problem'),
+        ('performance', 'Performance Issue'),
+        ('security', 'Security Concern'),
+        ('payment', 'Payment Bug'),
+        ('search', 'Search Issue'),
+        ('mobile', 'Mobile Responsiveness'),
+        ('other', 'Other'),
+    ]
+    SEVERITY_CHOICES = [
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('critical', 'Critical'),
+    ]
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    bug_type = models.CharField(max_length=20, choices=BUG_TYPE_CHOICES, default='other')
+    severity = models.CharField(max_length=10, choices=SEVERITY_CHOICES, default='medium')
+    description = models.TextField()
+    steps = models.TextField(blank=True)
+    browser = models.CharField(max_length=100, blank=True)
+    device = models.CharField(max_length=100, blank=True)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    is_resolved = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-submitted_at']
+
+    def __str__(self):
+        return f"[{self.get_severity_display()}] {self.get_bug_type_display()} — {self.name}"
+
+
+class NewsletterSubscription(models.Model):
+    """Stores newsletter / notification subscription emails"""
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-subscribed_at']
+
+    def __str__(self):
+        return f"{self.email} ({'active' if self.is_active else 'inactive'})"

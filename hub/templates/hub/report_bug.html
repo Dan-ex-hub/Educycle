@@ -1,248 +1,138 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}Report a Bug - EduCycle{% endblock %}
-
+{% block title %}Report a Bug — EduCycle{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <!-- Hero Section -->
-    <div class="row mb-5">
-        <div class="col-12 text-center">
-            <h1 class="display-4 mb-3">
-                <i class="fas fa-bug text-danger"></i> Report a Bug
-            </h1>
-            <p class="lead text-muted">Help us improve EduCycle by reporting any issues you encounter.</p>
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="text-center mb-10">
+    <div class="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center mx-auto mb-4">
+      <i class="fas fa-bug text-red-500 text-xl"></i>
+    </div>
+    <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Report a Bug</h1>
+    <p class="text-slate-500">Help us improve EduCycle by reporting any issues you encounter.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Form -->
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6 sm:p-8">
+
+        {% if submitted %}
+        <div class="flex flex-col items-center justify-center py-12 text-center">
+          <div class="w-20 h-20 rounded-3xl bg-emerald-100 flex items-center justify-center mb-5 shadow-inner">
+            <i class="fas fa-check-circle text-emerald-500 text-4xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Bug Report Submitted!</h3>
+          <p class="text-slate-500 text-sm max-w-sm mb-2 leading-relaxed">
+            Thank you for helping us improve EduCycle. Our team will investigate and respond based on severity.
+          </p>
+          <p class="text-xs text-slate-400 mb-6">You'll hear back at the email you provided.</p>
+          <button onclick="window.location.reload()"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+            <i class="fas fa-bug text-xs"></i>Report Another Bug
+          </button>
         </div>
+        {% else %}
+        <form method="post" enctype="multipart/form-data" class="space-y-5">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Your Name <span class="text-red-400">*</span></label>
+              <input type="text" name="name" required class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Email <span class="text-red-400">*</span></label>
+              <input type="email" name="email" required class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Bug Type <span class="text-red-400">*</span></label>
+              <select name="bug_type" required class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm text-slate-700 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all appearance-none" style="background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 1rem center;background-size:1.25rem;padding-right:2.5rem">
+                <option value="">Select type</option>
+                <option value="ui">UI Issue</option>
+                <option value="functionality">Functionality Problem</option>
+                <option value="performance">Performance Issue</option>
+                <option value="security">Security Concern</option>
+                <option value="payment">Payment Bug</option>
+                <option value="search">Search Issue</option>
+                <option value="mobile">Mobile Responsiveness</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Severity <span class="text-red-400">*</span></label>
+              <select name="severity" required class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm text-slate-700 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all appearance-none" style="background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 1rem center;background-size:1.25rem;padding-right:2.5rem">
+                <option value="">Select severity</option>
+                <option value="low">Low — Minor inconvenience</option>
+                <option value="medium">Medium — Affects functionality</option>
+                <option value="high">High — Significant impact</option>
+                <option value="critical">Critical — System unusable</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Description <span class="text-red-400">*</span></label>
+            <textarea name="description" rows="4" required placeholder="Describe the bug in detail…"
+              class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Steps to Reproduce <span class="text-red-400">*</span></label>
+            <textarea name="steps" rows="4" required placeholder="1. Go to…&#10;2. Click on…&#10;3. Expected: …&#10;4. Actual: …"
+              class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"></textarea>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Browser & Version</label>
+              <input type="text" name="browser" placeholder="e.g. Chrome 120" class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Device</label>
+              <input type="text" name="device" placeholder="e.g. Windows 10, iPhone 14" class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Screenshot <span class="text-slate-400 font-normal">(optional)</span></label>
+            <input type="file" name="screenshot" accept="image/*" class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all">
+          </div>
+          <button type="submit"
+            class="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-px flex items-center justify-center gap-2">
+            <i class="fas fa-paper-plane text-xs"></i>Submit Bug Report
+          </button>
+        </form>
+        {% endif %}
+      </div>
     </div>
 
-    <div class="row">
-        <!-- Bug Report Form -->
-        <div class="col-md-8 mb-5">
-            <div class="card shadow-sm">
-                <div class="card-header bg-gradient-danger text-white">
-                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Bug Report Form</h5>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="name" class="form-label">Your Name *</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email Address *</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="bug_type" class="form-label">Bug Type *</label>
-                            <select class="form-select" id="bug_type" name="bug_type" required>
-                                <option value="">Select bug type</option>
-                                <option value="ui">User Interface Issue</option>
-                                <option value="functionality">Functionality Problem</option>
-                                <option value="performance">Performance Issue</option>
-                                <option value="security">Security Concern</option>
-                                <option value="payment">Payment System Bug</option>
-                                <option value="search">Search Functionality</option>
-                                <option value="mobile">Mobile Responsiveness</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="severity" class="form-label">Severity Level *</label>
-                            <select class="form-select" id="severity" name="severity" required>
-                                <option value="">Select severity</option>
-                                <option value="low">Low - Minor inconvenience</option>
-                                <option value="medium">Medium - Affects functionality</option>
-                                <option value="high">High - Significant impact</option>
-                                <option value="critical">Critical - System unusable</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Bug Description *</label>
-                            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Please describe the bug in detail..." required></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="steps" class="form-label">Steps to Reproduce *</label>
-                            <textarea class="form-control" id="steps" name="steps" rows="4" placeholder="1. Go to...&#10;2. Click on...&#10;3. Expected:...&#10;4. Actual:..." required></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="browser" class="form-label">Browser & Version</label>
-                            <input type="text" class="form-control" id="browser" name="browser" placeholder="e.g., Chrome 120.0.6099.109">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="device" class="form-label">Device Information</label>
-                            <input type="text" class="form-control" id="device" name="device" placeholder="e.g., Windows 10, iPhone 14, etc.">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="screenshot" class="form-label">Screenshot (Optional)</label>
-                            <input type="file" class="form-control" id="screenshot" name="screenshot" accept="image/*">
-                            <div class="form-text">Upload a screenshot if possible to help us understand the issue better.</div>
-                        </div>
-                        
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i>
-                            <strong>Tip:</strong> The more detailed your report, the faster we can fix the issue!
-                        </div>
-                        
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-paper-plane"></i> Submit Bug Report
-                        </button>
-                    </form>
-                </div>
-            </div>
+    <!-- Sidebar -->
+    <div class="space-y-5">
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Before Reporting</h3>
+        <ul class="space-y-2">
+          {% for tip in "1234" %}
+          <li class="flex items-center gap-2 text-xs text-slate-600">
+            <i class="fas fa-check-circle text-emerald-500 flex-shrink-0"></i>
+            {% if tip == "1" %}Clear your browser cache{% elif tip == "2" %}Try refreshing the page{% elif tip == "3" %}Check your internet connection{% else %}Try a different browser{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Response Times</h3>
+        <div class="space-y-2">
+          <div class="flex justify-between text-xs"><span class="text-red-600 font-semibold">Critical</span><span class="text-slate-500">2–4 hours</span></div>
+          <div class="flex justify-between text-xs"><span class="text-orange-600 font-semibold">High</span><span class="text-slate-500">24 hours</span></div>
+          <div class="flex justify-between text-xs"><span class="text-amber-600 font-semibold">Medium</span><span class="text-slate-500">2–3 days</span></div>
+          <div class="flex justify-between text-xs"><span class="text-slate-600 font-semibold">Low</span><span class="text-slate-500">1 week</span></div>
         </div>
-
-        <!-- Bug Report Guidelines -->
-        <div class="col-md-4 mb-5">
-            <div class="card shadow-sm">
-                <div class="card-header bg-gradient-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Reporting Guidelines</h5>
-                </div>
-                <div class="card-body">
-                    <h6 class="text-primary">Before Reporting:</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Clear your browser cache</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Try refreshing the page</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Check your internet connection</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Try a different browser</li>
-                    </ul>
-                    
-                    <hr>
-                    
-                    <h6 class="text-primary">What to Include:</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-info text-info me-2"></i>Detailed description</li>
-                        <li class="mb-2"><i class="fas fa-info text-info me-2"></i>Step-by-step reproduction</li>
-                        <li class="mb-2"><i class="fas fa-info text-info me-2"></i>Expected vs actual behavior</li>
-                        <li class="mb-2"><i class="fas fa-info text-info me-2"></i>Browser and device info</li>
-                        <li class="mb-2"><i class="fas fa-info text-info me-2"></i>Screenshots if possible</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="card shadow-sm mt-4">
-                <div class="card-header bg-gradient-warning text-white">
-                    <h5 class="mb-0"><i class="fas fa-clock"></i> Response Time</h5>
-                </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <i class="fas fa-clock text-warning" style="font-size: 2rem;"></i>
-                        <h6 class="mt-2">We typically respond within:</h6>
-                        <ul class="list-unstyled">
-                            <li><strong>Critical bugs:</strong> 2-4 hours</li>
-                            <li><strong>High priority:</strong> 24 hours</li>
-                            <li><strong>Medium priority:</strong> 2-3 days</li>
-                            <li><strong>Low priority:</strong> 1 week</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-5 space-y-2">
+        <a href="{% url 'contact_us' %}" class="w-full flex items-center justify-center gap-2 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-xl transition-colors">
+          <i class="fas fa-envelope text-[10px]"></i>Contact Support
+        </a>
+        <a href="{% url 'help_center' %}" class="w-full flex items-center justify-center gap-2 py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl transition-colors">
+          <i class="fas fa-question-circle text-[10px]"></i>Help Center
+        </a>
+      </div>
     </div>
-
-    <!-- Common Issues Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2 class="text-center mb-4">
-                <i class="fas fa-question-circle text-primary"></i> Common Issues & Solutions
-            </h2>
-            
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-search text-primary"></i> Search Not Working
-                            </h5>
-                            <p class="card-text">If the search function isn't working properly, try:</p>
-                            <ul>
-                                <li>Clearing your browser cache</li>
-                                <li>Using different search terms</li>
-                                <li>Checking your internet connection</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-image text-success"></i> Images Not Loading
-                            </h5>
-                            <p class="card-text">If images aren't displaying:</p>
-                            <ul>
-                                <li>Refresh the page</li>
-                                <li>Check your internet speed</li>
-                                <li>Try a different browser</li>
-                                <li>Clear browser cache</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-shopping-cart text-warning"></i> Cart Issues
-                            </h5>
-                            <p class="card-text">If you're having cart problems:</p>
-                            <ul>
-                                <li>Log out and log back in</li>
-                                <li>Clear browser cookies</li>
-                                <li>Try adding items again</li>
-                                <li>Check if you're logged in</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-mobile-alt text-info"></i> Mobile Issues
-                            </h5>
-                            <p class="card-text">For mobile-specific problems:</p>
-                            <ul>
-                                <li>Update your mobile browser</li>
-                                <li>Try desktop version</li>
-                                <li>Check mobile data connection</li>
-                                <li>Restart your device</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alternative Contact Methods -->
-    <div class="row">
-        <div class="col-12 text-center">
-            <h3 class="mb-4">Need Immediate Help?</h3>
-            <p class="text-muted mb-4">If you need urgent assistance, try these alternatives:</p>
-            <div class="d-flex justify-content-center flex-wrap">
-                <a href="{% url 'contact_us' %}" class="btn btn-outline-primary me-3 mb-2">
-                    <i class="fas fa-envelope"></i> Contact Support
-                </a>
-                <a href="{% url 'help_center' %}" class="btn btn-outline-success me-3 mb-2">
-                    <i class="fas fa-question-circle"></i> Help Center
-                </a>
-                <a href="mailto:support@educycle.com" class="btn btn-outline-info mb-2">
-                    <i class="fas fa-at"></i> Email Support
-                </a>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
-{% endblock %} 
+{% endblock %}

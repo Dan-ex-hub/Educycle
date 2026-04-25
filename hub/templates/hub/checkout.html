@@ -1,121 +1,107 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}Checkout - EduCycle{% endblock %}
-
+{% block title %}Checkout — EduCycle{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="fas fa-credit-card"></i> Checkout</h2>
-                <a href="{% url 'cart' %}" class="btn btn-outline-primary">
-                    <i class="fas fa-arrow-left"></i> Back to Cart
-                </a>
-            </div>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-gradient-primary text-white">
-                            <h5 class="mb-0"><i class="fas fa-shipping-fast"></i> Shipping Information</h5>
-                        </div>
-                        <div class="card-body">
-                            <form method="post">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="shipping_address" class="form-label">
-                                        <i class="fas fa-map-marker-alt"></i> Shipping Address *
-                                    </label>
-                                    <textarea class="form-control" id="shipping_address" name="shipping_address" rows="3" placeholder="Enter your complete shipping address..." required></textarea>
-                                    <div class="form-text">Please provide your complete address for delivery.</div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="phone_number" class="form-label">
-                                        <i class="fas fa-phone"></i> Phone Number *
-                                    </label>
-                                    <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="Enter your phone number..." required>
-                                    <div class="form-text">We'll use this to contact you about your order.</div>
-                                </div>
-                                
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle"></i>
-                                    <strong>Note:</strong> Orders will be processed and shipped within 2-3 business days. You'll receive updates via email and phone.
-                                </div>
-                                
-                                <button type="submit" class="btn btn-primary btn-lg w-100">
-                                    <i class="fas fa-lock"></i> Place Order - ₹{{ total }}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-gradient-primary text-white">
-                            <h5 class="mb-0"><i class="fas fa-shopping-bag"></i> Order Summary</h5>
-                        </div>
-                        <div class="card-body">
-                            {% for cart_item in cart_items %}
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-2" style="width: 40px; height: 40px; border-radius: 6px; overflow: hidden;">
-                                        {% if cart_item.item.image1 %}
-                                            <img src="{{ cart_item.item.image1.url }}" alt="{{ cart_item.item.name }}" style="width: 100%; height: 100%; object-fit: cover;">
-                                        {% else %}
-                                            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); display: flex; align-items: center; justify-content: center;">
-                                                {% if cart_item.item.category == 'textbook' %}
-                                                    <span style="font-size: 1rem;">📚</span>
-                                                {% elif cart_item.item.category == 'equipment' %}
-                                                    <span style="font-size: 1rem;">🔬</span>
-                                                {% elif cart_item.item.category == 'appliance' %}
-                                                    <span style="font-size: 1rem;">⚡</span>
-                                                {% elif cart_item.item.category == 'decor' %}
-                                                    <span style="font-size: 1rem;">🎨</span>
-                                                {% else %}
-                                                    <span style="font-size: 1rem;">📦</span>
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div>
-                                        <small class="fw-bold">{{ cart_item.item.name }}</small>
-                                        <br>
-                                        <small class="text-muted">Qty: {{ cart_item.quantity }}</small>
-                                    </div>
-                                </div>
-                                <span class="text-primary">₹{{ cart_item.total_price }}</span>
-                            </div>
-                            {% endfor %}
-                            
-                            <hr>
-                            
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Subtotal:</span>
-                                <span>₹{{ total }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Shipping:</span>
-                                <span class="text-success">Free</span>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <strong>Total:</strong>
-                                <strong class="text-primary">₹{{ total }}</strong>
-                            </div>
-                            
-                            <div class="mt-3">
-                                <div class="alert alert-success">
-                                    <i class="fas fa-check-circle"></i>
-                                    <strong>Free Shipping!</strong> All orders ship for free within campus.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="flex items-center gap-3 mb-8">
+    <a href="{% url 'cart' %}" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
+      <i class="fas fa-arrow-left text-slate-600 text-sm"></i>
+    </a>
+    <h1 class="text-2xl font-extrabold text-slate-900">Checkout</h1>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Shipping form -->
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6 sm:p-8">
+        <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+          <i class="fas fa-shipping-fast text-indigo-400"></i>Shipping Information
+        </h2>
+        <form method="post" id="checkout-form">
+          {% csrf_token %}
+          <div class="space-y-5">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+                Delivery Address <span class="text-red-400">*</span>
+              </label>
+              <div class="relative">
+                <i class="fas fa-map-marker-alt absolute left-3.5 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
+                <textarea name="shipping_address" rows="3" required
+                  placeholder="Enter your complete campus address or hostel room number…"
+                  class="w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-2xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"></textarea>
+              </div>
             </div>
-        </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+                Phone Number <span class="text-red-400">*</span>
+              </label>
+              <div class="relative">
+                <i class="fas fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                <input type="tel" name="phone_number" required placeholder="+91 00000 00000"
+                  class="w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-2xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all">
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5 flex items-start gap-2 p-3.5 bg-blue-50 rounded-2xl border border-blue-100">
+            <i class="fas fa-info-circle text-blue-500 text-xs mt-0.5 flex-shrink-0"></i>
+            <p class="text-xs text-blue-700 leading-relaxed">Orders are processed within 2–3 business days. You'll receive updates via email and phone.</p>
+          </div>
+
+          <button type="submit" id="place-order-btn"
+            class="mt-6 w-full py-4 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-bold text-sm rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-px flex items-center justify-center gap-2">
+            <i class="fas fa-lock text-xs"></i>Place Order — ₹{{ total }}
+          </button>
+        </form>
+      </div>
     </div>
+
+    <!-- Order summary -->
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6 sticky top-20">
+        <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+          <i class="fas fa-shopping-bag text-indigo-400"></i>Order Summary
+        </h2>
+        <div class="space-y-3 mb-4">
+          {% for cart_item in cart_items %}
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
+              {% if cart_item.item.image1 %}
+                <img src="{{ cart_item.item.image1.url }}" alt="{{ cart_item.item.name }}" class="w-full h-full object-cover">
+              {% else %}
+                <div class="w-full h-full bg-indigo-50 flex items-center justify-center text-lg">
+                  {% if cart_item.item.category == 'textbook' %}📚{% elif cart_item.item.category == 'equipment' %}🔬{% elif cart_item.item.category == 'appliance' %}⚡{% elif cart_item.item.category == 'decor' %}🎨{% else %}📦{% endif %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-semibold text-slate-800 truncate">{{ cart_item.item.name }}</p>
+              <p class="text-[11px] text-slate-400">Qty: {{ cart_item.quantity }}</p>
+            </div>
+            <p class="text-xs font-bold text-indigo-600 flex-shrink-0">₹{{ cart_item.get_total_price }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="border-t border-slate-100 pt-4 space-y-2 text-sm">
+          <div class="flex justify-between text-slate-600"><span>Subtotal</span><span>₹{{ total }}</span></div>
+          <div class="flex justify-between text-slate-600"><span>Shipping</span><span class="text-emerald-600 font-semibold">Free</span></div>
+          <div class="flex justify-between font-bold text-slate-900 text-base pt-2 border-t border-slate-100">
+            <span>Total</span><span class="text-indigo-600">₹{{ total }}</span>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center gap-1.5 text-xs text-emerald-600 font-semibold justify-center">
+          <i class="fas fa-check-circle"></i>Free campus delivery on all orders
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-{% endblock %} 
+<script>
+document.getElementById('checkout-form').addEventListener('submit', function() {
+  const btn = document.getElementById('place-order-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i>Placing Order…';
+});
+</script>
+{% endblock %}

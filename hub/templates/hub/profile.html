@@ -1,208 +1,211 @@
 {% extends 'hub/base.html' %}
+{% block title %}My Profile — EduCycle{% endblock %}
+
 {% block content %}
-<!-- Profile Header -->
-<div class="row mb-5">
-    <div class="col-12">
-        <div class="card border-0 bg-gradient-primary text-white">
-            <div class="card-body p-4">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h2 class="mb-2">
-                            <i class="fas fa-user-circle me-3"></i>{{ user.get_full_name|default:user.username }}
-                        </h2>
-                        <p class="mb-0 opacity-75">
-                            <i class="fas fa-envelope me-2"></i>{{ user.email }}
-                        </p>
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <a href="{% url 'item_create' %}" class="btn btn-light">
-                            <i class="fas fa-plus me-2"></i>Add New Item
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+<!-- ── Hero banner ── -->
+<div class="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-600">
+  <div class="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-0 left-0 w-64 h-64 bg-amber-400/15 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+      <!-- Avatar -->
+      <div class="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur border-2 border-white/30 flex items-center justify-center flex-shrink-0 shadow-xl">
+        <span class="text-3xl font-extrabold text-white">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</span>
+      </div>
+      <!-- Info -->
+      <div class="flex-1 min-w-0">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white truncate">
+          {{ user.get_full_name|default:user.username }}
+        </h1>
+        <p class="text-indigo-200 text-sm mt-1 flex items-center gap-2">
+          <i class="fas fa-envelope text-xs"></i>{{ user.email }}
+          <span class="text-indigo-400">·</span>
+          <i class="fas fa-calendar text-xs"></i>Joined {{ user.date_joined|date:"M Y" }}
+        </p>
+      </div>
+      <a href="{% url 'item_create' %}"
+        class="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-indigo-900 font-bold text-sm rounded-xl shadow-lg transition-all hover:-translate-y-px">
+        <i class="fas fa-plus text-xs"></i>List an Item
+      </a>
     </div>
+
+    <!-- Stats strip -->
+    <div class="grid grid-cols-3 gap-4 mt-8">
+      <div class="bg-white/10 backdrop-blur rounded-2xl p-4 text-center border border-white/20">
+        <p class="text-3xl font-extrabold text-white">{{ user_items.count }}</p>
+        <p class="text-indigo-200 text-xs mt-1 font-medium">Active Listings</p>
+      </div>
+      <div class="bg-white/10 backdrop-blur rounded-2xl p-4 text-center border border-white/20">
+        <p class="text-3xl font-extrabold text-white">{{ received_messages.count }}</p>
+        <p class="text-indigo-200 text-xs mt-1 font-medium">Messages</p>
+      </div>
+      <div class="bg-white/10 backdrop-blur rounded-2xl p-4 text-center border border-white/20">
+        <p class="text-3xl font-extrabold text-white">{{ user.date_joined|date:"Y" }}</p>
+        <p class="text-indigo-200 text-xs mt-1 font-medium">Member Since</p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Stats Cards -->
-<div class="row mb-5">
-    <div class="col-md-4 mb-3">
-        <div class="card border-0 bg-light h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-tags text-primary mb-3" style="font-size: 2.5rem;"></i>
-                <h3 class="fw-bold text-primary">{{ user_items.count }}</h3>
-                <p class="text-muted mb-0">Active Listings</p>
-            </div>
-        </div>
+<!-- ── Tab nav ── -->
+<div class="bg-white border-b border-slate-200 sticky top-16 z-30 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex gap-1 overflow-x-auto scrollbar-hide">
+      <button onclick="switchTab('listings')" id="tab-listings"
+        class="tab-btn active-tab flex items-center gap-2 px-5 py-4 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors">
+        <i class="fas fa-tags text-xs"></i>My Listings
+      </button>
+      <button onclick="switchTab('messages')" id="tab-messages"
+        class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-semibold whitespace-nowrap border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition-colors">
+        <i class="fas fa-inbox text-xs"></i>Messages
+        {% if received_messages.count %}<span class="ml-1 px-1.5 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] font-bold rounded-full">{{ received_messages.count }}</span>{% endif %}
+      </button>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card border-0 bg-light h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-comments text-success mb-3" style="font-size: 2.5rem;"></i>
-                <h3 class="fw-bold text-success">{{ received_messages.count }}</h3>
-                <p class="text-muted mb-0">Messages Received</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-3">
-        <div class="card border-0 bg-light h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-calendar text-warning mb-3" style="font-size: 2.5rem;"></i>
-                <h3 class="fw-bold text-warning">{{ user.date_joined|date:"M Y" }}</h3>
-                <p class="text-muted mb-0">Member Since</p>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
 
-<!-- My Listings Section -->
-<div class="mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="mb-0">
-            <i class="fas fa-list me-2"></i>My Listings
-        </h3>
-        <a href="{% url 'item_create' %}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Add Item
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- ── Listings tab ── -->
+  <div id="panel-listings">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold text-slate-900">My Listings</h2>
+      <a href="{% url 'item_create' %}"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+        <i class="fas fa-plus text-xs"></i>Add Item
+      </a>
+    </div>
+
+    {% if user_items %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      {% for item in user_items %}
+      <div class="group bg-white rounded-3xl border border-slate-100 shadow-card overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
+        <!-- Image -->
+        <a href="{% url 'item_detail' item.id %}" class="block relative overflow-hidden" style="height:180px">
+          {% if item.image1 %}
+            <img src="{{ item.image1.url }}" alt="{{ item.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          {% else %}
+            <div class="w-full h-full bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center">
+              <i class="fas fa-image text-indigo-300 text-4xl"></i>
+            </div>
+          {% endif %}
+          <!-- Category badge -->
+          <span class="absolute top-2.5 left-2.5 px-2.5 py-1 bg-white/90 backdrop-blur text-indigo-700 text-[11px] font-bold rounded-full shadow-sm">
+            {{ item.get_category_display }}
+          </span>
         </a>
-    </div>
-    
-    <div class="row g-4">
-        {% for item in user_items %}
-        <div class="col-lg-4 col-md-6">
-            <div class="card h-100">
-                {% if item.image1 %}
-                <div class="position-relative">
-                    <img src="{{ item.image1.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                    <div class="position-absolute top-0 end-0 m-2">
-                        <span class="badge bg-primary">
-                            <i class="fas fa-tag me-1"></i>{{ item.get_category_display }}
-                        </span>
-                    </div>
-                </div>
-                {% else %}
-                <div class="position-relative bg-light" style="height: 200px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
-                    <div class="position-absolute top-0 end-0 m-2">
-                        <span class="badge bg-primary">
-                            <i class="fas fa-tag me-1"></i>{{ item.get_category_display }}
-                        </span>
-                    </div>
-                </div>
-                {% endif %}
-                
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">
-                        <a href="{% url 'item_detail' item.id %}" class="text-decoration-none text-dark">
-                            {{ item.name }}
-                        </a>
-                    </h5>
-                    <p class="card-text text-muted flex-grow-1">
-                        {{ item.description|truncatechars:100 }}
-                    </p>
-                    
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div>
-                            {% if item.price %}
-                                <span class="h5 text-primary mb-0">${{ item.price }}</span>
-                            {% else %}
-                                <span class="badge bg-success">Free</span>
-                            {% endif %}
-                        </div>
-                        <small class="text-muted">
-                            <i class="fas fa-clock me-1"></i>{{ item.created_at|timesince }} ago
-                        </small>
-                    </div>
-                </div>
-                
-                <div class="card-footer bg-transparent border-top-0">
-                    <div class="d-grid gap-2">
-                        <div class="btn-group" role="group">
-                            <a href="{% url 'item_detail' item.id %}" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-eye me-1"></i>View
-                            </a>
-                            <a href="{% url 'item_edit' item.id %}" class="btn btn-outline-warning btn-sm">
-                                <i class="fas fa-edit me-1"></i>Edit
-                            </a>
-                            <a href="{% url 'item_delete' item.id %}" class="btn btn-outline-danger btn-sm">
-                                <i class="fas fa-trash me-1"></i>Delete
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Body -->
+        <div class="flex flex-col flex-1 p-4">
+          <h3 class="font-semibold text-slate-900 text-sm leading-snug mb-1 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+            <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a>
+          </h3>
+          <p class="text-xs text-slate-500 line-clamp-2 mb-3 flex-1">{{ item.description|truncatewords:12 }}</p>
+          <div class="flex items-center justify-between mb-3">
+            {% if item.price %}
+              <span class="text-base font-bold text-indigo-600">₹{{ item.price }}</span>
+            {% else %}
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">Free</span>
+            {% endif %}
+            <span class="text-[11px] text-slate-400"><i class="fas fa-clock mr-1"></i>{{ item.created_at|timesince }} ago</span>
+          </div>
+          <!-- Actions -->
+          <div class="grid grid-cols-3 gap-1.5">
+            <a href="{% url 'item_detail' item.id %}"
+              class="flex items-center justify-center gap-1 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 text-xs font-semibold rounded-xl transition-colors">
+              <i class="fas fa-eye text-[10px]"></i>View
+            </a>
+            <a href="{% url 'item_edit' item.id %}"
+              class="flex items-center justify-center gap-1 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-semibold rounded-xl transition-colors">
+              <i class="fas fa-edit text-[10px]"></i>Edit
+            </a>
+            <a href="{% url 'item_delete' item.id %}"
+              class="flex items-center justify-center gap-1 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold rounded-xl transition-colors">
+              <i class="fas fa-trash text-[10px]"></i>Del
+            </a>
+          </div>
         </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="text-center py-5">
-                <i class="fas fa-box-open text-muted mb-3" style="font-size: 4rem;"></i>
-                <h4 class="text-muted">No listings yet</h4>
-                <p class="text-muted">Start selling your items to the campus community!</p>
-                <a href="{% url 'item_create' %}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Create Your First Listing
-                </a>
-            </div>
-        </div>
-        {% endfor %}
+      </div>
+      {% endfor %}
     </div>
-</div>
+    {% else %}
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+      <div class="w-20 h-20 rounded-3xl bg-indigo-50 flex items-center justify-center mb-5">
+        <i class="fas fa-box-open text-indigo-300 text-3xl"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-700 mb-2">No listings yet</h3>
+      <p class="text-slate-500 text-sm mb-5 max-w-xs">Start selling your study materials to the campus community!</p>
+      <a href="{% url 'item_create' %}"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+        <i class="fas fa-plus text-xs"></i>Create First Listing
+      </a>
+    </div>
+    {% endif %}
+  </div>
 
-<!-- Messages Section -->
-<div class="mb-5">
-    <h3 class="mb-4">
-        <i class="fas fa-inbox me-2"></i>Received Messages
-    </h3>
-    
-    <div class="row">
-        {% for msg in received_messages %}
-        <div class="col-12 mb-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-user text-white"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-0 fw-bold">{{ msg.sender.get_full_name|default:msg.sender.username }}</h6>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock me-1"></i>{{ msg.timestamp|date:"M d, Y H:i" }}
-                                    </small>
-                                </div>
-                            </div>
-                            <p class="mb-2">
-                                <strong>Regarding:</strong> 
-                                <a href="{% url 'item_detail' msg.item.id %}" class="text-decoration-none">
-                                    {{ msg.item.name }}
-                                </a>
-                            </p>
-                            <p class="mb-0 text-muted">{{ msg.content }}</p>
-                        </div>
-                        <div class="col-md-4 text-md-end">
-                            <a href="{% url 'send_message' msg.item.id %}" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-reply me-1"></i>Reply
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <!-- ── Messages tab ── -->
+  <div id="panel-messages" class="hidden">
+    <h2 class="text-xl font-bold text-slate-900 mb-6">Received Messages</h2>
+
+    {% if received_messages %}
+    <div class="space-y-3">
+      {% for msg in received_messages %}
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5 flex flex-col sm:flex-row gap-4 hover:border-indigo-200 transition-colors">
+        <!-- Avatar -->
+        <div class="w-11 h-11 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+          <span class="text-indigo-700 font-bold text-sm">{{ msg.sender.first_name|first|upper }}{{ msg.sender.last_name|first|upper }}</span>
         </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="text-center py-5">
-                <i class="fas fa-inbox text-muted mb-3" style="font-size: 4rem;"></i>
-                <h4 class="text-muted">No messages yet</h4>
-                <p class="text-muted">When someone messages you about your items, they'll appear here.</p>
-            </div>
+        <!-- Content -->
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2 mb-1">
+            <span class="font-semibold text-slate-900 text-sm">{{ msg.sender.get_full_name|default:msg.sender.username }}</span>
+            <span class="text-slate-300">·</span>
+            <span class="text-xs text-slate-400"><i class="fas fa-clock mr-1"></i>{{ msg.timestamp|date:"M d, Y H:i" }}</span>
+          </div>
+          <p class="text-xs text-indigo-600 font-medium mb-2">
+            Re: <a href="{% url 'item_detail' msg.item.id %}" class="hover:underline">{{ msg.item.name }}</a>
+          </p>
+          <p class="text-sm text-slate-600 leading-relaxed">{{ msg.content }}</p>
         </div>
-        {% endfor %}
+        <!-- Reply -->
+        <div class="flex-shrink-0">
+          <a href="{% url 'send_message' msg.item.id %}"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white text-xs font-semibold rounded-xl transition-all">
+            <i class="fas fa-reply text-[10px]"></i>Reply
+          </a>
+        </div>
+      </div>
+      {% endfor %}
     </div>
+    {% else %}
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+      <div class="w-20 h-20 rounded-3xl bg-slate-50 flex items-center justify-center mb-5">
+        <i class="fas fa-inbox text-slate-300 text-3xl"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-700 mb-2">No messages yet</h3>
+      <p class="text-slate-500 text-sm max-w-xs">When someone messages you about your items, they'll appear here.</p>
+    </div>
+    {% endif %}
+  </div>
+
 </div>
 
 <style>
-.bg-gradient-primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-}
+  .active-tab { color: #4f46e5; border-bottom-color: #4f46e5; }
+  .tab-btn:not(.active-tab) { color: #64748b; border-bottom-color: transparent; }
+  .tab-btn:not(.active-tab):hover { color: #334155; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
 </style>
-{% endblock %} 
+
+<script>
+function switchTab(name) {
+  ['listings','messages'].forEach(t => {
+    document.getElementById('panel-' + t).classList.toggle('hidden', t !== name);
+    const btn = document.getElementById('tab-' + t);
+    btn.classList.toggle('active-tab', t === name);
+    btn.classList.toggle('text-slate-500', t !== name);
+    btn.classList.toggle('border-transparent', t !== name);
+  });
+}
+</script>
+{% endblock %}

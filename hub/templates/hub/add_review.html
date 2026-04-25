@@ -1,178 +1,117 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}Add Review - {{ item.name }}{% endblock %}
-
+{% block title %}Write a Review — {{ item.name }}{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card shadow">
-                <div class="card-header bg-gradient-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-star"></i> Write a Review
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <!-- Item Info -->
-                    <div class="item-info mb-4">
-                        <div class="d-flex align-items-center">
-                            <div class="me-3">
-                                {% if item.image1 %}
-                                    <img src="{{ item.image1.url }}" alt="{{ item.name }}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
-                                {% else %}
-                                    <div class="bg-light d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                                        <i class="fas fa-image text-muted"></i>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div>
-                                <h6 class="mb-1">{{ item.name }}</h6>
-                                <p class="text-muted mb-0">{{ item.get_category_display }}</p>
-                                <small class="text-muted">Sold by {{ item.seller.get_full_name|default:item.seller.username }}</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Review Form -->
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        <!-- Rating -->
-                        <div class="mb-3">
-                            <label class="form-label">Rating *</label>
-                            <div class="rating-input">
-                                <div class="stars">
-                                    <input type="radio" name="rating" value="5" id="star5" required>
-                                    <label for="star5" class="star">★</label>
-                                    <input type="radio" name="rating" value="4" id="star4">
-                                    <label for="star4" class="star">★</label>
-                                    <input type="radio" name="rating" value="3" id="star3">
-                                    <label for="star3" class="star">★</label>
-                                    <input type="radio" name="rating" value="2" id="star2">
-                                    <label for="star2" class="star">★</label>
-                                    <input type="radio" name="rating" value="1" id="star1">
-                                    <label for="star1" class="star">★</label>
-                                </div>
-                                <small class="text-muted">Click on a star to rate</small>
-                            </div>
-                        </div>
-                        
-                        <!-- Review Title -->
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Review Title *</label>
-                            <input type="text" class="form-control" id="title" name="title" 
-                                   placeholder="Summarize your experience in a few words" required>
-                        </div>
-                        
-                        <!-- Review Comment -->
-                        <div class="mb-3">
-                            <label for="comment" class="form-label">Your Review *</label>
-                            <textarea class="form-control" id="comment" name="comment" rows="5" 
-                                      placeholder="Share your experience with this item. What did you like? What could be improved?" required></textarea>
-                        </div>
-                        
-                        <!-- Verified Purchase Badge -->
-                        <div class="mb-3">
-                            <div class="alert alert-info">
-                                <i class="fas fa-check-circle"></i>
-                                <strong>Verified Purchase:</strong> This review is from a verified purchase.
-                            </div>
-                        </div>
-                        
-                        <!-- Submit Buttons -->
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane"></i> Submit Review
-                            </button>
-                            <a href="{% url 'item_detail' item.id %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left"></i> Back to Item
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Review Guidelines -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h6 class="mb-0">
-                        <i class="fas fa-info-circle"></i> Review Guidelines
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Be honest and constructive</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Focus on the item and seller experience</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Include specific details about quality and condition</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Mention communication and meeting experience</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Keep reviews respectful and helpful</li>
-                    </ul>
-                </div>
-            </div>
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <a href="{% url 'item_detail' item.id %}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-indigo-600 transition-colors mb-6">
+    <i class="fas fa-arrow-left text-xs"></i>Back to item
+  </a>
+
+  <!-- Item preview -->
+  <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-4 flex items-center gap-4 mb-6">
+    <div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+      {% if item.image1 %}
+        <img src="{{ item.image1.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
+      {% else %}
+        <div class="w-full h-full bg-indigo-50 flex items-center justify-center text-2xl">
+          {% if item.category == 'textbook' %}📚{% elif item.category == 'equipment' %}🔬{% elif item.category == 'appliance' %}⚡{% elif item.category == 'decor' %}🎨{% else %}📦{% endif %}
         </div>
+      {% endif %}
     </div>
+    <div>
+      <p class="font-semibold text-slate-900 text-sm">{{ item.name }}</p>
+      <p class="text-xs text-slate-400 mt-0.5">{{ item.get_category_display }} · Sold by {{ item.seller.get_full_name|default:item.seller.username }}</p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6 sm:p-8">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center">
+        <i class="fas fa-star text-amber-500 text-sm"></i>
+      </div>
+      <h1 class="text-xl font-extrabold text-slate-900">Write a Review</h1>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <!-- Star rating -->
+      <div class="mb-6">
+        <label class="block text-sm font-semibold text-slate-700 mb-3">Rating <span class="text-red-400">*</span></label>
+        <div class="flex gap-2" id="star-row">
+          {% for i in "54321" %}
+          <button type="button" data-val="{{ i }}" onclick="setRating({{ i }})"
+            class="star-btn w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-100 text-slate-300 hover:text-amber-400 text-xl flex items-center justify-center transition-all">★</button>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="rating" id="rating-input" required>
+        <p id="rating-label" class="text-xs text-slate-400 mt-2">Click a star to rate</p>
+      </div>
+
+      <!-- Title -->
+      <div class="mb-5">
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Review Title <span class="text-red-400">*</span></label>
+        <input type="text" name="title" required placeholder="Summarize your experience…"
+          class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all">
+      </div>
+
+      <!-- Comment -->
+      <div class="mb-5">
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Your Review <span class="text-red-400">*</span></label>
+        <textarea name="comment" rows="5" required placeholder="Share your experience — condition, communication, meetup…"
+          class="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"></textarea>
+      </div>
+
+      <div class="flex items-center gap-2 p-3 bg-emerald-50 rounded-xl border border-emerald-100 mb-5">
+        <i class="fas fa-check-circle text-emerald-500 text-xs flex-shrink-0"></i>
+        <p class="text-xs text-emerald-700 font-medium">This will be marked as a Verified Purchase review.</p>
+      </div>
+
+      <div class="flex gap-3">
+        <button type="submit"
+          class="flex-1 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-2xl shadow-sm transition-all hover:-translate-y-px flex items-center justify-center gap-2">
+          <i class="fas fa-paper-plane text-xs"></i>Submit Review
+        </button>
+        <a href="{% url 'item_detail' item.id %}"
+          class="px-5 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm rounded-2xl transition-colors">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Guidelines -->
+  <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5 mt-5">
+    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Review Guidelines</h3>
+    <ul class="space-y-2">
+      {% for tip in "12345" %}
+      <li class="flex items-center gap-2 text-xs text-slate-600">
+        <i class="fas fa-check-circle text-emerald-500 flex-shrink-0"></i>
+        {% if tip == "1" %}Be honest and constructive
+        {% elif tip == "2" %}Focus on the item condition and seller experience
+        {% elif tip == "3" %}Include specific details about quality
+        {% elif tip == "4" %}Mention communication and meetup experience
+        {% else %}Keep reviews respectful and helpful{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 </div>
 
-<style>
-.rating-input {
-    text-align: center;
-}
-
-.stars {
-    display: inline-flex;
-    flex-direction: row-reverse;
-    gap: 2px;
-}
-
-.stars input {
-    display: none;
-}
-
-.stars label {
-    font-size: 2rem;
-    color: #ddd;
-    cursor: pointer;
-    transition: color 0.2s ease;
-}
-
-.stars label:hover,
-.stars label:hover ~ label,
-.stars input:checked ~ label {
-    color: #ffc107;
-}
-
-.stars input:checked ~ label {
-    color: #ffc107;
-}
-
-/* Hover effect for better UX */
-.stars:hover label {
-    color: #ffc107;
-}
-
-.stars:hover label:hover,
-.stars:hover label:hover ~ label {
-    color: #ffc107;
-}
-</style>
-
 <script>
-// Star rating functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const stars = document.querySelectorAll('.stars input');
-    const starLabels = document.querySelectorAll('.stars label');
-    
-    stars.forEach((star, index) => {
-        star.addEventListener('change', function() {
-            // Reset all stars
-            starLabels.forEach(label => label.style.color = '#ddd');
-            
-            // Color stars up to selected rating
-            for (let i = 0; i <= index; i++) {
-                starLabels[i].style.color = '#ffc107';
-            }
-        });
-    });
-});
+const labels = ['','Poor','Fair','Good','Very Good','Excellent'];
+function setRating(val) {
+  document.getElementById('rating-input').value = val;
+  document.getElementById('rating-label').textContent = labels[val] || '';
+  document.querySelectorAll('.star-btn').forEach(btn => {
+    const v = parseInt(btn.dataset.val);
+    // Stars are rendered 5→1 left to right, so highlight if v >= val
+    const active = v >= val;
+    btn.classList.toggle('bg-amber-100', active);
+    btn.classList.toggle('text-amber-400', active);
+    btn.classList.toggle('bg-slate-100', !active);
+    btn.classList.toggle('text-slate-300', !active);
+  });
+}
 </script>
-{% endblock %} 
+{% endblock %}

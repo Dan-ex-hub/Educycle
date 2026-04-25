@@ -1,0 +1,147 @@
+{% extends 'hub/base.html' %}
+{% block title %}Safety Guidelines — EduCycle{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<div class="relative overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-600 py-16">
+  <div class="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-4">
+      <i class="fas fa-shield-alt text-white text-2xl"></i>
+    </div>
+    <h1 class="text-4xl font-extrabold text-white mb-3">Safety Guidelines</h1>
+    <p class="text-emerald-200 text-lg">Your safety is our top priority. Follow these guidelines for every transaction.</p>
+  </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-8">
+
+  <!-- Alert banner -->
+  <div class="flex items-start gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-200">
+    <i class="fas fa-exclamation-triangle text-amber-500 mt-0.5 flex-shrink-0"></i>
+    <p class="text-sm text-amber-800 leading-relaxed">
+      <strong>Important:</strong> EduCycle facilitates connections between students but is not responsible for individual transactions. Always exercise caution and trust your instincts.
+    </p>
+  </div>
+
+  <!-- Meeting Safely -->
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+    <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-map-marker-alt text-emerald-600"></i>
+      </div>
+      Meeting Safely
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl">
+        <i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-sm"></i>
+        <div><p class="text-sm font-semibold text-slate-800">Meet in public places</p><p class="text-xs text-slate-500 mt-0.5">Campus library, cafeteria, student centre, or department building</p></div>
+      </div>
+      <div class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl">
+        <i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-sm"></i>
+        <div><p class="text-sm font-semibold text-slate-800">Meet during daylight hours</p><p class="text-xs text-slate-500 mt-0.5">Avoid late-night or isolated meetups</p></div>
+      </div>
+      <div class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl">
+        <i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-sm"></i>
+        <div><p class="text-sm font-semibold text-slate-800">Bring a friend</p><p class="text-xs text-slate-500 mt-0.5">For high-value items, bring someone you trust</p></div>
+      </div>
+      <div class="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl">
+        <i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-sm"></i>
+        <div><p class="text-sm font-semibold text-slate-800">Tell someone where you're going</p><p class="text-xs text-slate-500 mt-0.5">Let a friend or family member know your plans</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verifying Items -->
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+    <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-search text-blue-600"></i>
+      </div>
+      Verifying Items Before Buying
+    </h2>
+    <ul class="space-y-3 text-sm text-slate-600">
+      <li class="flex items-start gap-2"><i class="fas fa-check-circle text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i><span><strong class="text-slate-800">Inspect thoroughly</strong> — Check for damage, missing parts, or signs of tampering before paying</span></li>
+      <li class="flex items-start gap-2"><i class="fas fa-check-circle text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i><span><strong class="text-slate-800">Test electronics</strong> — Power on devices, check all functions work as described</span></li>
+      <li class="flex items-start gap-2"><i class="fas fa-check-circle text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i><span><strong class="text-slate-800">Verify edition/version</strong> — For textbooks, confirm the edition matches what was listed</span></li>
+      <li class="flex items-start gap-2"><i class="fas fa-check-circle text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i><span><strong class="text-slate-800">Ask questions first</strong> — Use our messaging system to clarify any doubts before meeting</span></li>
+      <li class="flex items-start gap-2"><i class="fas fa-times-circle text-red-500 mt-0.5 flex-shrink-0 text-xs"></i><span><strong class="text-slate-800">Never pay before seeing</strong> — Do not transfer money before physically inspecting the item</span></li>
+    </ul>
+  </div>
+
+  <!-- Payment Safety -->
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+    <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-rupee-sign text-amber-600"></i>
+      </div>
+      Payment Safety
+    </h2>
+    <div class="space-y-3 text-sm text-slate-600">
+      <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl">
+        <i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>
+        <div><p class="font-semibold text-slate-800">Use cash for in-person meetups</p><p class="text-xs text-slate-500 mt-0.5">Cash is the safest option for campus transactions</p></div>
+      </div>
+      <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl">
+        <i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0 text-xs"></i>
+        <div><p class="font-semibold text-slate-800">Use our secure payment system</p><p class="text-xs text-slate-500 mt-0.5">For online payments, use EduCycle's built-in payment options (Stripe/Razorpay)</p></div>
+      </div>
+      <div class="flex items-start gap-3 p-3 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-times-circle text-red-500 mt-0.5 flex-shrink-0 text-xs"></i>
+        <div><p class="font-semibold text-red-800">Never share bank details</p><p class="text-xs text-red-600 mt-0.5">Do not share your bank account number, UPI PIN, OTP, or card CVV with anyone</p></div>
+      </div>
+      <div class="flex items-start gap-3 p-3 bg-red-50 rounded-xl border border-red-100">
+        <i class="fas fa-times-circle text-red-500 mt-0.5 flex-shrink-0 text-xs"></i>
+        <div><p class="font-semibold text-red-800">Beware of advance payment scams</p><p class="text-xs text-red-600 mt-0.5">Legitimate sellers will not ask for payment before you've seen the item</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Red Flags -->
+  <div class="bg-white rounded-3xl border border-red-100 shadow-card p-6">
+    <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-exclamation-triangle text-red-500"></i>
+      </div>
+      Red Flags — Be Cautious If...
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {% for item in "12345678" %}
+      <div class="flex items-start gap-2 p-3 bg-red-50 rounded-xl">
+        <i class="fas fa-flag text-red-400 mt-0.5 flex-shrink-0 text-xs"></i>
+        <p class="text-xs text-red-700">
+          {% if forloop.counter == 1 %}The price seems too good to be true
+          {% elif forloop.counter == 2 %}The seller refuses to meet in person
+          {% elif forloop.counter == 3 %}You're asked to pay before seeing the item
+          {% elif forloop.counter == 4 %}The seller asks for your bank/UPI details
+          {% elif forloop.counter == 5 %}The listing photos look like stock images
+          {% elif forloop.counter == 6 %}The seller is evasive about item condition
+          {% elif forloop.counter == 7 %}You're pressured to decide quickly
+          {% else %}The seller wants to communicate outside EduCycle{% endif %}
+        </p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Reporting -->
+  <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+    <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-flag text-indigo-600"></i>
+      </div>
+      Reporting Issues
+    </h2>
+    <p class="text-sm text-slate-600 mb-4 leading-relaxed">If you encounter suspicious activity, fraud, or feel unsafe, please report it immediately. Your report helps protect the entire campus community.</p>
+    <div class="flex flex-wrap gap-3">
+      <a href="{% url 'contact_us' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+        <i class="fas fa-envelope text-xs"></i>Report to EduCycle
+      </a>
+      <a href="{% url 'report_bug' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors">
+        <i class="fas fa-bug text-xs"></i>Report a Bug
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,172 +1,147 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}My Orders - EduCycle{% endblock %}
-
+{% block title %}My Orders — EduCycle{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="mb-4"><i class="fas fa-shopping-bag"></i> My Orders</h2>
-            
-            <!-- Tabs -->
-            <ul class="nav nav-tabs mb-4" id="orderTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="bought-tab" data-bs-toggle="tab" data-bs-target="#bought" type="button" role="tab">
-                        <i class="fas fa-shopping-cart"></i> Orders I Bought ({{ bought_orders.count }})
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="sold-tab" data-bs-toggle="tab" data-bs-target="#sold" type="button" role="tab">
-                        <i class="fas fa-store"></i> Orders I Sold ({{ sold_orders.count }})
-                    </button>
-                </li>
-            </ul>
-            
-            <!-- Tab Content -->
-            <div class="tab-content" id="orderTabsContent">
-                <!-- Bought Orders -->
-                <div class="tab-pane fade show active" id="bought" role="tabpanel">
-                    {% if bought_orders %}
-                        <div class="row">
-                            {% for order in bought_orders %}
-                            <div class="col-md-6 col-lg-4 mb-4">
-                                <div class="card shadow-sm h-100">
-                                    <div class="card-header bg-gradient-primary text-white">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="mb-0">Order #{{ order.id }}</h6>
-                                            <span class="badge bg-light text-dark">{{ order.get_status_display }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="me-3" style="width: 50px; height: 50px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                                {% if order.orderitem_set.first.item.category == 'textbook' %}
-                                                    <span style="font-size: 1.2rem;">📚</span>
-                                                {% elif order.orderitem_set.first.item.category == 'equipment' %}
-                                                    <span style="font-size: 1.2rem;">🔬</span>
-                                                {% elif order.orderitem_set.first.item.category == 'appliance' %}
-                                                    <span style="font-size: 1.2rem;">⚡</span>
-                                                {% elif order.orderitem_set.first.item.category == 'decor' %}
-                                                    <span style="font-size: 1.2rem;">🎨</span>
-                                                {% else %}
-                                                    <span style="font-size: 1.2rem;">📦</span>
-                                                {% endif %}
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-1">{{ order.orderitem_set.first.item.name }}</h6>
-                                                <small class="text-muted">From {{ order.seller.first_name }} {{ order.seller.last_name }}</small>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row text-center mb-3">
-                                            <div class="col-6">
-                                                <small class="text-muted">Items</small>
-                                                <div class="fw-bold">{{ order.orderitem_set.count }}</div>
-                                            </div>
-                                            <div class="col-6">
-                                                <small class="text-muted">Total</small>
-                                                <div class="fw-bold text-primary">₹{{ order.total_amount }}</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <small class="text-muted">
-                                                <i class="fas fa-calendar"></i> {{ order.created_at|date:"M d, Y" }}
-                                            </small>
-                                        </div>
-                                        
-                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-outline-primary btn-sm w-100">
-                                            <i class="fas fa-eye"></i> View Details
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="text-center py-5">
-                            <i class="fas fa-shopping-cart text-muted" style="font-size: 4rem;"></i>
-                            <h4 class="text-muted mt-3">No orders yet</h4>
-                            <p class="text-muted">Start shopping to see your orders here!</p>
-                            <a href="{% url 'item_list' %}" class="btn btn-primary">
-                                <i class="fas fa-store"></i> Browse Items
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <!-- Sold Orders -->
-                <div class="tab-pane fade" id="sold" role="tabpanel">
-                    {% if sold_orders %}
-                        <div class="row">
-                            {% for order in sold_orders %}
-                            <div class="col-md-6 col-lg-4 mb-4">
-                                <div class="card shadow-sm h-100">
-                                    <div class="card-header bg-gradient-success text-white">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="mb-0">Order #{{ order.id }}</h6>
-                                            <span class="badge bg-light text-dark">{{ order.get_status_display }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="me-3" style="width: 50px; height: 50px; background: linear-gradient(135deg, #e8f5e8 0%, #a5d6a7 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                                {% if order.orderitem_set.first.item.category == 'textbook' %}
-                                                    <span style="font-size: 1.2rem;">📚</span>
-                                                {% elif order.orderitem_set.first.item.category == 'equipment' %}
-                                                    <span style="font-size: 1.2rem;">🔬</span>
-                                                {% elif order.orderitem_set.first.item.category == 'appliance' %}
-                                                    <span style="font-size: 1.2rem;">⚡</span>
-                                                {% elif order.orderitem_set.first.item.category == 'decor' %}
-                                                    <span style="font-size: 1.2rem;">🎨</span>
-                                                {% else %}
-                                                    <span style="font-size: 1.2rem;">📦</span>
-                                                {% endif %}
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-1">{{ order.orderitem_set.first.item.name }}</h6>
-                                                <small class="text-muted">To {{ order.buyer.first_name }} {{ order.buyer.last_name }}</small>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row text-center mb-3">
-                                            <div class="col-6">
-                                                <small class="text-muted">Items</small>
-                                                <div class="fw-bold">{{ order.orderitem_set.count }}</div>
-                                            </div>
-                                            <div class="col-6">
-                                                <small class="text-muted">Earnings</small>
-                                                <div class="fw-bold text-success">₹{{ order.total_amount }}</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <small class="text-muted">
-                                                <i class="fas fa-calendar"></i> {{ order.created_at|date:"M d, Y" }}
-                                            </small>
-                                        </div>
-                                        
-                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-outline-success btn-sm w-100">
-                                            <i class="fas fa-eye"></i> View Details
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="text-center py-5">
-                            <i class="fas fa-store text-muted" style="font-size: 4rem;"></i>
-                            <h4 class="text-muted mt-3">No sales yet</h4>
-                            <p class="text-muted">List items to start selling!</p>
-                            <a href="{% url 'item_create' %}" class="btn btn-success">
-                                <i class="fas fa-plus"></i> Add Item
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <h1 class="text-2xl font-extrabold text-slate-900 mb-8 flex items-center gap-3">
+    <div class="w-10 h-10 rounded-2xl bg-indigo-100 flex items-center justify-center">
+      <i class="fas fa-shopping-bag text-indigo-600"></i>
+    </div>My Orders
+  </h1>
+
+  <!-- Tab buttons -->
+  <div class="flex gap-1 bg-slate-100 p-1 rounded-2xl w-fit mb-8">
+    <button onclick="switchTab('bought')" id="tab-bought"
+      class="order-tab active-order-tab px-5 py-2.5 text-sm font-semibold rounded-xl transition-all">
+      <i class="fas fa-shopping-cart mr-1.5 text-xs"></i>Purchased ({{ bought_orders.count }})
+    </button>
+    <button onclick="switchTab('sold')" id="tab-sold"
+      class="order-tab px-5 py-2.5 text-sm font-semibold rounded-xl transition-all text-slate-500 hover:text-slate-700">
+      <i class="fas fa-store mr-1.5 text-xs"></i>Sold ({{ sold_orders.count }})
+    </button>
+  </div>
+
+  <!-- Purchased orders -->
+  <div id="panel-bought">
+    {% if bought_orders %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for order in bought_orders %}
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card overflow-hidden hover:border-indigo-200 transition-colors">
+        <div class="bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 flex items-center justify-between">
+          <span class="text-white font-bold text-sm">Order #{{ order.id }}</span>
+          <span class="px-2.5 py-1 bg-white/20 text-white text-xs font-semibold rounded-full">{{ order.get_status_display }}</span>
         </div>
+        <div class="p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-2xl flex-shrink-0">
+              {% with first=order.orderitem_set.first %}{% if first %}
+                {% if first.item.category == 'textbook' %}📚{% elif first.item.category == 'equipment' %}🔬{% elif first.item.category == 'appliance' %}⚡{% elif first.item.category == 'decor' %}🎨{% else %}📦{% endif %}
+              {% endif %}{% endwith %}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-slate-900 text-sm truncate">{{ order.orderitem_set.first.item.name }}</p>
+              <p class="text-xs text-slate-400 mt-0.5">From {{ order.seller.first_name }} {{ order.seller.last_name }}</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-slate-50 rounded-xl p-3 text-center">
+              <p class="text-xs text-slate-400 mb-0.5">Items</p>
+              <p class="font-bold text-slate-800">{{ order.orderitem_set.count }}</p>
+            </div>
+            <div class="bg-indigo-50 rounded-xl p-3 text-center">
+              <p class="text-xs text-slate-400 mb-0.5">Total</p>
+              <p class="font-bold text-indigo-600">₹{{ order.total_amount }}</p>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 mb-3"><i class="fas fa-calendar mr-1"></i>{{ order.created_at|date:"M d, Y" }}</p>
+          <a href="{% url 'order_detail' order.id %}"
+            class="w-full flex items-center justify-center gap-2 py-2.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white text-xs font-bold rounded-xl transition-all">
+            <i class="fas fa-eye text-[10px]"></i>View Details
+          </a>
+        </div>
+      </div>
+      {% endfor %}
     </div>
+    {% else %}
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+      <div class="w-20 h-20 rounded-3xl bg-indigo-50 flex items-center justify-center mb-5">
+        <i class="fas fa-shopping-cart text-indigo-300 text-3xl"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-700 mb-2">No orders yet</h3>
+      <p class="text-slate-500 text-sm mb-5">Start shopping to see your orders here!</p>
+      <a href="{% url 'item_list' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+        <i class="fas fa-store text-xs"></i>Browse Items
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Sold orders -->
+  <div id="panel-sold" class="hidden">
+    {% if sold_orders %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for order in sold_orders %}
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card overflow-hidden hover:border-emerald-200 transition-colors">
+        <div class="bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-3 flex items-center justify-between">
+          <span class="text-white font-bold text-sm">Order #{{ order.id }}</span>
+          <span class="px-2.5 py-1 bg-white/20 text-white text-xs font-semibold rounded-full">{{ order.get_status_display }}</span>
+        </div>
+        <div class="p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl flex-shrink-0">
+              {% with first=order.orderitem_set.first %}{% if first %}
+                {% if first.item.category == 'textbook' %}📚{% elif first.item.category == 'equipment' %}🔬{% elif first.item.category == 'appliance' %}⚡{% elif first.item.category == 'decor' %}🎨{% else %}📦{% endif %}
+              {% endif %}{% endwith %}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-slate-900 text-sm truncate">{{ order.orderitem_set.first.item.name }}</p>
+              <p class="text-xs text-slate-400 mt-0.5">To {{ order.buyer.first_name }} {{ order.buyer.last_name }}</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-slate-50 rounded-xl p-3 text-center">
+              <p class="text-xs text-slate-400 mb-0.5">Items</p>
+              <p class="font-bold text-slate-800">{{ order.orderitem_set.count }}</p>
+            </div>
+            <div class="bg-emerald-50 rounded-xl p-3 text-center">
+              <p class="text-xs text-slate-400 mb-0.5">Earnings</p>
+              <p class="font-bold text-emerald-600">₹{{ order.total_amount }}</p>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 mb-3"><i class="fas fa-calendar mr-1"></i>{{ order.created_at|date:"M d, Y" }}</p>
+          <a href="{% url 'order_detail' order.id %}"
+            class="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white text-xs font-bold rounded-xl transition-all">
+            <i class="fas fa-eye text-[10px]"></i>View Details
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+      <div class="w-20 h-20 rounded-3xl bg-emerald-50 flex items-center justify-center mb-5">
+        <i class="fas fa-store text-emerald-300 text-3xl"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-700 mb-2">No sales yet</h3>
+      <p class="text-slate-500 text-sm mb-5">List items to start selling!</p>
+      <a href="{% url 'item_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+        <i class="fas fa-plus text-xs"></i>List an Item
+      </a>
+    </div>
+    {% endif %}
+  </div>
 </div>
-{% endblock %} 
+<style>
+  .active-order-tab { background: white; color: #4f46e5; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+</style>
+<script>
+function switchTab(name) {
+  ['bought','sold'].forEach(t => {
+    document.getElementById('panel-' + t).classList.toggle('hidden', t !== name);
+    const btn = document.getElementById('tab-' + t);
+    btn.classList.toggle('active-order-tab', t === name);
+    btn.classList.toggle('text-slate-500', t !== name);
+  });
+}
+</script>
+{% endblock %}

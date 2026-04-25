@@ -1,159 +1,157 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}Notifications - EduCycle{% endblock %}
+{% block title %}Notifications — EduCycle{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>
-                    <i class="fas fa-bell text-primary"></i> Notifications
-                </h1>
-                <div>
-                    <button class="btn btn-outline-primary" onclick="markAllRead()">
-                        <i class="fas fa-check-double"></i> Mark All as Read
-                    </button>
-                </div>
-            </div>
-            
-            {% if notifications %}
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                {% for notification in notifications %}
-                                    <div class="notification-item border-bottom py-3 {% if not notification.is_read %}bg-light{% endif %}" 
-                                         data-notification-id="{{ notification.id }}">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div class="flex-grow-1">
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <div class="notification-icon me-3">
-                                                        {% if notification.notification_type == 'item_added' %}
-                                                            <i class="fas fa-plus-circle text-success"></i>
-                                                        {% elif notification.notification_type == 'item_sold' %}
-                                                            <i class="fas fa-shopping-cart text-primary"></i>
-                                                        {% elif notification.notification_type == 'item_purchased' %}
-                                                            <i class="fas fa-shopping-bag text-info"></i>
-                                                        {% elif notification.notification_type == 'review_received' %}
-                                                            <i class="fas fa-star text-warning"></i>
-                                                        {% elif notification.notification_type == 'message_received' %}
-                                                            <i class="fas fa-envelope text-secondary"></i>
-                                                        {% elif notification.notification_type == 'order_status' %}
-                                                            <i class="fas fa-truck text-dark"></i>
-                                                        {% else %}
-                                                            <i class="fas fa-bell text-muted"></i>
-                                                        {% endif %}
-                                                    </div>
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-1 {% if not notification.is_read %}fw-bold{% endif %}">
-                                                            {{ notification.title }}
-                                                        </h6>
-                                                        <p class="text-muted mb-1">{{ notification.message }}</p>
-                                                        <small class="text-muted">
-                                                            <i class="fas fa-clock"></i> {{ notification.created_at|timesince }} ago
-                                                        </small>
-                                                    </div>
-                                                </div>
-                                                
-                                                {% if notification.related_item %}
-                                                    <div class="mt-2">
-                                                        <a href="{% url 'item_detail' notification.related_item.id %}" class="btn btn-sm btn-outline-primary">
-                                                            <i class="fas fa-eye"></i> View Item
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                                
-                                                {% if notification.related_order %}
-                                                    <div class="mt-2">
-                                                        <a href="{% url 'order_detail' notification.related_order.id %}" class="btn btn-sm btn-outline-info">
-                                                            <i class="fas fa-receipt"></i> View Order
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                            
-                                            <div class="ms-3">
-                                                {% if not notification.is_read %}
-                                                    <button class="btn btn-sm btn-outline-success" onclick="markAsRead({{ notification.id }})">
-                                                        <i class="fas fa-check"></i> Mark Read
-                                                    </button>
-                                                {% else %}
-                                                    <span class="badge bg-success">Read</span>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body text-center py-5">
-                                <i class="fas fa-bell-slash text-muted" style="font-size: 3rem;"></i>
-                                <h4 class="mt-3 text-muted">No Notifications</h4>
-                                <p class="text-muted">You don't have any notifications yet. When you add items, make purchases, or receive messages, you'll see them here.</p>
-                                <a href="{% url 'item_list' %}" class="btn btn-primary">
-                                    <i class="fas fa-shopping-cart"></i> Browse Items
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-100 flex items-center justify-center">
+          <i class="fas fa-bell text-indigo-600"></i>
         </div>
+        Notifications
+      </h1>
+      <p class="text-slate-500 text-sm mt-1">
+        {% if notifications %}{{ notifications|length }} notification{{ notifications|length|pluralize }}{% else %}You're all caught up{% endif %}
+      </p>
     </div>
+    {% if notifications %}
+    <button onclick="markAllRead()"
+      class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-semibold rounded-xl transition-colors">
+      <i class="fas fa-check-double text-xs"></i>Mark all read
+    </button>
+    {% endif %}
+  </div>
+
+  {% if notifications %}
+  <div class="space-y-3" id="notifications-list">
+    {% for n in notifications %}
+    <div class="notification-card group bg-white rounded-2xl border shadow-card p-4 flex gap-4 transition-all hover:border-indigo-200
+        {% if not n.is_read %}border-indigo-100 bg-indigo-50/30{% else %}border-slate-100{% endif %}"
+      data-notification-id="{{ n.id }}">
+
+      <!-- Icon -->
+      <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm
+        {% if n.notification_type == 'item_sold' %}bg-emerald-100
+        {% elif n.notification_type == 'item_purchased' %}bg-blue-100
+        {% elif n.notification_type == 'review_received' %}bg-amber-100
+        {% elif n.notification_type == 'message_received' %}bg-violet-100
+        {% elif n.notification_type == 'order_status' %}bg-slate-100
+        {% else %}bg-indigo-100{% endif %}">
+        <i class="
+          {% if n.notification_type == 'item_added' %}fas fa-plus-circle text-indigo-600
+          {% elif n.notification_type == 'item_sold' %}fas fa-shopping-cart text-emerald-600
+          {% elif n.notification_type == 'item_purchased' %}fas fa-shopping-bag text-blue-600
+          {% elif n.notification_type == 'review_received' %}fas fa-star text-amber-500
+          {% elif n.notification_type == 'message_received' %}fas fa-envelope text-violet-600
+          {% elif n.notification_type == 'order_status' %}fas fa-truck text-slate-600
+          {% else %}fas fa-bell text-indigo-500{% endif %} text-sm"></i>
+      </div>
+
+      <!-- Content -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start gap-3">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-slate-900 {% if not n.is_read %}font-bold{% endif %} leading-snug">
+              {{ n.title }}
+              {% if not n.is_read %}
+              <span class="ml-2 inline-block w-2 h-2 rounded-full bg-indigo-500 align-middle"></span>
+              {% else %}
+              <span class="ml-2 inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-semibold rounded-full">
+                <i class="fas fa-check text-[9px]"></i>Read
+              </span>
+              {% endif %}
+            </p>
+            <p class="text-sm text-slate-500 mt-0.5 leading-relaxed">{{ n.message }}</p>
+            <p class="text-xs text-slate-400 mt-1.5 flex items-center gap-1">
+              <i class="fas fa-clock text-[10px]"></i>{{ n.created_at|timesince }} ago
+            </p>
+          </div>
+        </div>
+
+        <!-- Action links -->
+        {% if n.related_item or n.related_order %}
+        <div class="flex gap-2 mt-3">
+          {% if n.related_item %}
+          <a href="{% url 'item_detail' n.related_item.id %}"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white text-xs font-semibold rounded-lg transition-all">
+            <i class="fas fa-eye text-[10px]"></i>View Item
+          </a>
+          {% endif %}
+          {% if n.related_order %}
+          <a href="{% url 'order_detail' n.related_order.id %}"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-200 text-slate-600 text-xs font-semibold rounded-lg transition-all">
+            <i class="fas fa-receipt text-[10px]"></i>View Order
+          </a>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <!-- Empty state -->
+  <div class="flex flex-col items-center justify-center py-24 text-center">
+    <div class="w-24 h-24 rounded-3xl bg-indigo-50 flex items-center justify-center mb-6 shadow-inner">
+      <i class="fas fa-bell-slash text-indigo-300 text-4xl"></i>
+    </div>
+    <h3 class="text-xl font-bold text-slate-700 mb-2">All caught up!</h3>
+    <p class="text-slate-500 text-sm max-w-sm mb-6">
+      You don't have any notifications yet. When you add items, make purchases, or receive messages, they'll appear here.
+    </p>
+    <a href="{% url 'item_list' %}"
+      class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all hover:-translate-y-px">
+      <i class="fas fa-shopping-bag text-xs"></i>Browse Items
+    </a>
+  </div>
+  {% endif %}
 </div>
 
+{% if notifications %}
+<form id="csrf-form">{% csrf_token %}</form>
+{% endif %}
+
 <script>
-function markAsRead(notificationId) {
-    fetch(`/notifications/${notificationId}/read/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            const notificationItem = document.querySelector(`[data-notification-id="${notificationId}"]`);
-            notificationItem.classList.remove('bg-light');
-            notificationItem.querySelector('.btn-outline-success').outerHTML = '<span class="badge bg-success">Read</span>';
-        }
-    });
+function getCsrf() {
+  return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+function markAsRead(id) {
+  fetch(`/notifications/${id}/read/`, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': getCsrf() }
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (!d.success) return;
+    const card = document.querySelector(`[data-notification-id="${id}"]`);
+    if (!card) return;
+    card.classList.remove('border-indigo-100', 'bg-indigo-50/30');
+    card.classList.add('border-slate-100');
+    // Remove unread dot and mark-read button, add "Read" badge
+    const dot = card.querySelector('.bg-indigo-500');
+    if (dot) dot.remove();
+    const btn = card.querySelector('button[onclick^="markAsRead"]');
+    if (btn) {
+      const badge = document.createElement('span');
+      badge.className = 'flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-semibold rounded-full';
+      badge.innerHTML = '<i class="fas fa-check text-[9px]"></i>Read';
+      btn.replaceWith(badge);
+    }
+  });
 }
 
 function markAllRead() {
-    fetch('/notifications/mark-all-read/', {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        }
-    });
+  fetch('/notifications/mark-all-read/', {
+    method: 'POST',
+    headers: { 'X-CSRFToken': getCsrf() }
+  })
+  .then(r => r.json())
+  .then(d => { if (d.success) location.reload(); });
 }
 </script>
-
-<style>
-.notification-item {
-    transition: background-color 0.3s ease;
-}
-
-.notification-item:hover {
-    background-color: #f8f9fa !important;
-}
-
-.notification-icon i {
-    font-size: 1.2rem;
-}
-</style>
-{% endblock %} 
+{% endblock %}

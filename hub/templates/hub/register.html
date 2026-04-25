@@ -1,300 +1,319 @@
 {% extends 'hub/base.html' %}
+{% block title %}Create Account — EduCycle{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8 col-md-10">
-        <div class="card shadow-lg border-0">
-            <div class="card-body p-5">
-                <div class="text-center mb-4">
-                    <i class="fas fa-user-plus text-success mb-3" style="font-size: 3rem;"></i>
-                    <h2 class="fw-bold">Join EduCycle!</h2>
-                    <p class="text-muted">Create your account and start buying, selling, and swapping with your campus community</p>
-                </div>
-                
-                <form method="post" id="registrationForm">
-            {% csrf_token %}
-                    
-                    <!-- Personal Information -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-user me-2"></i>Personal Information
-                            </h5>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-user me-2"></i>First Name *
-                            </label>
-                            {{ form.first_name }}
-                            {% if form.first_name.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.first_name.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-user me-2"></i>Last Name *
-                            </label>
-                            {{ form.last_name }}
-                            {% if form.last_name.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.last_name.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    <!-- Account Information -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-lock me-2"></i>Account Information
-                            </h5>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-at me-2"></i>Username *
-                            </label>
-                            {{ form.username }}
-                            {% if form.username.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.username.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>3-150 characters, letters, numbers, and underscores only
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-envelope me-2"></i>Email Address *
-                            </label>
-                            {{ form.email }}
-                            {% if form.email.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.email.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-lock me-2"></i>Password *
-                            </label>
-                            {{ form.password1 }}
-                            {% if form.password1.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.password1.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                            <div class="form-text">
-                                <i class="fas fa-shield-alt me-1"></i>Must be at least 8 characters with uppercase, lowercase, number, and special character
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-lock me-2"></i>Confirm Password *
-                            </label>
-                            {{ form.password2 }}
-                            {% if form.password2.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.password2.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    <!-- Student Information -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-graduation-cap me-2"></i>Student Information
-                            </h5>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.student_id.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-id-card me-2"></i>Student ID *
-                            </label>
-                            {{ form.student_id }}
-                            {% if form.student_id.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.student_id.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>Uppercase letters and numbers only
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.phone_number.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-phone me-2"></i>Phone Number
-                            </label>
-                            {{ form.phone_number }}
-                            {% if form.phone_number.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.phone_number.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.department.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-building me-2"></i>Department *
-                            </label>
-                            {{ form.department }}
-                            {% if form.department.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.department.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.year_of_study.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-calendar me-2"></i>Year of Study *
-                            </label>
-                            {{ form.year_of_study }}
-                            {% if form.year_of_study.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.year_of_study.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    <!-- Terms and Conditions -->
-                    <div class="mb-4">
-                        <div class="form-check">
-                            {{ form.terms_accepted }}
-                            <label class="form-check-label" for="{{ form.terms_accepted.id_for_label }}">
-                                I agree to the <a href="#" class="text-decoration-none">Terms and Conditions</a> and <a href="#" class="text-decoration-none">Privacy Policy</a> *
-                            </label>
-                        </div>
-                        {% if form.terms_accepted.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in form.terms_accepted.errors %}
-                                    <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-success btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>Create Account
-                        </button>
-                    </div>
-        </form>
-                
-                <div class="text-center mt-4">
-                    <p class="text-muted mb-0">
-                        Already have an account? 
-                        <a href="{% url 'user_login' %}" class="text-decoration-none fw-semibold">
-                            <i class="fas fa-sign-in-alt me-1"></i>Sign In
-                        </a>
-                    </p>
-                </div>
-            </div>
+<div class="min-h-[calc(100vh-4rem)] flex">
+
+  <!-- ── Left decorative panel ── -->
+  <div class="hidden lg:flex lg:w-5/12 relative overflow-hidden bg-gradient-to-br from-violet-700 via-indigo-600 to-indigo-500">
+    <div class="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 -left-10 w-72 h-72 bg-amber-400/20 rounded-full blur-3xl"></div>
+
+    <div class="relative z-10 flex flex-col justify-between p-12 w-full">
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+          <i class="fas fa-recycle text-white"></i>
         </div>
-        
-        <!-- Benefits Section -->
-        <div class="row mt-5">
-            <div class="col-md-4 text-center">
-                <div class="card border-0 bg-light h-100">
-                    <div class="card-body">
-                        <i class="fas fa-dollar-sign text-success mb-2" style="font-size: 2rem;"></i>
-                        <h6 class="card-title">Save Money</h6>
-                        <p class="card-text small text-muted">Get great deals on textbooks and supplies</p>
-                    </div>
-                </div>
+        <span class="text-2xl font-bold text-white tracking-tight">EduCycle</span>
+      </a>
+
+      <div>
+        <h2 class="text-4xl font-extrabold text-white leading-tight mb-4">
+          Join thousands<br>of students<br>
+          <span class="text-amber-300">saving more.</span>
+        </h2>
+        <p class="text-indigo-200 text-base leading-relaxed mb-10">
+          List your old textbooks, lab gear, and supplies in minutes. Earn money and help fellow students.
+        </p>
+
+        <!-- Steps -->
+        <div class="flex flex-col gap-5">
+          {% for step in "123" %}
+          <div class="flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-amber-400 text-indigo-900 font-bold text-sm flex items-center justify-center flex-shrink-0 mt-0.5">{{ step }}</div>
+            <div>
+              {% if step == "1" %}
+              <p class="text-white font-semibold text-sm">Create your free account</p>
+              <p class="text-indigo-300 text-xs mt-0.5">Takes less than 2 minutes</p>
+              {% elif step == "2" %}
+              <p class="text-white font-semibold text-sm">List your items</p>
+              <p class="text-indigo-300 text-xs mt-0.5">Add photos, set your price</p>
+              {% else %}
+              <p class="text-white font-semibold text-sm">Connect & transact</p>
+              <p class="text-indigo-300 text-xs mt-0.5">Chat, meet on campus, done</p>
+              {% endif %}
             </div>
-            <div class="col-md-4 text-center">
-                <div class="card border-0 bg-light h-100">
-                    <div class="card-body">
-                        <i class="fas fa-leaf text-primary mb-2" style="font-size: 2rem;"></i>
-                        <h6 class="card-title">Eco-Friendly</h6>
-                        <p class="card-text small text-muted">Reduce waste by reusing items</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="card border-0 bg-light h-100">
-                    <div class="card-body">
-                        <i class="fas fa-handshake text-warning mb-2" style="font-size: 2rem;"></i>
-                        <h6 class="card-title">Community</h6>
-                        <p class="card-text small text-muted">Connect with fellow students</p>
-                    </div>
-                </div>
-            </div>
+          </div>
+          {% endfor %}
         </div>
+      </div>
+
+      <p class="text-indigo-300 text-sm italic">"Give your study materials a second life."</p>
     </div>
+  </div>
+
+  <!-- ── Right form panel ── -->
+  <div class="flex-1 flex items-start justify-center px-6 py-10 bg-slate-50 overflow-y-auto">
+    <div class="w-full max-w-xl">
+
+      <!-- Mobile logo -->
+      <div class="lg:hidden flex items-center gap-2.5 mb-8">
+        <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center">
+          <i class="fas fa-recycle text-white text-sm"></i>
+        </div>
+        <span class="text-xl font-bold text-indigo-700">EduCycle</span>
+      </div>
+
+      <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-1">Create your account</h1>
+        <p class="text-slate-500 text-sm">Already have one?
+          <a href="{% url 'user_login' %}" class="text-indigo-600 font-semibold hover:text-indigo-700 transition-colors">Sign in →</a>
+        </p>
+      </div>
+
+      <form method="post" id="registrationForm" novalidate class="space-y-6">
+        {% csrf_token %}
+
+        <!-- ── Personal Information ── -->
+        <div class="bg-white rounded-3xl shadow-card border border-slate-100 p-6">
+          <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-5 flex items-center gap-2">
+            <i class="fas fa-user text-indigo-400"></i> Personal Information
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">First Name <span class="text-red-400">*</span></label>
+              <div class="relative">
+                <i class="fas fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.first_name }}
+              </div>
+              {% if form.first_name.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.first_name.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Last Name <span class="text-red-400">*</span></label>
+              <div class="relative">
+                <i class="fas fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.last_name }}
+              </div>
+              {% if form.last_name.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.last_name.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Account Information ── -->
+        <div class="bg-white rounded-3xl shadow-card border border-slate-100 p-6">
+          <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-5 flex items-center gap-2">
+            <i class="fas fa-lock text-indigo-400"></i> Account Information
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Username <span class="text-red-400">*</span></label>
+              <div class="relative">
+                <i class="fas fa-at absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.username }}
+              </div>
+              <p class="mt-1 text-xs text-slate-400">Letters, numbers, underscores only</p>
+              {% if form.username.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.username.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Email Address <span class="text-red-400">*</span></label>
+              <div class="relative">
+                <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.email }}
+              </div>
+              {% if form.email.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.email.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Password <span class="text-red-400">*</span></label>
+              <div class="relative">
+                <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.password1 }}
+                <button type="button" id="togglePw1" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                  <i class="fas fa-eye text-sm" id="eye1"></i>
+                </button>
+              </div>
+              <!-- Strength bar -->
+              <div class="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                <div id="strengthBar" class="h-full rounded-full transition-all duration-300 w-0 bg-red-400"></div>
+              </div>
+              <p id="strengthLabel" class="mt-1 text-xs text-slate-400">Min 8 chars, uppercase, number, symbol</p>
+              {% if form.password1.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.password1.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Confirm Password <span class="text-red-400">*</span></label>
+              <div class="relative">
+                <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.password2 }}
+                <button type="button" id="togglePw2" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                  <i class="fas fa-eye text-sm" id="eye2"></i>
+                </button>
+              </div>
+              {% if form.password2.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.password2.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Student Information ── -->
+        <div class="bg-white rounded-3xl shadow-card border border-slate-100 p-6">
+          <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-5 flex items-center gap-2">
+            <i class="fas fa-graduation-cap text-indigo-400"></i> Student Information
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Student ID <span class="text-red-400">*</span></label>
+              <div class="relative">
+                <i class="fas fa-id-card absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.student_id }}
+              </div>
+              <p class="mt-1 text-xs text-slate-400">Uppercase letters and numbers only</p>
+              {% if form.student_id.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.student_id.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Phone Number</label>
+              <div class="relative">
+                <i class="fas fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.phone_number }}
+              </div>
+              {% if form.phone_number.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.phone_number.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Department <span class="text-red-400">*</span></label>
+              <div class="relative">
+                <i class="fas fa-building absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.department }}
+              </div>
+              {% if form.department.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.department.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1.5">Year of Study <span class="text-red-400">*</span></label>
+              <div class="relative">
+                <i class="fas fa-calendar absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                {{ form.year_of_study }}
+              </div>
+              {% if form.year_of_study.errors %}<p class="mt-1 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.year_of_study.errors %}{{ e }}{% endfor %}</p>{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Terms ── -->
+        <div class="bg-white rounded-3xl shadow-card border border-slate-100 p-5">
+          <label class="flex items-start gap-3 cursor-pointer group">
+            {{ form.terms_accepted }}
+            <span class="text-sm text-slate-600 leading-relaxed">
+              I agree to the
+              <a href="#" class="text-indigo-600 hover:text-indigo-700 font-medium underline underline-offset-2">Terms and Conditions</a>
+              and
+              <a href="#" class="text-indigo-600 hover:text-indigo-700 font-medium underline underline-offset-2">Privacy Policy</a>
+              <span class="text-red-400"> *</span>
+            </span>
+          </label>
+          {% if form.terms_accepted.errors %}<p class="mt-2 text-xs text-red-600 ml-7"><i class="fas fa-exclamation-circle mr-1"></i>{% for e in form.terms_accepted.errors %}{{ e }}{% endfor %}</p>{% endif %}
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+          class="w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-base rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-px flex items-center justify-center gap-2">
+          <i class="fas fa-user-plus"></i>
+          Create My Account
+        </button>
+      </form>
+
+      <p class="text-center text-xs text-slate-400 mt-6 pb-8">
+        Already have an account?
+        <a href="{% url 'user_login' %}" class="text-indigo-600 font-semibold hover:text-indigo-700 transition-colors">Sign in here</a>
+      </p>
+    </div>
+  </div>
 </div>
 
+<style>
+  /* ── Shared input styles for all form fields ── */
+  #registrationForm input[type="text"],
+  #registrationForm input[type="email"],
+  #registrationForm input[type="password"],
+  #registrationForm input[type="tel"],
+  #registrationForm select {
+    width: 100%;
+    padding: 0.7rem 1rem 0.7rem 2.6rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 0.875rem;
+    font-size: 0.875rem;
+    color: #1e293b;
+    background: #f8fafc;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  #registrationForm input:focus,
+  #registrationForm select:focus {
+    border-color: #6366f1;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+  }
+  /* Password fields need right padding for eye icon */
+  #registrationForm input[type="password"] {
+    padding-right: 2.75rem;
+  }
+  /* Checkbox */
+  #registrationForm input[type="checkbox"] {
+    width: 1.1rem; height: 1.1rem;
+    accent-color: #6366f1;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  /* Select arrow */
+  #registrationForm select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.25rem;
+    padding-right: 2.5rem;
+  }
+</style>
+
 <script>
-// Password strength indicator
-document.getElementById('password1').addEventListener('input', function() {
-    const password = this.value;
-    const strength = checkPasswordStrength(password);
-    updatePasswordStrengthIndicator(strength);
-});
+(function () {
+  // Toggle password visibility helpers
+  function makeToggle(btnId, eyeId, fieldSelector) {
+    const btn   = document.getElementById(btnId);
+    const eye   = document.getElementById(eyeId);
+    const field = document.querySelector(fieldSelector);
+    if (!btn || !field) return;
+    btn.addEventListener('click', () => {
+      const isText = field.type === 'text';
+      field.type = isText ? 'password' : 'text';
+      eye.classList.toggle('fa-eye', isText);
+      eye.classList.toggle('fa-eye-slash', !isText);
+    });
+  }
+  makeToggle('togglePw1', 'eye1', '#registrationForm input[name="password1"]');
+  makeToggle('togglePw2', 'eye2', '#registrationForm input[name="password2"]');
 
-function checkPasswordStrength(password) {
-    let score = 0;
-    
-    if (password.length >= 8) score++;
-    if (/[A-Z]/.test(password)) score++;
-    if (/[a-z]/.test(password)) score++;
-    if (/\d/.test(password)) score++;
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
-    
-    if (score < 2) return 'weak';
-    if (score < 4) return 'medium';
-    return 'strong';
-}
+  // Password strength meter
+  const pw1 = document.querySelector('#registrationForm input[name="password1"]');
+  const bar = document.getElementById('strengthBar');
+  const lbl = document.getElementById('strengthLabel');
+  if (pw1 && bar && lbl) {
+    pw1.addEventListener('input', function () {
+      const v = this.value;
+      let score = 0;
+      if (v.length >= 8)                        score++;
+      if (/[A-Z]/.test(v))                      score++;
+      if (/[a-z]/.test(v))                      score++;
+      if (/\d/.test(v))                         score++;
+      if (/[!@#$%^&*(),.?":{}|<>]/.test(v))    score++;
 
-function updatePasswordStrengthIndicator(strength) {
-    const feedback = document.querySelector('#password1').parentNode.querySelector('.form-text');
-    const icon = feedback.querySelector('i');
-    const text = feedback.textContent;
-    
-    switch(strength) {
-        case 'weak':
-            icon.className = 'fas fa-times-circle me-1 text-danger';
-            feedback.innerHTML = '<i class="fas fa-times-circle me-1 text-danger"></i>Password is weak';
-            break;
-        case 'medium':
-            icon.className = 'fas fa-exclamation-triangle me-1 text-warning';
-            feedback.innerHTML = '<i class="fas fa-exclamation-triangle me-1 text-warning"></i>Password is medium strength';
-            break;
-        case 'strong':
-            icon.className = 'fas fa-check-circle me-1 text-success';
-            feedback.innerHTML = '<i class="fas fa-check-circle me-1 text-success"></i>Password is strong';
-            break;
-    }
-}
+      const pct   = ['0%','25%','50%','75%','100%'][score] || '0%';
+      const color = ['bg-red-400','bg-red-400','bg-amber-400','bg-amber-400','bg-emerald-500'][score] || 'bg-red-400';
+      const text  = ['','Weak','Fair','Good','Strong','Very Strong'][score] || '';
+
+      bar.style.width = pct;
+      bar.className = `h-full rounded-full transition-all duration-300 ${color}`;
+      lbl.textContent = text || 'Min 8 chars, uppercase, number, symbol';
+      lbl.className = `mt-1 text-xs ${score >= 4 ? 'text-emerald-600' : score >= 2 ? 'text-amber-600' : 'text-slate-400'}`;
+    });
+  }
+})();
 </script>
-{% endblock %} 
+{% endblock %}

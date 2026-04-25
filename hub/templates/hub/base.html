@@ -1,811 +1,673 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}EduCycle - Campus Marketplace{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>{% block title %}EduCycle — Campus Marketplace{% endblock %}</title>
+
+    <!-- ── Theme: apply BEFORE page renders to avoid flash ── -->
+    <script>
+        (function() {
+            var t = localStorage.getItem('ec-theme') || 'light';
+            if (t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        indigo: {
+                            50:  '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        },
+                        amber: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card':    '0 4px 24px 0 rgba(99,102,241,0.08)',
+                        'card-hover': '0 12px 40px 0 rgba(99,102,241,0.18)',
+                        'nav':     '0 2px 20px 0 rgba(49,46,129,0.10)',
+                    },
+                    borderRadius: {
+                        '2xl': '1rem',
+                        '3xl': '1.5rem',
+                        '4xl': '2rem',
+                    },
+                    animation: {
+                        'fade-up': 'fadeUp 0.5s ease-out both',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
+                    },
+                    keyframes: {
+                        fadeUp: {
+                            '0%':   { opacity: '0', transform: 'translateY(24px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --primary-color: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary-color: #8b5cf6;
-            --accent-color: #f59e0b;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --light-bg: #fafafa;
-            --card-bg: #ffffff;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-            --border-color: #e5e7eb;
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        body { font-family: 'Inter', system-ui, sans-serif; }
+
+        /* Smooth card hover lift */
+        .card-lift {
+            transition: transform 0.28s cubic-bezier(.22,.68,0,1.2),
+                        box-shadow 0.28s ease;
+        }
+        .card-lift:hover {
+            transform: translateY(-6px) scale(1.012);
+            box-shadow: 0 20px 48px 0 rgba(99,102,241,0.18);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* Navbar glass effect */
+        .navbar-glass {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
-        body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--light-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* Navbar Styling */
-        .navbar {
-            background: var(--gradient-primary) !important;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .navbar-brand {
-            font-weight: 800;
-            font-size: 1.8rem;
-            color: white !important;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .navbar-brand::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--gradient-accent);
-            border-radius: 2px;
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .navbar-brand:hover::after {
-            transform: scaleX(1);
-        }
-
-        .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-weight: 500;
-            padding: 0.75rem 1.25rem !important;
-            border-radius: 12px;
-            margin: 0 0.25rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .navbar-nav .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .navbar-nav .nav-link:hover::before {
-            left: 100%;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: white !important;
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Container and Layout */
-        .container {
-            max-width: 1200px;
-        }
-
-        /* Cards */
-        .card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s ease;
-            background: var(--card-bg);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient-primary);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-img-top {
-            border-radius: 20px 20px 0 0;
-            transition: transform 0.4s ease;
-        }
-
-        .card:hover .card-img-top {
-            transform: scale(1.05);
-        }
-
-        /* Buttons */
-        .btn {
-            border-radius: 15px;
-            font-weight: 600;
-            padding: 0.875rem 2rem;
-            transition: all 0.3s ease;
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--gradient-secondary);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-success {
-            background: var(--gradient-accent);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
-        }
-
-        .btn-outline-primary {
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            background: transparent;
-        }
-
-        .btn-outline-primary:hover {
-            background: var(--gradient-primary);
-            color: white;
-            transform: translateY(-3px);
-            border-color: transparent;
-        }
-
-        .btn-outline-secondary {
-            border: 2px solid var(--secondary-color);
-            color: var(--secondary-color);
-            background: transparent;
-        }
-
-        .btn-outline-secondary:hover {
-            background: var(--gradient-secondary);
-            color: white;
-            transform: translateY(-3px);
-            border-color: transparent;
-        }
-
-        /* Hero Section */
-        .hero-section {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 5rem 2rem;
-            border-radius: 30px;
-            margin-bottom: 3rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .hero-section h1 {
-            font-weight: 800;
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 1;
-            background: linear-gradient(45deg, #fff, #f0f0f0);
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #4f46e5 0%, #818cf8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .hero-section .lead {
-            font-size: 1.25rem;
-            font-weight: 400;
-            margin-bottom: 2rem;
+        /* Amber accent button shimmer */
+        .btn-amber {
             position: relative;
-            z-index: 1;
+            overflow: hidden;
         }
+        .btn-amber::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+        .btn-amber:hover::after { transform: translateX(100%); }
 
-        /* Search Form */
-        .search-form {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #a5b4fc; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+
+        /* Nav link underline animation */
+        .nav-link-animated {
             position: relative;
-            z-index: 1;
         }
-
-        .form-control {
-            border-radius: 15px;
-            border: 2px solid var(--border-color);
-            padding: 1rem 1.25rem;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
+        .nav-link-animated::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #f59e0b;
+            border-radius: 2px;
+            transition: width 0.3s ease;
         }
+        .nav-link-animated:hover::after { width: 100%; }
 
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
-            background: white;
-            transform: translateY(-2px);
-        }
-
-        /* Form Styling */
-        .form-label {
+        /* Badge pill */
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.72rem;
             font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
         }
 
-        .form-control {
-            border-radius: 12px;
-            border: 2px solid var(--border-color);
-            padding: 0.875rem 1rem;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+        /* Image placeholder shimmer */
+        .img-placeholder {
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
         }
 
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15);
-            transform: translateY(-2px);
+        /* Focus ring */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.18);
         }
 
-        .form-text {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
+        /* Alert animation */
+        .alert-slide {
+            animation: fadeUp 0.4s ease-out both;
         }
 
-        .invalid-feedback {
-            color: var(--danger-color);
-            font-size: 0.875rem;
-            font-weight: 500;
+        /* Footer wave is handled by inline SVG */
+
+        /* ═══════════════════════════════════════════════════
+           DARK MODE — comprehensive overrides
+           Applied when <html class="dark"> is set
+        ═══════════════════════════════════════════════════ */
+
+        /* Base */
+        .dark body { background-color: #0f172a; color: #e2e8f0; }
+
+        /* Scrollbar */
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        .dark ::-webkit-scrollbar-thumb { background: #4f46e5; }
+
+        /* Navbar */
+        .dark .navbar-glass {
+            background: rgba(15,23,42,0.92);
+            border-bottom-color: rgba(99,102,241,0.15);
         }
+        .dark header a.nav-link-animated,
+        .dark header a { color: #94a3b8; }
+        .dark header a:hover { color: #a5b4fc; background-color: rgba(99,102,241,0.12); }
+        .dark header .w-px { background-color: #334155; }
+        .dark #mobile-menu { border-top-color: #1e293b; background: #0f172a; }
+
+        /* Cards / white surfaces */
+        .dark .bg-white,
+        .dark [class*="bg-white"] { background-color: #1e293b !important; }
+        .dark .bg-slate-50 { background-color: #0f172a !important; }
+        .dark .bg-slate-100 { background-color: #1e293b !important; }
+        .dark .bg-slate-200 { background-color: #334155 !important; }
+
+        /* Borders */
+        .dark .border-slate-100 { border-color: #334155 !important; }
+        .dark .border-slate-200 { border-color: #334155 !important; }
+        .dark .border-slate-300 { border-color: #475569 !important; }
+        .dark [class*="border-slate-1"] { border-color: #334155 !important; }
+
+        /* Text */
+        .dark .text-slate-900 { color: #f1f5f9 !important; }
+        .dark .text-slate-800 { color: #e2e8f0 !important; }
+        .dark .text-slate-700 { color: #cbd5e1 !important; }
+        .dark .text-slate-600 { color: #94a3b8 !important; }
+        .dark .text-slate-500 { color: #64748b !important; }
+        .dark .text-slate-400 { color: #475569 !important; }
+
+        /* Inputs / selects / textareas */
+        .dark input:not([type="radio"]):not([type="checkbox"]):not([type="submit"]):not([type="button"]),
+        .dark select,
+        .dark textarea {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+            color: #e2e8f0 !important;
+        }
+        .dark input::placeholder,
+        .dark textarea::placeholder { color: #475569 !important; }
+        .dark input:focus,
+        .dark select:focus,
+        .dark textarea:focus {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.25) !important;
+        }
+        .dark input:disabled,
+        .dark select:disabled { background-color: #1e293b !important; opacity: 0.5; }
+
+        /* Hover states on rows */
+        .dark .hover\:bg-slate-50:hover { background-color: #1e293b !important; }
+        .dark .hover\:bg-slate-100:hover { background-color: #334155 !important; }
+        .dark .hover\:bg-indigo-50:hover { background-color: rgba(99,102,241,0.12) !important; }
+        .dark .hover\:bg-red-50:hover { background-color: rgba(239,68,68,0.1) !important; }
+
+        /* Indigo tinted backgrounds */
+        .dark .bg-indigo-50 { background-color: rgba(99,102,241,0.12) !important; }
+        .dark .bg-indigo-100 { background-color: rgba(99,102,241,0.18) !important; }
+        .dark .bg-violet-50 { background-color: rgba(139,92,246,0.1) !important; }
+
+        /* Emerald / amber / blue tinted */
+        .dark .bg-emerald-50 { background-color: rgba(16,185,129,0.1) !important; }
+        .dark .bg-emerald-100 { background-color: rgba(16,185,129,0.15) !important; }
+        .dark .bg-amber-50 { background-color: rgba(245,158,11,0.1) !important; }
+        .dark .bg-amber-100 { background-color: rgba(245,158,11,0.15) !important; }
+        .dark .bg-blue-50 { background-color: rgba(59,130,246,0.1) !important; }
+        .dark .bg-blue-100 { background-color: rgba(59,130,246,0.15) !important; }
+        .dark .bg-red-50 { background-color: rgba(239,68,68,0.08) !important; }
+        .dark .bg-red-100 { background-color: rgba(239,68,68,0.12) !important; }
+
+        /* Gradient backgrounds (hero, profile banner etc.) — keep as-is, they look fine */
+
+        /* Card shadows */
+        .dark .shadow-card { box-shadow: 0 4px 24px 0 rgba(0,0,0,0.4) !important; }
+        .dark .shadow-card-hover { box-shadow: 0 12px 40px 0 rgba(0,0,0,0.5) !important; }
+        .dark .shadow-sm { box-shadow: 0 1px 4px rgba(0,0,0,0.4) !important; }
+
+        /* Dividers */
+        .dark .divide-slate-100 > * + * { border-color: #334155; }
+        .dark hr, .dark .border-t { border-color: #334155 !important; }
 
         /* Badges */
-        .badge {
-            border-radius: 10px;
-            font-weight: 600;
-            padding: 0.5rem 0.75rem;
+        .dark .badge-green { background: rgba(16,185,129,0.15); color: #34d399; }
+        .dark .badge-gray  { background: #334155; color: #94a3b8; }
+
+        /* Toggle rows in settings */
+        .dark .toggle-row { background: #1e293b; }
+        .dark .toggle-row:hover { background: #334155; }
+        .dark .toggle-label { color: #e2e8f0; }
+        .dark .toggle-sub { color: #64748b; }
+        .dark .status-row { background: #1e293b; }
+        .dark .status-label { color: #e2e8f0; }
+        .dark .status-sub { color: #64748b; }
+
+        /* Settings sfield */
+        .dark .sfield {
+            background: #0f172a !important;
+            border-color: #334155 !important;
+            color: #e2e8f0 !important;
+        }
+        .dark .sfield:focus { border-color: #6366f1 !important; }
+        .dark .sfield:disabled { background: #1e293b !important; }
+
+        /* Settings section title */
+        .dark .section-title { color: #475569; }
+        .dark .flabel { color: #94a3b8; }
+
+        /* Active nav in settings */
+        .dark .active-nav { background: rgba(99,102,241,0.2) !important; color: #a5b4fc !important; }
+        .dark .settings-nav:not(.active-nav) { color: #94a3b8; }
+        .dark .settings-nav:not(.active-nav):hover { background: #1e293b; }
+
+        /* Notifications page */
+        .dark .notification-card { background: #1e293b; border-color: #334155; }
+        .dark .notification-card.border-indigo-100 { border-color: rgba(99,102,241,0.3) !important; background: rgba(99,102,241,0.06) !important; }
+
+        /* Chat bubbles */
+        .dark .bubble-bot {
+            background: #1e293b !important;
+            color: #e2e8f0 !important;
+            border-color: #334155 !important;
+        }
+        .dark #chat-messages { background: linear-gradient(180deg,#0f172a 0%,#0f172a 100%) !important; }
+        .dark #pills-bar { background: #1e293b !important; border-top-color: #334155 !important; }
+        .dark #message-input {
+            background: #0f172a !important;
+            border-color: #334155 !important;
+            color: #e2e8f0 !important;
         }
 
-        .bg-primary {
-            background: var(--gradient-primary) !important;
+        /* Item cards */
+        .dark .card-lift { background: #1e293b; border-color: #334155; }
+        .dark .card-lift:hover { box-shadow: 0 20px 48px 0 rgba(0,0,0,0.5); }
+
+        /* Flash messages */
+        .dark .alert-slide.bg-emerald-50 { background: rgba(16,185,129,0.1) !important; border-color: rgba(16,185,129,0.3) !important; color: #6ee7b7 !important; }
+        .dark .alert-slide.bg-red-50 { background: rgba(239,68,68,0.1) !important; border-color: rgba(239,68,68,0.3) !important; color: #fca5a5 !important; }
+        .dark .alert-slide.bg-amber-50 { background: rgba(245,158,11,0.1) !important; border-color: rgba(245,158,11,0.3) !important; color: #fcd34d !important; }
+        .dark .alert-slide.bg-indigo-50 { background: rgba(99,102,241,0.1) !important; border-color: rgba(99,102,241,0.3) !important; color: #a5b4fc !important; }
+
+        /* Login / Register split panels */
+        .dark .bg-slate-50.flex-1 { background: #0f172a !important; }
+
+        /* Checkout / Cart / Orders */
+        .dark .bg-gradient-to-r.from-indigo-50 { background: rgba(99,102,241,0.08) !important; }
+
+        /* Danger zone inputs */
+        .dark input[type="text"].border-red-200 {
+            background: #1e293b !important;
+            border-color: #7f1d1d !important;
+            color: #fca5a5 !important;
         }
 
-        .bg-secondary {
-            background: var(--gradient-secondary) !important;
-        }
-
-        /* Alerts */
-        .alert {
-            border-radius: 15px;
-            border: none;
-            padding: 1rem 1.5rem;
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--text-primary);
-            color: white;
-            padding: 3rem 0 1rem;
-            margin-top: 4rem;
-            position: relative;
-            min-height: 200px;
-        }
-
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient-primary);
-        }
-
-        .footer h5 {
-            color: white;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .footer p {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .footer .text-muted {
-            color: rgba(255, 255, 255, 0.6) !important;
-        }
-
-        .footer-link {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: color 0.3s ease;
-            display: block;
-            padding: 0.25rem 0;
-        }
-
-        .footer-link:hover {
-            color: white;
-            text-decoration: none;
-        }
-
-        .social-links a {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.2rem;
-            transition: color 0.3s ease;
-        }
-
-        .social-links a:hover {
-            color: white;
-        }
-
-        .footer-divider {
-            border-color: rgba(255, 255, 255, 0.2);
-            margin: 2rem 0 1rem;
-        }
-
-        .newsletter-signup .form-control {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .newsletter-signup .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .newsletter-signup .form-control:focus {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: white;
-            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-badges .badge {
-            font-size: 0.75rem;
-            padding: 0.5rem 0.75rem;
-        }
-
-        /* Amazon-style Search Bar */
-        .amazon-search-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .search-wrapper {
-            flex: 1;
-            position: relative;
-        }
-
-        .amazon-search-form {
-            width: 100%;
-        }
-
-        .search-input-group {
-            display: flex;
-            border: 2px solid #ff9900;
-            border-radius: 8px;
-            overflow: hidden;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .category-dropdown {
-            position: relative;
-            background: #f3f3f3;
-            border-right: 1px solid #ddd;
-            min-width: 120px;
-        }
-
-        .category-select {
-            width: 100%;
-            padding: 12px 16px;
-            border: none;
-            background: transparent;
-            font-size: 14px;
-            color: #333;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-        }
-
-        .dropdown-arrow {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-            font-size: 12px;
-            pointer-events: none;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 12px 16px;
-            border: none;
-            outline: none;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .search-input::placeholder {
-            color: #999;
-        }
-
-        .search-button {
-            background: #ff9900;
-            border: none;
-            padding: 12px 20px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            min-width: 50px;
-        }
-
-        .search-button:hover {
-            background: #e68a00;
-        }
-
-        .search-button:active {
-            background: #d47f00;
-        }
-
-        .add-item-button {
-            flex-shrink: 0;
-        }
-
-        .add-item-button .btn {
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-        /* Responsive design for Amazon search */
-        @media (max-width: 768px) {
-            .amazon-search-container {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .search-input-group {
-                width: 100%;
-            }
-            
-            .category-dropdown {
-                min-width: 100px;
-            }
-            
-            .search-input {
-                font-size: 14px;
-            }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero-section h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-section {
-                padding: 3rem 1rem;
-            }
-            
-            .container {
-                padding: 0 1rem;
-            }
-
-            /* Mobile responsive for horizontal search */
-            .row.align-items-end > div {
-                margin-bottom: 1rem;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .float-animation {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--light-bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--gradient-primary);
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--gradient-secondary);
-        }
-
-        /* Loading Animation */
-        .loading-dots {
-            display: inline-block;
-        }
-
-        .loading-dots::after {
-            content: '';
-            animation: dots 1.5s steps(5, end) infinite;
-        }
-
-        @keyframes dots {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80%, 100% { content: '...'; }
-        }
+        /* Appearance section theme cards */
+        .dark .peer-checked\:bg-indigo-50 { background: rgba(99,102,241,0.2) !important; }
+        .dark .border-slate-200 { border-color: #334155 !important; }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-palette me-2"></i>EduCycle
-            </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="fas fa-home me-1"></i>Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'item_create' %}">
-                            <i class="fas fa-plus me-1"></i>Add Item
-                        </a>
-                    </li>
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'profile' %}">
-                                <i class="fas fa-user me-1"></i>Profile
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'notifications' %}">
-                                <i class="fas fa-bell me-1"></i>Notifications
-                                <span id="notification-count" class="badge bg-danger" style="display: none;">0</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'chatbot' %}">
-                                <i class="fas fa-robot me-1"></i>Assistant
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_logout' %}">
-                                <i class="fas fa-sign-out-alt me-1"></i>Logout
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/register/">
-                                <i class="fas fa-user-plus me-1"></i>Sign Up
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/login/">
-                                <i class="fas fa-sign-in-alt me-1"></i>Login
-                            </a>
-                        </li>
-                    {% endif %}
-      </ul>
-    </div>
-  </div>
-</nav>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col antialiased transition-colors duration-200">
 
-    <!-- Main Content -->
-    <main class="container fade-in-up flex-grow-1">
-        {% if messages %}
-            <div class="mt-3">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- ═══════════════════════════════════════════════════════
+         NAVBAR
+    ═══════════════════════════════════════════════════════ -->
+    <header class="sticky top-0 z-50 navbar-glass border-b border-slate-200/70 shadow-nav">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-2.5 group flex-shrink-0">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-md group-hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-recycle text-white text-sm"></i>
                     </div>
-                {% endfor %}
+                    <span class="text-xl font-bold gradient-text tracking-tight">EduCycle</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-1">
+                    <a href="/" class="nav-link-animated px-3 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
+                        <i class="fas fa-home mr-1.5 text-xs"></i>Home
+                    </a>
+                    <a href="{% url 'item_create' %}" class="nav-link-animated px-3 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
+                        <i class="fas fa-plus mr-1.5 text-xs"></i>Sell Item
+                    </a>
+                    {% if user.is_authenticated %}
+                        {% if user.email == 'admin@gmail.com' %}
+                        <a href="{% url 'admin_panel' %}" class="nav-link-animated px-3 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
+                            <i class="fas fa-shield-alt mr-1.5 text-xs"></i>Panel
+                        </a>
+                        {% else %}
+                        <a href="{% url 'profile' %}" class="nav-link-animated px-3 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
+                            <i class="fas fa-user mr-1.5 text-xs"></i>Profile
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'notifications' %}" class="relative nav-link-animated px-3 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
+                            <i class="fas fa-bell mr-1.5 text-xs"></i>Alerts
+                            <span id="notification-count" class="hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
+                        </a>
+                        <a href="{% url 'chatbot' %}" class="nav-link-animated px-3 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
+                            <i class="fas fa-robot mr-1.5 text-xs"></i>Assistant
+                        </a>
+                        <a href="{% url 'settings' %}" class="nav-link-animated px-3 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
+                            <i class="fas fa-cog mr-1.5 text-xs"></i>Settings
+                        </a>
+                        <div class="w-px h-5 bg-slate-200 mx-1"></div>
+                        <a href="{% url 'user_logout' %}" class="px-3 py-2 text-sm font-medium text-slate-500 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors">
+                            <i class="fas fa-sign-out-alt mr-1.5 text-xs"></i>Logout
+                        </a>
+                    {% else %}
+                        <div class="w-px h-5 bg-slate-200 mx-1"></div>
+                        <a href="/register/" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
+                            Sign Up
+                        </a>
+                        <a href="/login/" class="ml-1 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-all hover:shadow-md hover:-translate-y-px">
+                            Login
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-colors" aria-label="Toggle menu">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
             </div>
-        {% endif %}
-        
+
+            <!-- Mobile Nav -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-slate-100 mt-1 pt-3 space-y-1">
+                <a href="/" class="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
+                    <i class="fas fa-home w-4 text-center"></i>Home
+                </a>
+                <a href="{% url 'item_create' %}" class="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
+                    <i class="fas fa-plus w-4 text-center"></i>Sell Item
+                </a>
+                {% if user.is_authenticated %}
+                    {% if user.email == 'admin@gmail.com' %}
+                    <a href="{% url 'admin_panel' %}" class="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
+                        <i class="fas fa-shield-alt w-4 text-center"></i>Panel
+                    </a>
+                    {% else %}
+                    <a href="{% url 'profile' %}" class="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
+                        <i class="fas fa-user w-4 text-center"></i>Profile
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'notifications' %}" class="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
+                        <i class="fas fa-bell w-4 text-center"></i>Alerts
+                    </a>
+                    <a href="{% url 'chatbot' %}" class="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
+                        <i class="fas fa-robot w-4 text-center"></i>Assistant
+                    </a>
+                    <a href="{% url 'settings' %}" class="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
+                        <i class="fas fa-cog w-4 text-center"></i>Settings
+                    </a>
+                    <a href="{% url 'user_logout' %}" class="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                        <i class="fas fa-sign-out-alt w-4 text-center"></i>Logout
+                    </a>
+                {% else %}
+                    <a href="/register/" class="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
+                        <i class="fas fa-user-plus w-4 text-center"></i>Sign Up
+                    </a>
+                    <a href="/login/" class="flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors">
+                        <i class="fas fa-sign-in-alt w-4 text-center"></i>Login
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════
+         FLASH MESSAGES
+    ═══════════════════════════════════════════════════════ -->
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 space-y-2">
+        {% for message in messages %}
+        <div class="alert-slide flex items-start gap-3 px-4 py-3 rounded-2xl border
+            {% if message.tags == 'success' %}bg-emerald-50 border-emerald-200 text-emerald-800
+            {% elif message.tags == 'error' or message.tags == 'danger' %}bg-red-50 border-red-200 text-red-800
+            {% elif message.tags == 'warning' %}bg-amber-50 border-amber-200 text-amber-800
+            {% else %}bg-indigo-50 border-indigo-200 text-indigo-800{% endif %}">
+            <i class="fas
+                {% if message.tags == 'success' %}fa-check-circle text-emerald-500
+                {% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle text-red-500
+                {% elif message.tags == 'warning' %}fa-exclamation-triangle text-amber-500
+                {% else %}fa-info-circle text-indigo-500{% endif %} mt-0.5 flex-shrink-0"></i>
+            <span class="text-sm font-medium flex-1">{{ message }}</span>
+            <button onclick="this.closest('.alert-slide').remove()" class="text-current opacity-50 hover:opacity-100 transition-opacity ml-2">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ═══════════════════════════════════════════════════════
+         MAIN CONTENT
+    ═══════════════════════════════════════════════════════ -->
+    <main class="flex-1 animate-fade-up">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5><i class="fas fa-palette me-2"></i>EduCycle</h5>
-                    <p class="text-muted">Connecting students through sustainable commerce. Buy, sell, and swap campus essentials with your community.</p>
-                    <div class="social-links mt-3">
-                        <a href="#" class="me-3"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-linkedin"></i></a>
+    <!-- ═══════════════════════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════════════════════ -->
+    <footer class="relative mt-24 overflow-hidden">
+
+        <!-- Top wave divider -->
+        <div class="w-full overflow-hidden leading-none -mb-px">
+            <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-12 sm:h-16 block">
+                <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#0f172a"/>
+            </svg>
+        </div>
+
+        <div class="bg-slate-950 text-slate-400">
+
+            <!-- Main footer content -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12">
+
+                <!-- Top row: brand + newsletter -->
+                <div class="flex flex-col lg:flex-row gap-10 lg:gap-16 pb-12 border-b border-slate-800">
+
+                    <!-- Brand block -->
+                    <div class="lg:w-80 flex-shrink-0">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-900/40">
+                                <i class="fas fa-recycle text-white text-base"></i>
+                            </div>
+                            <div>
+                                <span class="text-xl font-extrabold text-white tracking-tight">EduCycle</span>
+                                <p class="text-[11px] text-indigo-400 font-medium -mt-0.5">Campus Marketplace</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-6">
+                            The student-first marketplace for buying, selling, and swapping second-hand study materials. Sustainable, affordable, community-driven.
+                        </p>
+
+                        <!-- Social icons -->
+                        <div class="flex gap-2.5">
+                            <a href="#" aria-label="Facebook"
+                                class="group w-9 h-9 rounded-xl bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-500 flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-facebook text-slate-400 group-hover:text-white text-sm transition-colors"></i>
+                            </a>
+                            <a href="#" aria-label="Twitter / X"
+                                class="group w-9 h-9 rounded-xl bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-500 flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-twitter text-slate-400 group-hover:text-white text-sm transition-colors"></i>
+                            </a>
+                            <a href="#" aria-label="Instagram"
+                                class="group w-9 h-9 rounded-xl bg-slate-800 hover:bg-pink-600 border border-slate-700 hover:border-pink-500 flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-instagram text-slate-400 group-hover:text-white text-sm transition-colors"></i>
+                            </a>
+                            <a href="#" aria-label="LinkedIn"
+                                class="group w-9 h-9 rounded-xl bg-slate-800 hover:bg-blue-600 border border-slate-700 hover:border-blue-500 flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-linkedin text-slate-400 group-hover:text-white text-sm transition-colors"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Newsletter -->
+                    <div class="flex-1 lg:max-w-md lg:ml-auto">
+                        <div class="bg-gradient-to-br from-indigo-600/20 to-violet-600/10 border border-indigo-500/20 rounded-3xl p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="w-7 h-7 rounded-lg bg-amber-400/20 flex items-center justify-center">
+                                    <i class="fas fa-bell text-amber-400 text-xs"></i>
+                                </div>
+                                <h4 class="text-white font-bold text-sm">Stay in the loop</h4>
+                            </div>
+                            <p class="text-slate-400 text-xs mb-4 leading-relaxed">
+                                Get notified about new listings, campus deals, and EduCycle updates. No spam, ever.
+                            </p>
+                            <form method="post" action="{% url 'newsletter_subscribe' %}" id="newsletter-form">
+                                {% csrf_token %}
+                                <div class="flex gap-2">
+                                    <input type="email" name="email" placeholder="your@university.edu" required
+                                        class="flex-1 min-w-0 px-4 py-2.5 text-sm bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                                    <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors flex-shrink-0 flex items-center gap-1.5">
+                                        <i class="fas fa-paper-plane text-xs"></i>
+                                        <span class="hidden sm:inline">Subscribe</span>
+                                    </button>
+                                </div>
+                            </form>
+                            <p class="text-[11px] text-slate-500 mt-2.5">
+                                <i class="fas fa-shield-alt mr-1 text-emerald-500"></i>
+                                We respect your privacy. Unsubscribe anytime.
+                            </p>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="col-md-2">
-                    <h6 class="text-white mb-3">Quick Links</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'about_us' %}" class="footer-link">About Us</a></li>
-                        <li><a href="#" class="footer-link">How It Works</a></li>
-                        <li><a href="#" class="footer-link">Safety Guidelines</a></li>
-                        <li><a href="#" class="footer-link">Terms of Service</a></li>
-                    </ul>
-                </div>
-                
-                <div class="col-md-2">
-                    <h6 class="text-white mb-3">Support</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'contact_us' %}" class="footer-link">Contact Us</a></li>
-                        <li><a href="{% url 'help_center' %}" class="footer-link">Help Center</a></li>
-                        <li><a href="{% url 'report_bug' %}" class="footer-link">Report a Bug</a></li>
-                        <li><a href="#" class="footer-link">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                
-                <div class="col-md-4">
-                    <h6 class="text-white mb-3">Get in Touch</h6>
-                    <p class="text-muted mb-2">
-                        <i class="fas fa-envelope me-2"></i>support@educycle.com
-                    </p>
-                    <p class="text-muted mb-2">
-                        <i class="fas fa-phone me-2"></i>+91 98765 43210
-                    </p>
-                    <p class="text-muted mb-3">
-                        <i class="fas fa-map-marker-alt me-2"></i>Campus Address, University
-                    </p>
-                    
-                    <div class="newsletter-signup">
-                        <h6 class="text-white mb-2">Stay Updated</h6>
-                        <div class="input-group">
-                            <input type="email" class="form-control" placeholder="Enter your email">
-                            <button class="btn btn-primary" type="button">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
+
+                <!-- Links grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 pt-10">
+
+                    <!-- Platform -->
+                    <div>
+                        <h6 class="text-white font-bold text-xs uppercase tracking-widest mb-4">Platform</h6>
+                        <ul class="space-y-3">
+                            <li><a href="{% url 'about_us' %}" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>About Us</a></li>
+                            <li><a href="{% url 'how_it_works' %}" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>How It Works</a></li>
+                            <li><a href="{% url 'safety_guidelines' %}" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>Safety Guidelines</a></li>
+                            <li><a href="{% url 'terms_of_service' %}" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>Terms of Service</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Support -->
+                    <div>
+                        <h6 class="text-white font-bold text-xs uppercase tracking-widest mb-4">Support</h6>
+                        <ul class="space-y-3">
+                            <li><a href="{% url 'contact_us' %}" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>Contact Us</a></li>
+                            <li><a href="{% url 'help_center' %}" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>Help Center</a></li>
+                            <li><a href="{% url 'report_bug' %}" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>Report a Bug</a></li>
+                            <li><a href="{% url 'privacy_policy' %}" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>Privacy Policy</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Categories -->
+                    <div>
+                        <h6 class="text-white font-bold text-xs uppercase tracking-widest mb-4">Browse</h6>
+                        <ul class="space-y-3">
+                            <li><a href="/?category=textbook" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>📚 Textbooks</a></li>
+                            <li><a href="/?category=equipment" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>🔬 Lab Equipment</a></li>
+                            <li><a href="/?category=appliance" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>⚡ Appliances</a></li>
+                            <li><a href="/?category=decor" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 group">
+                                <i class="fas fa-chevron-right text-[9px] text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity -ml-1"></i>🎨 Room Decor</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Contact -->
+                    <div>
+                        <h6 class="text-white font-bold text-xs uppercase tracking-widest mb-4">Contact</h6>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-2.5">
+                                <i class="fas fa-envelope text-indigo-400 text-xs mt-1 flex-shrink-0"></i>
+                                <a href="mailto:support@educycle.com" class="text-sm text-slate-400 hover:text-white transition-colors break-all">support@educycle.com</a>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fas fa-phone text-indigo-400 text-xs mt-1 flex-shrink-0"></i>
+                                <span class="text-sm text-slate-400">+91 98765 43210</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fas fa-map-marker-alt text-indigo-400 text-xs mt-1 flex-shrink-0"></i>
+                                <span class="text-sm text-slate-400">Campus Address, University</span>
+                            </li>
+                        </ul>
+
+                        <!-- Trust badges -->
+                        <div class="flex flex-wrap gap-2 mt-5">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-900/40 border border-emerald-800/60 text-emerald-400 text-[11px] font-semibold">
+                                <i class="fas fa-shield-alt text-[9px]"></i> Secure
+                            </span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-900/40 border border-amber-800/60 text-amber-400 text-[11px] font-semibold">
+                                <i class="fas fa-leaf text-[9px]"></i> Eco
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <hr class="footer-divider">
-            
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="text-muted mb-0">&copy; 2024 EduCycle. Made with <i class="fas fa-heart text-danger"></i> for students.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="footer-badges">
-                        <span class="badge bg-success me-2">
-                            <i class="fas fa-shield-alt"></i> Secure
-                        </span>
-                        <span class="badge bg-info me-2">
-                            <i class="fas fa-users"></i> Community
-                        </span>
-                        <span class="badge bg-warning">
-                            <i class="fas fa-leaf"></i> Eco-Friendly
+
+            <!-- Bottom bar -->
+            <div class="border-t border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p class="text-xs text-slate-500 flex items-center gap-1.5">
+                        &copy; 2024 EduCycle &mdash; Made with
+                        <i class="fas fa-heart text-red-500 text-[10px]"></i>
+                        for students everywhere.
+                    </p>
+                    <div class="flex items-center gap-5">
+                        <a href="{% url 'privacy_policy' %}" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Privacy</a>
+                        <a href="{% url 'terms_of_service' %}" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Terms</a>
+                        <a href="{% url 'safety_guidelines' %}" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Safety</a>
+                        <span class="text-xs text-slate-600 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-slow"></span>
+                            All systems operational
                         </span>
                     </div>
                 </div>
@@ -813,6 +675,35 @@
         </div>
     </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mobile menu toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+                const icon = btn.querySelector('i');
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-times');
+            });
+        }
+
+        /* ── Global theme engine ──────────────────────────────────
+           Called from settings page when user picks a theme.
+           Also called on every page load (inline script in <head>).
+        ──────────────────────────────────────────────────────── */
+        function applyTheme(theme) {
+            localStorage.setItem('ec-theme', theme);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const useDark = theme === 'dark' || (theme === 'system' && prefersDark);
+            document.documentElement.classList.toggle('dark', useDark);
+        }
+
+        // Re-apply on system preference change (for "system" mode)
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            const t = localStorage.getItem('ec-theme') || 'light';
+            if (t === 'system') applyTheme('system');
+        });
+    </script>
 </body>
-</html> 
+</html>

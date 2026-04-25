@@ -139,7 +139,7 @@ def payment_page(request, order_id):
             'total_amount': total_amount,
             'payment_options': payment_options,
             'stripe_public_key': settings.STRIPE_PUBLISHABLE_KEY,
-            'razorpay_key_id': settings.RAZORPAY_KEY_ID if RAZORPAY_AVAILABLE else 'rzp_test_key',
+            'razorpay_key_id': settings.RAZORPAY_KEY_ID,
         })
     except Order.DoesNotExist:
         messages.error(request, 'Order not found.')
@@ -211,7 +211,6 @@ def process_cod_payment(request, order_id):
             amount=order.total_amount,
             currency='INR',
             status='pending',
-            payment_method='cod'
         )
         
         # Update order status

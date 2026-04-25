@@ -1,357 +1,113 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}Help Center - EduCycle{% endblock %}
-
+{% block title %}Help Center — EduCycle{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <!-- Hero Section -->
-    <div class="row mb-5">
-        <div class="col-12 text-center">
-            <h1 class="display-4 mb-3">
-                <i class="fas fa-question-circle text-primary"></i> Help Center
-            </h1>
-            <p class="lead text-muted">Find answers to your questions and learn how to use EduCycle effectively.</p>
-        </div>
-    </div>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-    <!-- Search Section -->
-    <div class="row mb-5">
-        <div class="col-md-8 mx-auto">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for help articles..." id="helpSearch">
-                        <button class="btn btn-primary" type="button">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Header -->
+  <div class="text-center mb-10">
+    <div class="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center mx-auto mb-4">
+      <i class="fas fa-question-circle text-indigo-600 text-xl"></i>
     </div>
+    <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Help Center</h1>
+    <p class="text-slate-500">Find answers and learn how to use EduCycle effectively.</p>
+  </div>
 
-    <!-- Help Categories -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2 class="text-center mb-4">Help Categories</h2>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-user-plus text-primary" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3">Getting Started</h5>
-                    <p class="text-muted">Learn how to create an account and get started with EduCycle.</p>
-                    <a href="#getting-started" class="btn btn-outline-primary">View Articles</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-shopping-cart text-success" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3">Buying & Selling</h5>
-                    <p class="text-muted">Learn how to buy and sell items on the platform.</p>
-                    <a href="#buying-selling" class="btn btn-outline-success">View Articles</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-shield-alt text-warning" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3">Safety & Security</h5>
-                    <p class="text-muted">Stay safe while using EduCycle and protect your information.</p>
-                    <a href="#safety-security" class="btn btn-outline-warning">View Articles</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-credit-card text-info" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3">Payments</h5>
-                    <p class="text-muted">Learn about payment methods and transaction processes.</p>
-                    <a href="#payments" class="btn btn-outline-info">View Articles</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-mobile-alt text-secondary" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3">Mobile Usage</h5>
-                    <p class="text-muted">Tips for using EduCycle on mobile devices.</p>
-                    <a href="#mobile-usage" class="btn btn-outline-secondary">View Articles</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-cog text-dark" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3">Account Settings</h5>
-                    <p class="text-muted">Manage your account settings and preferences.</p>
-                    <a href="#account-settings" class="btn btn-outline-dark">View Articles</a>
-                </div>
-            </div>
-        </div>
+  <!-- Search -->
+  <div class="max-w-xl mx-auto mb-12">
+    <div class="relative">
+      <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+      <input type="text" id="help-search" placeholder="Search help articles…"
+        class="w-full pl-11 pr-4 py-3.5 border-2 border-slate-200 rounded-2xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all shadow-sm">
     </div>
+  </div>
 
-    <!-- Help Articles -->
-    <div class="row">
-        <div class="col-12">
-            <h2 class="text-center mb-4">Popular Help Articles</h2>
-        </div>
-        
-        <!-- Getting Started Section -->
-        <div class="col-12 mb-5" id="getting-started">
-            <h3 class="mb-4">
-                <i class="fas fa-user-plus text-primary"></i> Getting Started
-            </h3>
-            
-            <div class="accordion" id="gettingStartedAccordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#gs1">
-                            How do I create an account?
-                        </button>
-                    </h2>
-                    <div id="gs1" class="accordion-collapse collapse show" data-bs-parent="#gettingStartedAccordion">
-                        <div class="accordion-body">
-                            <ol>
-                                <li>Click on the "Sign Up" button in the navigation bar</li>
-                                <li>Fill out the registration form with your details:
-                                    <ul>
-                                        <li>Full name</li>
-                                        <li>Email address</li>
-                                        <li>Password</li>
-                                        <li>Student information</li>
-                                    </ul>
-                                </li>
-                                <li>Verify your email address</li>
-                                <li>Complete your profile setup</li>
-                            </ol>
-                            <p class="text-muted mt-3"><strong>Note:</strong> You must use your student email address to register.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gs2">
-                            How do I verify my account?
-                        </button>
-                    </h2>
-                    <div id="gs2" class="accordion-collapse collapse" data-bs-parent="#gettingStartedAccordion">
-                        <div class="accordion-body">
-                            <p>After registration, you'll receive a verification email. Follow these steps:</p>
-                            <ol>
-                                <li>Check your email inbox (and spam folder)</li>
-                                <li>Click on the verification link in the email</li>
-                                <li>Your account will be activated automatically</li>
-                            </ol>
-                            <p class="text-muted mt-3"><strong>Didn't receive the email?</strong> Check your spam folder or contact support.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Buying & Selling Section -->
-        <div class="col-12 mb-5" id="buying-selling">
-            <h3 class="mb-4">
-                <i class="fas fa-shopping-cart text-success"></i> Buying & Selling
-            </h3>
-            
-            <div class="accordion" id="buyingSellingAccordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#bs1">
-                            How do I list an item for sale?
-                        </button>
-                    </h2>
-                    <div id="bs1" class="accordion-collapse collapse show" data-bs-parent="#buyingSellingAccordion">
-                        <div class="accordion-body">
-                            <ol>
-                                <li>Log in to your account</li>
-                                <li>Click "Add Item" in the navigation bar</li>
-                                <li>Fill out the item details:
-                                    <ul>
-                                        <li>Item name and description</li>
-                                        <li>Category and condition</li>
-                                        <li>Price</li>
-                                        <li>Upload photos</li>
-                                    </ul>
-                                </li>
-                                <li>Review and submit your listing</li>
-                            </ol>
-                            <p class="text-muted mt-3"><strong>Tip:</strong> Good photos and detailed descriptions help items sell faster!</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bs2">
-                            How do I buy an item?
-                        </button>
-                    </h2>
-                    <div id="bs2" class="accordion-collapse collapse" data-bs-parent="#buyingSellingAccordion">
-                        <div class="accordion-body">
-                            <ol>
-                                <li>Browse items on the homepage or search for specific items</li>
-                                <li>Click on an item to view details</li>
-                                <li>Add the item to your cart</li>
-                                <li>Go to your cart and proceed to checkout</li>
-                                <li>Complete the purchase process</li>
-                            </ol>
-                            <p class="text-muted mt-3"><strong>Note:</strong> You can also contact sellers directly to ask questions about items.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Safety & Security Section -->
-        <div class="col-12 mb-5" id="safety-security">
-            <h3 class="mb-4">
-                <i class="fas fa-shield-alt text-warning"></i> Safety & Security
-            </h3>
-            
-            <div class="accordion" id="safetySecurityAccordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ss1">
-                            How do I stay safe when meeting sellers/buyers?
-                        </button>
-                    </h2>
-                    <div id="ss1" class="accordion-collapse collapse show" data-bs-parent="#safetySecurityAccordion">
-                        <div class="accordion-body">
-                            <h6>Safety Guidelines:</h6>
-                            <ul>
-                                <li><strong>Meet in public places:</strong> Campus libraries, cafes, or student centers</li>
-                                <li><strong>Verify items:</strong> Check the condition before paying</li>
-                                <li><strong>Use cash or secure payment:</strong> Avoid sharing bank details</li>
-                                <li><strong>Trust your instincts:</strong> If something feels off, don't proceed</li>
-                                <li><strong>Report suspicious activity:</strong> Contact support immediately</li>
-                            </ul>
-                            <p class="text-muted mt-3"><strong>Remember:</strong> Your safety is our top priority!</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ss2">
-                            How do I report a problem or suspicious activity?
-                        </button>
-                    </h2>
-                    <div id="ss2" class="accordion-collapse collapse" data-bs-parent="#safetySecurityAccordion">
-                        <div class="accordion-body">
-                            <p>If you encounter any issues or suspicious activity:</p>
-                            <ol>
-                                <li><strong>Immediate concerns:</strong> Contact campus security if needed</li>
-                                <li><strong>Report to us:</strong> Use the "Report a Bug" page or contact support</li>
-                                <li><strong>Provide details:</strong> Include screenshots and specific information</li>
-                                <li><strong>Follow up:</strong> We'll investigate and get back to you</li>
-                            </ol>
-                            <p class="text-muted mt-3"><strong>Emergency:</strong> Call campus security or local authorities if needed.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <!-- Category cards -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-14">
+    {% for item in "123456" %}
+    <a href="#section-{{ forloop.counter }}"
+      class="bg-white rounded-2xl border border-slate-100 shadow-card p-5 text-center hover:-translate-y-1 hover:border-indigo-200 transition-all group">
+      <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center
+        {% if forloop.counter == 1 %}bg-indigo-100 group-hover:bg-indigo-200
+        {% elif forloop.counter == 2 %}bg-emerald-100 group-hover:bg-emerald-200
+        {% elif forloop.counter == 3 %}bg-amber-100 group-hover:bg-amber-200
+        {% elif forloop.counter == 4 %}bg-blue-100 group-hover:bg-blue-200
+        {% elif forloop.counter == 5 %}bg-violet-100 group-hover:bg-violet-200
+        {% else %}bg-slate-100 group-hover:bg-slate-200{% endif %} transition-colors">
+        <i class="{% if forloop.counter == 1 %}fas fa-user-plus text-indigo-600{% elif forloop.counter == 2 %}fas fa-shopping-cart text-emerald-600{% elif forloop.counter == 3 %}fas fa-shield-alt text-amber-600{% elif forloop.counter == 4 %}fas fa-credit-card text-blue-600{% elif forloop.counter == 5 %}fas fa-mobile-alt text-violet-600{% else %}fas fa-cog text-slate-600{% endif %} text-lg"></i>
+      </div>
+      <p class="text-xs font-bold text-slate-700">{% if forloop.counter == 1 %}Getting Started{% elif forloop.counter == 2 %}Buying & Selling{% elif forloop.counter == 3 %}Safety{% elif forloop.counter == 4 %}Payments{% elif forloop.counter == 5 %}Mobile{% else %}Account{% endif %}</p>
+    </a>
+    {% endfor %}
+  </div>
 
-    <!-- Contact Support Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card bg-gradient-primary text-white">
-                <div class="card-body text-center">
-                    <h3 class="mb-4">Still Need Help?</h3>
-                    <p class="lead mb-4">Our support team is here to help you with any questions or issues.</p>
-                    <div class="d-flex justify-content-center flex-wrap">
-                        <a href="{% url 'contact_us' %}" class="btn btn-light me-3 mb-2">
-                            <i class="fas fa-envelope"></i> Contact Support
-                        </a>
-                        <a href="{% url 'report_bug' %}" class="btn btn-outline-light me-3 mb-2">
-                            <i class="fas fa-bug"></i> Report a Bug
-                        </a>
-                        <a href="mailto:support@educycle.com" class="btn btn-outline-light mb-2">
-                            <i class="fas fa-at"></i> Email Support
-                        </a>
-                    </div>
-                </div>
-            </div>
+  <!-- FAQ sections -->
+  {% for section_num in "123" %}
+  <div class="mb-10 help-section" id="section-{{ forloop.counter }}">
+    <h2 class="text-lg font-extrabold text-slate-900 mb-4 flex items-center gap-2">
+      <i class="{% if forloop.counter == 1 %}fas fa-user-plus text-indigo-500{% elif forloop.counter == 2 %}fas fa-shopping-cart text-emerald-500{% else %}fas fa-shield-alt text-amber-500{% endif %}"></i>
+      {% if forloop.counter == 1 %}Getting Started{% elif forloop.counter == 2 %}Buying & Selling{% else %}Safety & Security{% endif %}
+    </h2>
+    <div class="space-y-2">
+      {% for q_num in "12" %}
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-card overflow-hidden help-item">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-5 py-4 text-left text-sm font-semibold text-slate-800 hover:bg-slate-50 transition-colors">
+          {% if forloop.parentloop.counter == 1 and forloop.counter == 1 %}How do I create an account?
+          {% elif forloop.parentloop.counter == 1 and forloop.counter == 2 %}How do I verify my account?
+          {% elif forloop.parentloop.counter == 2 and forloop.counter == 1 %}How do I list an item for sale?
+          {% elif forloop.parentloop.counter == 2 and forloop.counter == 2 %}How do I buy an item?
+          {% elif forloop.parentloop.counter == 3 and forloop.counter == 1 %}How do I stay safe when meeting sellers?
+          {% else %}How do I report suspicious activity?{% endif %}
+          <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform flex-shrink-0 ml-3"></i>
+        </button>
+        <div class="hidden px-5 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-50">
+          {% if forloop.parentloop.counter == 1 and forloop.counter == 1 %}
+            Click "Sign Up" in the navbar, fill in your student details (name, email, password, student ID, department), and submit. You'll be logged in immediately.
+          {% elif forloop.parentloop.counter == 1 and forloop.counter == 2 %}
+            After registration you'll receive a verification email. Click the link inside to activate your account. Check your spam folder if you don't see it.
+          {% elif forloop.parentloop.counter == 2 and forloop.counter == 1 %}
+            Log in → click "Sell Item" in the navbar → fill in item name, category, price, description, and upload photos → click "Publish Listing".
+          {% elif forloop.parentloop.counter == 2 and forloop.counter == 2 %}
+            Browse items on the homepage, click an item to view details, add to cart, proceed to checkout, and complete payment. You can also message the seller directly.
+          {% elif forloop.parentloop.counter == 3 and forloop.counter == 1 %}
+            Always meet in public campus areas (library, cafeteria, student center). Verify the item before paying. Use cash or secure digital payments. Trust your instincts.
+          {% else %}
+            Use the "Report a Bug" page or email support@educycle.com with details. For immediate safety concerns, contact campus security.
+          {% endif %}
         </div>
+      </div>
+      {% endfor %}
     </div>
+  </div>
+  {% endfor %}
 
-    <!-- Quick Links -->
-    <div class="row">
-        <div class="col-12">
-            <h3 class="text-center mb-4">Quick Links</h3>
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-book text-primary" style="font-size: 2rem;"></i>
-                            <h6 class="mt-2">User Guide</h6>
-                            <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-video text-success" style="font-size: 2rem;"></i>
-                            <h6 class="mt-2">Video Tutorials</h6>
-                            <a href="#" class="btn btn-sm btn-outline-success">Watch Videos</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-download text-warning" style="font-size: 2rem;"></i>
-                            <h6 class="mt-2">Download App</h6>
-                            <a href="#" class="btn btn-sm btn-outline-warning">Get App</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-comments text-info" style="font-size: 2rem;"></i>
-                            <h6 class="mt-2">Community Forum</h6>
-                            <a href="#" class="btn btn-sm btn-outline-info">Join Forum</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- CTA -->
+  <div class="bg-gradient-to-br from-indigo-600 to-violet-600 rounded-3xl p-8 text-center text-white">
+    <h3 class="text-xl font-extrabold mb-2">Still need help?</h3>
+    <p class="text-indigo-200 text-sm mb-5">Our support team is here for you.</p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="{% url 'contact_us' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-700 font-bold text-sm rounded-xl shadow-sm transition-all hover:-translate-y-px">
+        <i class="fas fa-envelope text-xs"></i>Contact Support
+      </a>
+      <a href="{% url 'report_bug' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white font-semibold text-sm rounded-xl transition-all">
+        <i class="fas fa-bug text-xs"></i>Report a Bug
+      </a>
     </div>
+  </div>
 </div>
 
 <script>
-// Simple search functionality
-document.getElementById('helpSearch').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const accordionItems = document.querySelectorAll('.accordion-item');
-    
-    accordionItems.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        if (text.includes(searchTerm)) {
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
-    });
+function toggleHelp(btn) {
+  const body = btn.nextElementSibling;
+  const icon = btn.querySelector('i');
+  body.classList.toggle('hidden');
+  icon.style.transform = body.classList.contains('hidden') ? '' : 'rotate(180deg)';
+}
+
+document.getElementById('help-search').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.help-item').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
 });
 </script>
-{% endblock %} 
+{% endblock %}

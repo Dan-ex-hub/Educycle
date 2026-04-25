@@ -170,14 +170,8 @@ class EduCycleChatbot:
 Just ask me about any of these topics!"""
 
     def _get_default_response(self):
-        """Get default response for unrecognized messages"""
-        default_responses = [
-            "I'm not sure I understood that. Could you try asking about buying, selling, account setup, safety, or payment methods?",
-            "I didn't catch that. You can ask me about how to buy/sell items, create an account, safety guidelines, or payment methods.",
-            "I'm here to help with EduCycle! Try asking about buying, selling, account setup, safety, or how to use our platform.",
-            "Not sure what you mean. I can help with buying/selling, account questions, safety guidelines, or payment methods. What would you like to know?"
-        ]
-        return random.choice(default_responses)
+        """Get default response for unrecognized messages — escalate to admin"""
+        return "__ESCALATE_TO_ADMIN__"
 
     def get_conversation_history(self, session_id):
         """Get conversation history for a session"""

@@ -1,447 +1,378 @@
 {% extends 'hub/base.html' %}
-
-{% block title %}Payment - Order #{{ order.id }}{% endblock %}
-
+{% block title %}Payment — Order #{{ order.id }}{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-lg-8">
-            <!-- Payment Options -->
-            <div class="card shadow">
-                <div class="card-header bg-gradient-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-credit-card"></i> Choose Payment Method
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <!-- Payment Method Tabs -->
-                    <ul class="nav nav-tabs" id="paymentTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="card-tab" data-bs-toggle="tab" data-bs-target="#card" type="button" role="tab">
-                                <i class="fas fa-credit-card"></i> Credit/Debit Card
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="upi-tab" data-bs-toggle="tab" data-bs-target="#upi" type="button" role="tab">
-                                <i class="fas fa-mobile-alt"></i> UPI & Digital Wallets
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="cod-tab" data-bs-toggle="tab" data-bs-target="#cod" type="button" role="tab">
-                                <i class="fas fa-money-bill-wave"></i> Cash on Delivery
-                            </button>
-                        </li>
-                    </ul>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-                    <!-- Tab Content -->
-                    <div class="tab-content mt-3" id="paymentTabContent">
-                        <!-- Credit/Debit Card -->
-                        <div class="tab-pane fade show active" id="card" role="tabpanel">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-title">Secure Payment with Stripe</h6>
-                                    <p class="text-muted">Your payment information is encrypted and secure.</p>
-                                    
-                                    <form id="stripe-payment-form">
-                                        <div id="card-element" class="form-control mb-3" style="height: 40px; padding: 10px;">
-                                            <!-- Stripe Elements will be inserted here -->
-                                        </div>
-                                        <div id="card-errors" class="alert alert-danger" style="display: none;"></div>
-                                        
-                                        <button type="submit" class="btn btn-primary" id="stripe-submit">
-                                            <i class="fas fa-lock"></i> Pay ₹{{ total_amount }}
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- UPI & Digital Wallets -->
-                        <div class="tab-pane fade" id="upi" role="tabpanel">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-title">Pay with UPI & Digital Wallets</h6>
-                                    <p class="text-muted">Pay using UPI, PayTM, Google Pay, PhonePe, and more.</p>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="upi-id" class="form-label">UPI ID</label>
-                                                <input type="text" class="form-control" id="upi-id" placeholder="yourname@upi">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="mobile-number" class="form-label">Mobile Number</label>
-                                                <input type="tel" class="form-control" id="mobile-number" placeholder="+91 98765 43210">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="payment-methods mb-3">
-                                        <label class="form-label">Select Payment Method:</label>
-                                        <div class="row">
-                                            <div class="col-md-3 mb-2">
-                                                <div class="payment-method-option">
-                                                    <input type="radio" name="payment-method" id="googlepay" value="googlepay">
-                                                    <label for="googlepay" class="payment-method-label">
-                                                        <i class="fab fa-google-pay"></i> Google Pay
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 mb-2">
-                                                <div class="payment-method-option">
-                                                    <input type="radio" name="payment-method" id="paytm" value="paytm">
-                                                    <label for="paytm" class="payment-method-label">
-                                                        <i class="fas fa-mobile-alt"></i> PayTM
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 mb-2">
-                                                <div class="payment-method-option">
-                                                    <input type="radio" name="payment-method" id="phonepe" value="phonepe">
-                                                    <label for="phonepe" class="payment-method-label">
-                                                        <i class="fas fa-mobile-alt"></i> PhonePe
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 mb-2">
-                                                <div class="payment-method-option">
-                                                    <input type="radio" name="payment-method" id="upi" value="upi">
-                                                    <label for="upi" class="payment-method-label">
-                                                        <i class="fas fa-mobile-alt"></i> UPI
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="button" class="btn btn-success" id="razorpay-submit">
-                                        <i class="fas fa-mobile-alt"></i> Pay ₹{{ total_amount }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cash on Delivery -->
-                        <div class="tab-pane fade" id="cod" role="tabpanel">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle"></i>
-                                        <strong>Cash on Delivery:</strong> Pay when you receive your items.
-                                    </div>
-                                    
-                                    <h6 class="card-title">Order Summary</h6>
-                                    <ul class="list-unstyled">
-                                        <li><strong>Total Amount:</strong> ₹{{ total_amount }}</li>
-                                        <li><strong>Payment Method:</strong> Cash on Delivery</li>
-                                        <li><strong>Delivery:</strong> Meet with seller to collect items</li>
-                                    </ul>
-                                    
-                                    <form method="post" action="{% url 'process_cod_payment' order.id %}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-warning">
-                                            <i class="fas fa-money-bill-wave"></i> Confirm COD Order
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Order Summary -->
-        <div class="col-lg-4">
-            <div class="card shadow">
-                <div class="card-header bg-gradient-success text-white">
-                    <h6 class="mb-0">
-                        <i class="fas fa-shopping-cart"></i> Order Summary
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="order-items">
-                        {% for order_item in order.orderitem_set.all %}
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="me-3">
-                                {% if order_item.item.image1 %}
-                                    <img src="{{ order_item.item.image1.url }}" alt="{{ order_item.item.name }}" 
-                                         class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
-                                {% else %}
-                                    <div class="bg-light d-flex align-items-center justify-content-center" 
-                                         style="width: 50px; height: 50px;">
-                                        <i class="fas fa-image text-muted"></i>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">{{ order_item.item.name }}</h6>
-                                <small class="text-muted">Qty: {{ order_item.quantity }}</small>
-                            </div>
-                            <div class="text-end">
-                                <strong>₹{{ order_item.get_total_price }}</strong>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    
-                    <hr>
-                    
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal:</span>
-                        <span>₹{{ total_amount }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Delivery:</span>
-                        <span class="text-success">Free</span>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <strong>Total:</strong>
-                        <strong class="text-primary">₹{{ total_amount }}</strong>
-                    </div>
-                    
-                    <hr>
-                    
-                    <div class="order-info">
-                        <h6>Order Details</h6>
-                        <p class="mb-1"><strong>Order ID:</strong> #{{ order.id }}</p>
-                        <p class="mb-1"><strong>Date:</strong> {{ order.created_at|date:"M d, Y" }}</p>
-                        <p class="mb-1"><strong>Status:</strong> 
-                            <span class="badge bg-warning">{{ order.get_status_display }}</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Security Info -->
-            <div class="card mt-3">
-                <div class="card-body">
-                    <h6 class="card-title">
-                        <i class="fas fa-shield-alt text-success"></i> Secure Payment
-                    </h6>
-                    <ul class="list-unstyled mb-0">
-                        <li><i class="fas fa-check text-success me-2"></i>SSL Encrypted</li>
-                        <li><i class="fas fa-check text-success me-2"></i>PCI DSS Compliant</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Secure Gateway</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Money Back Guarantee</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+  <!-- Header -->
+  <div class="flex items-center gap-3 mb-8">
+    <div class="w-10 h-10 rounded-2xl bg-indigo-100 flex items-center justify-center">
+      <i class="fas fa-credit-card text-indigo-600"></i>
     </div>
+    <div>
+      <h1 class="text-2xl font-extrabold text-slate-900">Complete Payment</h1>
+      <p class="text-slate-500 text-xs mt-0.5">Order #{{ order.id }} · ₹{{ total_amount }}</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- ── Payment methods ── -->
+    <div class="lg:col-span-2 space-y-4">
+
+      <!-- Tab switcher -->
+      <div class="flex gap-1 bg-slate-100 p-1 rounded-2xl">
+        <button onclick="switchPay('card')" id="ptab-card"
+          class="pay-tab active-pay-tab flex-1 py-2.5 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5">
+          <i class="fas fa-credit-card"></i>Card
+        </button>
+        <button onclick="switchPay('upi')" id="ptab-upi"
+          class="pay-tab flex-1 py-2.5 text-xs font-bold rounded-xl transition-all text-slate-500 hover:text-slate-700 flex items-center justify-center gap-1.5">
+          <i class="fas fa-mobile-alt"></i>UPI / Razorpay
+        </button>
+        <button onclick="switchPay('cod')" id="ptab-cod"
+          class="pay-tab flex-1 py-2.5 text-xs font-bold rounded-xl transition-all text-slate-500 hover:text-slate-700 flex items-center justify-center gap-1.5">
+          <i class="fas fa-money-bill-wave"></i>Cash
+        </button>
+      </div>
+
+      <!-- ── CARD (Stripe) ── -->
+      <div id="ppanel-card" class="bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center">
+            <i class="fas fa-lock text-indigo-600 text-sm"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm">Pay with Card</h3>
+            <p class="text-xs text-slate-400">Secured by Stripe · SSL encrypted</p>
+          </div>
+        </div>
+        <form id="stripe-form">
+          {% csrf_token %}
+          <div id="card-element"
+            class="w-full px-4 py-3.5 border-2 border-slate-200 rounded-2xl mb-3 focus-within:border-indigo-400 transition-colors bg-slate-50"
+            style="min-height:46px"></div>
+          <div id="card-errors"
+            class="hidden text-xs text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2 mb-3 flex items-center gap-2">
+            <i class="fas fa-exclamation-circle flex-shrink-0"></i>
+            <span id="card-error-msg"></span>
+          </div>
+          <button type="submit" id="stripe-btn"
+            class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed
+                   text-white font-bold text-sm rounded-2xl shadow-sm hover:shadow-md transition-all
+                   hover:-translate-y-px flex items-center justify-center gap-2">
+            <i class="fas fa-lock text-xs" id="stripe-icon"></i>
+            <span id="stripe-label">Pay ₹{{ total_amount }}</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- ── UPI / Razorpay ── -->
+      <div id="ppanel-upi" class="hidden bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center">
+            <i class="fas fa-mobile-alt text-emerald-600 text-sm"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm">UPI & Digital Wallets</h3>
+            <p class="text-xs text-slate-400">Google Pay · PhonePe · PayTM · UPI · Net Banking</p>
+          </div>
+        </div>
+
+        <!-- UPI method selector (visual only — Razorpay shows its own modal) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+          {% for icon, label, color in upi_opts %}
+          {% empty %}
+          {% for item in "1234" %}
+          <div class="p-3 rounded-2xl border border-slate-200 bg-slate-50 text-center">
+            <div class="text-2xl mb-1">
+              {% if forloop.counter == 1 %}🇬{% elif forloop.counter == 2 %}📱{% elif forloop.counter == 3 %}💳{% else %}🏦{% endif %}
+            </div>
+            <p class="text-[11px] font-semibold text-slate-600">
+              {% if forloop.counter == 1 %}Google Pay{% elif forloop.counter == 2 %}PhonePe{% elif forloop.counter == 3 %}PayTM{% else %}Net Banking{% endif %}
+            </p>
+          </div>
+          {% endfor %}
+          {% endfor %}
+        </div>
+
+        <div id="rzp-error"
+          class="hidden text-xs text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2 mb-3 flex items-center gap-2">
+          <i class="fas fa-exclamation-circle flex-shrink-0"></i>
+          <span id="rzp-error-msg"></span>
+        </div>
+
+        <button id="rzp-btn" onclick="startRazorpay()"
+          class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 disabled:cursor-not-allowed
+                 text-white font-bold text-sm rounded-2xl shadow-sm hover:shadow-md transition-all
+                 hover:-translate-y-px flex items-center justify-center gap-2">
+          <i class="fas fa-mobile-alt text-xs" id="rzp-icon"></i>
+          <span id="rzp-label">Pay ₹{{ total_amount }} via UPI / Razorpay</span>
+        </button>
+
+        <p class="text-[11px] text-slate-400 text-center mt-2">
+          A Razorpay checkout window will open. Choose your preferred UPI app inside.
+        </p>
+      </div>
+
+      <!-- ── Cash on Delivery ── -->
+      <div id="ppanel-cod" class="hidden bg-white rounded-3xl border border-slate-100 shadow-card p-6">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
+            <i class="fas fa-money-bill-wave text-amber-600 text-sm"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm">Cash on Delivery</h3>
+            <p class="text-xs text-slate-400">Pay when you receive the item from the seller</p>
+          </div>
+        </div>
+
+        <div class="space-y-3 mb-5">
+          <div class="flex items-center gap-3 p-3.5 bg-slate-50 rounded-2xl">
+            <i class="fas fa-rupee-sign text-indigo-500 w-5 text-center flex-shrink-0"></i>
+            <div>
+              <p class="text-xs font-semibold text-slate-700">Amount Due</p>
+              <p class="text-lg font-extrabold text-indigo-600">₹{{ total_amount }}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3.5 bg-slate-50 rounded-2xl">
+            <i class="fas fa-handshake text-emerald-500 w-5 text-center flex-shrink-0"></i>
+            <div>
+              <p class="text-xs font-semibold text-slate-700">How it works</p>
+              <p class="text-xs text-slate-500 mt-0.5">Meet the seller on campus and pay in cash when you collect the item.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2 p-3.5 bg-amber-50 rounded-2xl border border-amber-100 mb-5">
+          <i class="fas fa-shield-alt text-amber-500 text-xs mt-0.5 flex-shrink-0"></i>
+          <p class="text-xs text-amber-700 leading-relaxed">
+            Always meet in a public campus location. Verify the item before paying.
+          </p>
+        </div>
+
+        <form method="post" action="{% url 'process_cod_payment' order.id %}">
+          {% csrf_token %}
+          <button type="submit"
+            class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-2xl
+                   shadow-sm hover:shadow-md transition-all hover:-translate-y-px flex items-center justify-center gap-2">
+            <i class="fas fa-check-circle text-xs"></i>Confirm Cash on Delivery
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Order summary sidebar ── -->
+    <div class="space-y-4">
+
+      <!-- Items -->
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-5">
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Order Summary</h2>
+        <div class="space-y-3 mb-4 max-h-52 overflow-y-auto pr-1">
+          {% for oi in order.orderitem_set.all %}
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-indigo-50">
+              {% if oi.item.image1 %}
+                <img src="{{ oi.item.image1.url }}" alt="{{ oi.item.name }}" class="w-full h-full object-cover">
+              {% else %}
+                <div class="w-full h-full flex items-center justify-center text-lg">
+                  {% if oi.item.category == 'textbook' %}📚{% elif oi.item.category == 'equipment' %}🔬{% elif oi.item.category == 'appliance' %}⚡{% elif oi.item.category == 'decor' %}🎨{% else %}📦{% endif %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-semibold text-slate-800 truncate">{{ oi.item.name }}</p>
+              <p class="text-[11px] text-slate-400">Qty: {{ oi.quantity }}</p>
+            </div>
+            <p class="text-xs font-bold text-indigo-600 flex-shrink-0">₹{{ oi.get_total_price }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="border-t border-slate-100 pt-3 space-y-2 text-sm">
+          <div class="flex justify-between text-slate-600"><span>Subtotal</span><span>₹{{ total_amount }}</span></div>
+          <div class="flex justify-between text-slate-600"><span>Delivery</span><span class="text-emerald-600 font-semibold">Free</span></div>
+          <div class="flex justify-between font-bold text-slate-900 text-base pt-1 border-t border-slate-100">
+            <span>Total</span><span class="text-indigo-600">₹{{ total_amount }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-5">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Secure Payment</h3>
+        <ul class="space-y-2">
+          <li class="flex items-center gap-2 text-xs text-slate-600"><i class="fas fa-check-circle text-emerald-500 flex-shrink-0"></i>SSL Encrypted</li>
+          <li class="flex items-center gap-2 text-xs text-slate-600"><i class="fas fa-check-circle text-emerald-500 flex-shrink-0"></i>PCI DSS Compliant</li>
+          <li class="flex items-center gap-2 text-xs text-slate-600"><i class="fas fa-check-circle text-emerald-500 flex-shrink-0"></i>Secure Gateway</li>
+          <li class="flex items-center gap-2 text-xs text-slate-600"><i class="fas fa-check-circle text-emerald-500 flex-shrink-0"></i>Money Back Guarantee</li>
+        </ul>
+      </div>
+
+      <!-- Order info -->
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-card p-5">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Order Info</h3>
+        <div class="space-y-1.5 text-xs text-slate-600">
+          <div class="flex justify-between"><span>Order ID</span><span class="font-semibold">#{{ order.id }}</span></div>
+          <div class="flex justify-between"><span>Date</span><span>{{ order.created_at|date:"M d, Y" }}</span></div>
+          <div class="flex justify-between"><span>Status</span>
+            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 font-bold rounded-full text-[11px]">{{ order.get_status_display }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Stripe Script -->
+<style>
+  .active-pay-tab { background: white; color: #4f46e5; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+</style>
+
+<!-- Stripe -->
 <script src="https://js.stripe.com/v3/"></script>
-<script>
-// Initialize Stripe
-const stripe = Stripe('{{ stripe_public_key }}');
-const elements = stripe.elements();
-
-// Create card element
-const cardElement = elements.create('card', {
-    style: {
-        base: {
-            fontSize: '16px',
-            color: '#424770',
-            '::placeholder': {
-                color: '#aab7c4',
-            },
-        },
-        invalid: {
-            color: '#9e2146',
-        },
-    },
-});
-
-// Mount the card element
-cardElement.mount('#card-element');
-
-// Handle form submission
-const form = document.getElementById('stripe-payment-form');
-const submitButton = document.getElementById('stripe-submit');
-
-form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-    try {
-        // Create payment intent
-        const response = await fetch(`/payment/create-intent/{{ order.id }}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            // Confirm payment
-            const { error, paymentIntent } = await stripe.confirmCardPayment(data.client_secret, {
-                payment_method: {
-                    card: cardElement,
-                }
-            });
-
-            if (error) {
-                showError(error.message);
-            } else {
-                showSuccess('Payment successful! Redirecting...');
-                setTimeout(() => {
-                    window.location.href = '/orders/';
-                }, 2000);
-            }
-        } else {
-            showError(data.error || 'Payment failed');
-        }
-    } catch (error) {
-        showError('Payment processing failed. Please try again.');
-    } finally {
-        submitButton.disabled = false;
-        submitButton.innerHTML = '<i class="fas fa-lock"></i> Pay ₹{{ total_amount }}';
-    }
-});
-
-// Razorpay integration
-document.getElementById('razorpay-submit').addEventListener('click', async () => {
-    const submitButton = document.getElementById('razorpay-submit');
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-    try {
-        const response = await fetch(`/payment/create-razorpay-order/{{ order.id }}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            const options = {
-                key: '{{ razorpay_key_id }}',
-                amount: data.amount,
-                currency: data.currency,
-                order_id: data.order_id,
-                name: 'EduCycle',
-                description: 'Order Payment',
-                image: 'https://your-logo-url.com/logo.png',
-                handler: function (response) {
-                    showSuccess('Payment successful! Redirecting...');
-                    setTimeout(() => {
-                        window.location.href = '/orders/';
-                    }, 2000);
-                },
-                prefill: {
-                    name: '{{ request.user.get_full_name|default:request.user.username }}',
-                    email: '{{ request.user.email }}',
-                    contact: ''
-                },
-                theme: {
-                    color: '#007bff'
-                }
-            };
-
-            const rzp = new Razorpay(options);
-            rzp.open();
-        } else {
-            showError(data.error || 'Payment failed');
-        }
-    } catch (error) {
-        showError('Payment processing failed. Please try again.');
-    } finally {
-        submitButton.disabled = false;
-        submitButton.innerHTML = '<i class="fas fa-mobile-alt"></i> Pay ₹{{ total_amount }}';
-    }
-});
-
-function showError(message) {
-    const errorDiv = document.getElementById('card-errors');
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
-}
-
-function showSuccess(message) {
-    // You can implement a success message display
-    alert(message);
-}
-
-// Handle card errors
-cardElement.addEventListener('change', ({error}) => {
-    const displayError = document.getElementById('card-errors');
-    if (error) {
-        displayError.textContent = error.message;
-        displayError.style.display = 'block';
-    } else {
-        displayError.textContent = '';
-        displayError.style.display = 'none';
-    }
-});
-</script>
-
-<!-- Razorpay Script -->
+<!-- Razorpay -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<style>
-.payment-method-option {
-    border: 1px solid #dee2e6;
-    border-radius: 0.375rem;
-    padding: 0.75rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+<script>
+/* ── Tab switcher ── */
+function switchPay(name) {
+  ['card','upi','cod'].forEach(t => {
+    document.getElementById('ppanel-' + t).classList.toggle('hidden', t !== name);
+    const btn = document.getElementById('ptab-' + t);
+    btn.classList.toggle('active-pay-tab', t === name);
+    btn.classList.toggle('text-slate-500', t !== name);
+  });
 }
 
-.payment-method-option:hover {
-    border-color: #007bff;
-    background-color: #f8f9fa;
+/* ── CSRF helper ── */
+function getCsrf() {
+  return document.querySelector('[name=csrfmiddlewaretoken]').value;
 }
 
-.payment-method-option input[type="radio"] {
-    display: none;
-}
+/* ── Stripe ── */
+const stripe = Stripe('{{ stripe_public_key }}');
+const elements = stripe.elements();
+const cardEl = elements.create('card', {
+  style: {
+    base: { fontSize:'15px', color:'#1e293b', fontFamily:'Inter,sans-serif',
+            '::placeholder':{ color:'#94a3b8' } },
+    invalid: { color:'#ef4444' }
+  }
+});
+cardEl.mount('#card-element');
 
-.payment-method-option input[type="radio"]:checked + .payment-method-label {
-    color: #007bff;
-    font-weight: bold;
-}
+cardEl.on('change', ({error}) => {
+  const box = document.getElementById('card-errors');
+  const msg = document.getElementById('card-error-msg');
+  if (error) { msg.textContent = error.message; box.classList.remove('hidden'); }
+  else { box.classList.add('hidden'); }
+});
 
-.payment-method-label {
-    cursor: pointer;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+document.getElementById('stripe-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn   = document.getElementById('stripe-btn');
+  const icon  = document.getElementById('stripe-icon');
+  const label = document.getElementById('stripe-label');
+  btn.disabled = true;
+  icon.className = 'fas fa-spinner fa-spin text-xs';
+  label.textContent = 'Processing…';
 
-.nav-tabs .nav-link {
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: #6c757d;
-}
+  try {
+    const res  = await fetch('/payment/create-intent/{{ order.id }}/', {
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCsrf(), 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
 
-.nav-tabs .nav-link.active {
-    border-bottom-color: #007bff;
-    color: #007bff;
-    background: none;
-}
+    if (!data.success) throw new Error(data.error || 'Failed to create payment intent');
 
-#card-element {
-    border: 1px solid #ced4da;
-    border-radius: 0.375rem;
-    padding: 0.75rem;
-}
+    const { error, paymentIntent } = await stripe.confirmCardPayment(data.client_secret, {
+      payment_method: { card: cardEl }
+    });
 
-.order-items {
-    max-height: 300px;
-    overflow-y: auto;
+    if (error) throw new Error(error.message);
+
+    // Success
+    label.textContent = '✓ Payment successful! Redirecting…';
+    icon.className = 'fas fa-check text-xs';
+    setTimeout(() => { window.location.href = '/orders/'; }, 1500);
+
+  } catch (err) {
+    const box = document.getElementById('card-errors');
+    document.getElementById('card-error-msg').textContent = err.message;
+    box.classList.remove('hidden');
+    btn.disabled = false;
+    icon.className = 'fas fa-lock text-xs';
+    label.textContent = 'Pay ₹{{ total_amount }}';
+  }
+});
+
+/* ── Razorpay ── */
+async function startRazorpay() {
+  const btn   = document.getElementById('rzp-btn');
+  const icon  = document.getElementById('rzp-icon');
+  const label = document.getElementById('rzp-label');
+  const errBox = document.getElementById('rzp-error');
+  const errMsg = document.getElementById('rzp-error-msg');
+
+  btn.disabled = true;
+  icon.className = 'fas fa-spinner fa-spin text-xs';
+  label.textContent = 'Creating order…';
+  errBox.classList.add('hidden');
+
+  try {
+    const res  = await fetch('/payment/create-razorpay-order/{{ order.id }}/', {
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCsrf(), 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
+
+    if (!data.success) throw new Error(data.error || 'Failed to create Razorpay order');
+
+    const options = {
+      key:         '{{ razorpay_key_id }}',
+      amount:      data.amount,
+      currency:    data.currency,
+      order_id:    data.order_id,
+      name:        'EduCycle',
+      description: 'Order #{{ order.id }}',
+      image:       '',
+      prefill: {
+        name:    '{{ request.user.get_full_name|default:request.user.username|escapejs }}',
+        email:   '{{ request.user.email|escapejs }}',
+        contact: ''
+      },
+      theme: { color: '#4f46e5' },
+      handler: function(response) {
+        // Payment successful — redirect to orders
+        label.textContent = '✓ Payment successful! Redirecting…';
+        icon.className = 'fas fa-check text-xs';
+        setTimeout(() => { window.location.href = '/orders/'; }, 1500);
+      },
+      modal: {
+        ondismiss: function() {
+          btn.disabled = false;
+          icon.className = 'fas fa-mobile-alt text-xs';
+          label.textContent = 'Pay ₹{{ total_amount }} via UPI / Razorpay';
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(response) {
+      errMsg.textContent = response.error.description || 'Payment failed. Please try again.';
+      errBox.classList.remove('hidden');
+      btn.disabled = false;
+      icon.className = 'fas fa-mobile-alt text-xs';
+      label.textContent = 'Pay ₹{{ total_amount }} via UPI / Razorpay';
+    });
+    rzp.open();
+
+  } catch (err) {
+    errMsg.textContent = err.message;
+    errBox.classList.remove('hidden');
+    btn.disabled = false;
+    icon.className = 'fas fa-mobile-alt text-xs';
+    label.textContent = 'Pay ₹{{ total_amount }} via UPI / Razorpay';
+  }
 }
-</style>
-{% endblock %} 
+</script>
+{% endblock %}
