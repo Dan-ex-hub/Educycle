@@ -2,6 +2,9 @@
 
 A full-stack student marketplace built with **Django 5.2** and **Tailwind CSS**. Students can buy, sell, and swap second-hand textbooks, lab equipment, appliances, and room decor within their campus community.
 
+**🌐 Live Demo:** [https://educycle-production.up.railway.app](https://educycle-production.up.railway.app)
+
+
 ---
 
 ## ✨ Features
