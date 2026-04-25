@@ -1,0 +1,18 @@
+{
+  "builds": [
+    {
+      "src": "EduCycle/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "EduCycle/wsgi.py"
+    }
+  ]
+}
