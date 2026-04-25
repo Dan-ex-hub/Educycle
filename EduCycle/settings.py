@@ -27,7 +27,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure--^cweqg7_)7etl*p08=wg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['.vercel.app', 'now.sh', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '.railway.app,localhost,127.0.0.1,.vercel.app').split(',')
+
 
 
 # Application definition
@@ -119,42 +120,22 @@ USE_I18N = True
 USE_TZ = True
 
 
-# AWS S3 Settings (Supabase Storage)
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')
-AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'us-east-1')
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-
-if AWS_STORAGE_BUCKET_NAME:
-    STORAGES = {
-        "default": {
-            "BACKEND": "storages.backends.s3.S3Storage",
-        },
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-        },
-    }
-else:
-    STORAGES = {
-        "default": {
-            "BACKEND": "django.core.files.storage.FileSystemStorage",
-        },
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-        },
-    }
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-# STATICFILES_STORAGE is handled in the STORAGES setting above
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -208,23 +189,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-# OAuth2 Settings (for future implementation)
-# OAUTH2_PROVIDER = {
-#     'SCOPES': {
-#         'read': 'Read scope',
-#         'write': 'Write scope',
-#     },
-#     'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
-#     'REFRESH_TOKEN_EXPIRE_SECONDS': 86400,
-# }
 
-# Two-Factor Authentication (for future implementation)
-# TWO_FACTOR_CALL_GATEWAY = 'two_factor.gateways.fake.Fake'
-# TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.fake.Fake'
 
-# Rate Limiting (for future implementation)
-# RATELIMIT_USE_CACHE = 'default'
-# RATELIMIT_ENABLE = True
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
@@ -250,17 +216,15 @@ CACHES = {
     }
 }
 
-# Static Files Configuration (for future whitenoise implementation)
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
 
 # Media Files Configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Debug Toolbar (for future implementation)
-# INTERNAL_IPS = [
-#     '127.0.0.1',
-# ]
+
+
 
 # Payment Gateway Configuration
 # Stripe Configuration
@@ -300,5 +264,5 @@ EMAIL_HOST_USER = 'your-email@gmail.com'  # Replace with your email
 EMAIL_HOST_PASSWORD = 'your-app-password'  # Replace with your app password
 DEFAULT_FROM_EMAIL = 'EduCycle <noreply@educycle.com>'
 
-# For development, you can use console backend instead:
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
