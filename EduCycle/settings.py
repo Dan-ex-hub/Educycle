@@ -29,6 +29,12 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '.railway.app,localhost,127.0.0.1,.vercel.app').split(',')
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://educycle-production.up.railway.app',
+    'https://*.railway.app',
+]
+
+
 
 
 # Application definition
