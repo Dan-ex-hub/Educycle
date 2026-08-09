@@ -150,6 +150,8 @@ Run the test suite to validate functionality:
 
 ```bash
 python manage.py test hub
+python main.pu test main hub
+
 ```
 
 ---
